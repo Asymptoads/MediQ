@@ -4,14 +4,13 @@ const { Schema } = mongoose;
 
 const UserInQueueSchema = new Schema({
   registered_at: { type: Date, default: Date.now },
+  remaining_at_the_time_of_register: { type: Number },
   // Reference to the VisitCategory model
   category: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'VisitCategory',  // This is where you reference the VisitCategory model
   },
-  due_date: { type: Date, default: null },
-  is_completed: { type: Boolean, default: false },
   description: { type: String, default: null },
 
   queue_id: {
@@ -26,16 +25,15 @@ const UserInQueueSchema = new Schema({
     ref: 'User',
   },
 
-  total_waited: { 
-    type: Number,  // Store total wait time in seconds or minutes
-    default: null 
-  },
-
   doctor_id: {
     type: Schema.Types.ObjectId, 
     ref: 'Doctor',  // Reference to the Doctor model
     default: null 
   },
+  is_suspended: { type: Boolean, default: false },
+  suspended_at: { type: Date, default: null }
+  is_completed: { type: Boolean, default: false },
+  completed_at: { type: Date, default: null }
 });
 
 // Middleware to calculate total_waited
