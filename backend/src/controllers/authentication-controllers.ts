@@ -101,7 +101,7 @@ import { v4 as uuidv4 } from 'uuid'; // For generating _id
 
       const salt = random();
       const _id = uuidv4(); // Generate unique ID
-
+      
       const user = await userModel.create({
         _id,
         email,
