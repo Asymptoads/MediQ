@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const UserInQueueSchema = new Schema({
+const userInQueueSchema = new Schema({
   registered_at: { type: Date, default: Date.now },
   remaining_at_the_time_of_register: { type: Number },
   // Reference to the VisitCategory model
@@ -46,4 +46,5 @@ const UserInQueueSchema = new Schema({
 //   next();
 // });
 
-export default mongoose.model('UserInQueue', UserInQueueSchema);
+const userInQueueModel = mongoose.model('userInQueue', userInQueueSchema);
+export {userInQueueModel, userInQueueSchema};

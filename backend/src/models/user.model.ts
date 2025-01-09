@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const UserSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   _id: { type: String, required: true, unique: true },  // patient_id as the primary key
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -15,4 +15,5 @@ const UserSchema = new mongoose.Schema({
   // updated_at: { type: Date, default: Date.now },
 });
 
-export default mongoose.model('User', UserSchema);
+const userModel = mongoose.model('user', userSchema);
+export {userModel, userSchema};

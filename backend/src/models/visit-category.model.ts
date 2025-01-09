@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const VisitCategorySchema = new Schema({
+const visitCategorySchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -22,4 +22,5 @@ const VisitCategorySchema = new Schema({
   },
 });
 
-export default mongoose.model('VisitCategory', VisitCategorySchema);
+const visitCategoryModel = mongoose.model('visitCategory', visitCategorySchema);
+export {visitCategoryModel, visitCategorySchemal};

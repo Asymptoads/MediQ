@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const SpecializationSchema = new Schema({
+const specializationSchema = new Schema({
   name: { 
     type: String, 
     required: true, 
@@ -36,4 +36,5 @@ const SpecializationSchema = new Schema({
   },
 });
 
-export default mongoose.model('Specialization', SpecializationSchema);
+const specializationModel = mongoose.model('specialization', specializationSchema);
+export {specializationModel, specializationSchema};
