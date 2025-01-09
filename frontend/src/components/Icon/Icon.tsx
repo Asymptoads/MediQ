@@ -1,13 +1,12 @@
-// components/Icon/Icon.tsx
 import React from 'react';
 import { Icon as MuiIcon } from '@mui/material';
 
 interface IconProps {
-  id: string;  // This will be any valid Material UI icon ID
+  id: string;
   styles?: React.CSSProperties;
   className?: string;
   onClick?: () => void;
-  color?: 'inherit' | 'primary' | 'secondary' | 'error' | 'warning' | 'info' | 'success';
+  color?: 'inherit' | 'action' | 'disabled' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning';
   fontSize?: 'inherit' | 'small' | 'medium' | 'large';
 }
 
@@ -17,7 +16,7 @@ const Icon: React.FC<IconProps> = ({
   className = '',
   onClick,
   color = 'inherit',
-  fontSize = 'medium'
+  fontSize = 'medium',
 }) => {
   return (
     <MuiIcon
@@ -33,6 +32,3 @@ const Icon: React.FC<IconProps> = ({
 };
 
 export default Icon;
-
-//<Icon id ="Search" />
-//<Icon id = "person_outline" color = "primary" font size = "large"/> 
