@@ -32,3 +32,6 @@ const Icon: React.FC<IconProps> = ({
 };
 
 export default Icon;
+
+
+//<Icon id="person_outline" fontSize="large" color="primary" />
