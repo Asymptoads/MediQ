@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const DoctorSchema = new Schema({
+const doctorSchema = new Schema({
     _id: { type: String, required: true, unique: true },  // doctor_id as the primary key
     email: { type: String, required: true, unique: true },
     phone_number: { type: String, required: true }, // Added phone_number as mandatory
@@ -20,4 +20,5 @@ const DoctorSchema = new Schema({
   { timestamps: true } // Enable automatic createdAt and updatedAt fields
 );
 
-export default mongoose.model('Doctor', DoctorSchema);
+const doctorModel = mongoose.model('doctor', doctorSchema);
+export {doctorModel, doctorSchema};

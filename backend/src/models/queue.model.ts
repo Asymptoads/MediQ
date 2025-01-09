@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
-const QueueSchema = new Schema({
+const queueSchema = new Schema({
   specialization: { 
     type: Schema.Types.ObjectId, 
     ref: 'Specialization',  // Reference to the Specialization model
@@ -23,4 +23,5 @@ const QueueSchema = new Schema({
   is_active: { type: Boolean, default: true },  // Track if the queue is active
 });
 
-export default mongoose.model('Queue', QueueSchema);
+const queueModel = mongoose.model('queue', queueSchema);
+export {queueModel, queueSchema};
