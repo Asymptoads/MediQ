@@ -1,4 +1,4 @@
-import { userModel } from '../models/user.model';
+import  {userModel}  from '../models/user.model';
 
 // returns all the entries of users
 export const getUsers = () => userModel.find();
