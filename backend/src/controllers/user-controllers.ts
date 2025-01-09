@@ -1,136 +1,130 @@
 import express from 'express';
-import { get } from 'lodash';
+import { userModel } from '../models/user.model';
 
-import { getUserById, deleteUserById, getUsers } from '../helpers/userHelpers';
+// Get all users
+export const getAllUsers = async (req: express.Request, res: express.Response) => {
+  try {
+    const users = await userModel
+      .find({})
+      .select('-authentication -password');
 
-// returns the user of current session
+    return res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Error fetching users' });
+  }
+};
+
+// Get current user
 export const getCurrentUser = async (
-    req: express.Request,
-    res: express.Response
+  req: any, // Using any for req to access user property
+  res: express.Response
 ) => {
-    try {
-        const userId = get(req, 'identity._id') as string;
-        if (!userId) {
-            return res
-                .status(403)
-                .json({ message: 'You are not authenticated!' });
-        }
+  try {
+    const userId = req.user?.id;
 
-        const user = await getUserById(userId);
-        if (!user) {
-            return res.status(403).json({ message: 'You are not authorized!' });
-        }
-
-        const userDetails = {
-            id: user._id,
-            username: user.username,
-            email: user.email,
-            created_at: user.created_at,
-            updated_at: user.updated_at,
-        };
-
-        return res
-            .status(200)
-            .json({ message: 'User authorized!', user: userDetails })
-            .end();
-    } catch (error) {
-        console.log(error);
-        return res
-            .status(400)
-            .json({ message: 'Something went wrong!', error: error })
-            .end();
+    if (!userId) {
+      return res.status(401).json({ message: 'User ID not found in request' });
     }
+
+    const user = await userModel
+      .findById(userId)
+      .select('-authentication -password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Error fetching user' });
+  }
 };
 
-// returns all the users
-export const getAllUsers = async (
-    req: express.Request,
-    res: express.Response
-) => {
-    try {
-        const users = await getUsers();
-
-        return res
-            .status(200)
-            .json({ message: 'User authorized!', users })
-            .end();
-    } catch (error) {
-        console.log(error);
-        return res
-            .status(400)
-            .json({ message: 'Something went wrong!', error })
-            .end();
-    }
-};
-
-// deletes user requested by id
-export const deleteUser = async (
-    req: express.Request,
-    res: express.Response
-) => {
-    try {
-        const { id } = req.params; // param from the url
-
-        const deletedUser = await deleteUserById(id);
-
-        if (!deletedUser) {
-            return res
-                .status(400)
-                .json({ message: 'Something went wrong!' })
-                .end();
-        }
-
-        return res
-            .status(200)
-            .clearCookie('jwt_token')
-            .json({ message: 'User deleted successfully', deletedUser })
-            .end();
-    } catch (error) {
-        console.log(error);
-        return res
-            .status(400)
-            .json({ message: 'Something went wrong!', error })
-            .end();
-    }
-};
-
-// updates user's username by comparing id
+// Update user
 export const updateUser = async (
-    req: express.Request,
-    res: express.Response
+  req: any, // Using any for req to access user property
+  res: express.Response
 ) => {
-    try {
-        const { id } = req.params;
-        // can take in multiple values (phone no for example if we choose to include it)
-        const { username } = req.body;
+  try {
+    const userId = req.user?.id;
 
-        if (!username) {
-            return res
-                .status(400)
-                .json({ message: 'Something went wrong!' })
-                .end();
-        }
-
-        const user = await getUserById(id);
-        if (!user) {
-            return res
-                .status(400)
-                .json({ message: 'Something went wrong!' })
-                .end();
-        }
-
-        user.username = username;
-        user.updated_at = new Date(Date.now());
-        await user.save();
-
-        return res
-            .status(200)
-            .json({ message: 'User updated successfully!', user })
-            .end();
-    } catch (error) {
-        console.log(error);
-        return res
-            .status(400)
-            .json({ message: 'Something went wrong!', error });
+    if (!userId) {
+      return res.status(401).json({ message: 'User ID not found in request' });
     }
+
+    const { name, email, phone_number, date_of_birth } = req.body;
+
+    // Validate email if it's being updated
+    if (email) {
+      const existingUser = await userModel.findOne({ 
+        email, 
+        _id: { $ne: userId } 
+      });
+      
+      if (existingUser) {
+        return res.status(400).json({ message: 'Email already in use' });
+      }
+    }
+
+    const updatedUser = await userModel.findByIdAndUpdate(
+      userId,
+      {
+        $set: {
+          ...(name && { name }),
+          ...(email && { email }),
+          ...(phone_number && { phone_number }),
+          ...(date_of_birth && { date_of_birth: new Date(date_of_birth) })
+        }
+      },
+      { 
+        new: true,
+        select: '-authentication -password'
+      }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    return res.status(200).json({
+      message: 'User updated successfully',
+      user: updatedUser
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Error updating user' });
+  }
+};
+
+// Delete user
+export const deleteUser = async (
+  req: any, // Using any for req to access user property
+  res: express.Response
+) => {
+  try {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ message: 'User ID not found in request' });
+    }
+
+    const deletedUser = await userModel.findByIdAndDelete(userId);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Clear authentication cookie
+    res.clearCookie('jwt_token', {
+      domain: 'localhost',
+      path: '/'
+    });
+
+    return res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Error deleting user' });
+  }
 };
