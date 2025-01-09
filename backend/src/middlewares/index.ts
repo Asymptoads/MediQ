@@ -1,42 +1,43 @@
-import express from 'express';
-import { get, merge } from 'lodash';
+// middlewares/auth.ts
+import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import { secret } from '../envconfig';
+import  {userModel}  from '../models/user.model';
 
-import { getUserBySessionToken } from '../helpers/user-helpers';
-
-// checks if there is a sessionToken and if it matches with one of the existing user entries
 export const isAuthenticated = async (
-    req: express.Request,
-    res: express.Response,
-    next: express.NextFunction
+    req: Request & { user?: any },
+    res: Response,
+    next: NextFunction
 ) => {
     try {
-        const sessionToken = req.cookies['jwt_token']; // 'jwt_token' name set during creation of token
-
-        // return error if there is no sessionToken
-        if (!sessionToken) {
-            return res
-                .status(403)
-                .json({ message: 'You are not authenticated!' })
-                .end();
+        // Check for Authorization header first, then cookie
+        const authHeader = req.headers.authorization;
+        const cookieToken = req.cookies.jwt_token;
+        
+        let token;
+        
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+            token = authHeader.split(' ')[1];
+        } else if (cookieToken) {
+            token = cookieToken;
         }
 
-        // checks if there is an entry among users that matches above sessionToken
-        const existingUser = await getUserBySessionToken(sessionToken);
-        if (!existingUser) {
-            return res
-                .status(403)
-                .json({ message: 'You are not authenticated' })
-                .end();
+        if (!token) {
+            return res.status(401).json({ message: 'Authentication required' });
         }
 
-        // if the user exists with above session token then merge the 'identity' property with request
-        merge(req, { identity: existingUser });
-        return next(); // call next function thingy
+        const decoded = jwt.verify(token, secret) as { id: string };
+        
+        // Verify user exists
+        const user = await userModel.findById(decoded.id);
+        if (!user) {
+            return res.status(401).json({ message: 'User not found' });
+        }
+
+        req.user = { id: decoded.id };
+        next();
     } catch (error) {
         console.log(error);
-        return res
-            .status(400)
-            .json({ message: 'Something went wrong!', error: error })
-            .end();
+        return res.status(401).json({ message: 'Invalid or expired token' });
     }
 };
