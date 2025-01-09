@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
-  _id: { type: String, required: true, unique: true },  // patient_id as the primary key
+  _id: { type: String, required: true, unique: true },  
+  name: { type: String, required: true, unique: true },  
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   date_of_birth: { type: Date, required: true },

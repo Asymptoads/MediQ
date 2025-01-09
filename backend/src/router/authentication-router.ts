@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { register, login } from '../controllers/authenticationControllers';
+import { register, login } from '../controllers/authentication-controllers';
 
 const authenticationRouter = (router: express.Router) => {
     router.post('/api/auth/register', register);
