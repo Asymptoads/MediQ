@@ -1,5 +1,6 @@
 import express from "express";
 import { userModel } from "../models/user.model";
+import mongoose from "mongoose";
 
 // Get all users both doctor and user
 export const getAllUsers = async (
@@ -201,5 +202,48 @@ export const deleteUser = async (
     } catch (error) {
         console.log(error);
         return res.status(500).json({ message: "Error deleting user" });
+    }
+};
+
+export const validateObjectId = (
+    req: express.Request,
+    res: express.Response,
+    next: express.NextFunction
+) => {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ message: "Invalid ObjectId format" });
+    }
+    next();
+};
+
+export const getDoctorById = async (
+    req: express.Request,
+    res: express.Response
+) => {
+    try {
+        const doctorId = req.params.id;
+
+        // Validate if the ID is a valid MongoDB ObjectId
+        if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+            return res
+                .status(400)
+                .json({ message: "Invalid doctor ID format" });
+        }
+
+        // Fetch doctor by ID and ensure they are marked as a doctor
+        const doctor = await userModel.findOne({
+            _id: doctorId,
+            is_doctor: true,
+        });
+
+        if (!doctor) {
+            return res.status(404).json({ message: "Doctor not found" });
+        }
+
+        return res.status(200).json(doctor);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Error fetching doctor by ID" });
     }
 };
