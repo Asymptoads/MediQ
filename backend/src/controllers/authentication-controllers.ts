@@ -92,6 +92,7 @@ export const register = async (req: express.Request, res: express.Response) => {
             phone_number,
             is_doctor,
             specialization,
+            is_busy,
         } = req.body;
 
         console.log("Request body:", req.body);
@@ -143,6 +144,7 @@ export const register = async (req: express.Request, res: express.Response) => {
             date_of_birth: user.date_of_birth,
             is_doctor: user.is_doctor,
             specialization: user.is_doctor ? user.specialization : undefined, // Include specialization if doctor
+            is_bus: user.is_doctor ? user.is_busy : undefined, 
         };
 
         return res

@@ -1,6 +1,19 @@
 import { Request, Response } from 'express';
 import { queueModel } from '../models/queue.model'; // Import the queue model
 
+export const getAllQueue = async (
+    req: Request,
+    res: Response
+) => {
+    try {
+        const users = await queueModel.find({});
+        return res.status(200).json(users);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Error fetching users" });
+    }
+};
+
 export const getQueueById = async (req: Request, res: Response) => {
   try {
     const { queueId } = req.params;

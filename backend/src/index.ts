@@ -55,5 +55,14 @@ mongoose.connection.on('error', (err: Error) => {
 //     console.error('Error clearing users:', error);
 //   }
 // };
-//
+// import { queueModel } from './models/queue.model';
+// const clearQueue = async () => {
+//   try {
+//     await queueModel.deleteMany({});
+//     console.log('All queue have been deleted');
+//   } catch (error) {
+//     console.error('Error clearing users:', error);
+//   }
+// };
+// clearQueue();
 // clearUsers();
