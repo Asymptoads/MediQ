@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Route, Routes, Router } from 'react-router-dom';
 import { Box } from '@chakra-ui/react';
 
+import Logo from './components/HeaderRenderer/HeaderRenderer';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Reports from './pages/Report/Report';
@@ -10,8 +11,9 @@ import LabTests from './pages/LabTest/LabTest';
 import PaymentPage from './pages/Payment/Payment';
 import QueuePage from './components/Queue/QueuePage';
 
+
 // import Register from './pages/Register/Register';
-// import MyAccount from './pages/MyAccount/MyAccount';
+import MyAccount from './pages/MyAccount/MyAccount';
 
 
 import './App.scss';
@@ -19,6 +21,7 @@ import SpecializationDetails from './components/Specilization/SpecilizationDetai
 import BookAppointment from './components/BookAppointment/BookAppointment';
 
 const App = () => {
+    const [isLoggedIn, setLoggedIn] = useState(false);
     // return (
     //     <Box className='app'>
     //         <NavBar />
@@ -56,8 +59,8 @@ const App = () => {
                     <Route path='/queue' element={<QueuePage />} />
                     <Route path='/lab-tests' element={<LabTests />} />
 
-                    {/* <Route path='/register' element={<Register />} />
-                    <Route path='/my-account' element={<MyAccount />} /> */}
+                    {/* <Route path='/register' element={<Register />} />*/}
+                    <Route path='/my-account' element={<MyAccount />} /> 
                 </Routes>
             {/* </CalendarContextProvider> */}
         </Box>
