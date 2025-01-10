@@ -1,0 +1,39 @@
+@use '../../variables.module';
+
+.doctor-specializations-wrapper {
+  background-color: #f9fafb;
+
+  .chakra-grid__item {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .chakra-box {
+    background-color: #f1f5f9;
+    color: #000000;
+  }
+
+  .chakra-text {
+    font-family: variables.$primary-font;
+    color: #1a202c;
+  }
+}
+
+@media (max-width: 768px) {
+  .doctor-specializations-wrapper {
+    padding: 16px;
+
+    .chakra-grid {
+      gap: 12px;
+    }
+
+    .chakra-text {
+      font-size: 1rem;
+    }
+  }
+}
