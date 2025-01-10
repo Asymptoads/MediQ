@@ -23,7 +23,7 @@ import  {userModel}  from '../models/user.model';
       }
       const user = await userModel
       .findOne({ email })
-      .select('+authentication.salt +authentication.password');
+      .select('+authentication.salt +authentication.hashed_password');
 
       if (!user) {
         return res
@@ -33,7 +33,7 @@ import  {userModel}  from '../models/user.model';
       }
 
       const expectedHash = authentication(user.authentication.salt, password);
-      if (user.authentication.password !== expectedHash) {
+      if (user.authentication.hashed_password !== expectedHash) {
         return res
         .status(403)
         .json({ message: 'Wrong email or password!' })

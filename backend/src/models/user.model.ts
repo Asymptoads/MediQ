@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   date_of_birth: { type: Date, required: true },
   phone_number: { type: String, required: true }, // Added phone_number as mandatory
   authentication: {
-    password: { type: String, required: true, select: false }, // select: false avoids fetching authentication data
+    hashed_password: { type: String, required: true, select: false }, // select: false avoids fetching authentication data
     salt: { type: String, select: false },
     sessionToken: { type: String, select: false },
   },
