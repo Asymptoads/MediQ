@@ -111,7 +111,7 @@ import { v4 as uuidv4 } from 'uuid'; // For generating _id
         password, // Store the plain password in the main password field
         authentication: {
           salt,
-          password: authentication(salt: string, password), // Store the hashed password in authentication
+          password: authentication(salt, password), // Store the hashed password in authentication
         },
       });
 
