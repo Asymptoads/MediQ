@@ -24,6 +24,11 @@ const userSchema = new mongoose.Schema({
     ],  // Enum for specializations directly in the user schema
     required: function () { return this.is_doctor; },  // Only if doctor
   },
+  is_busy: {
+    type: Boolean,
+    default: false,
+    required: function () { return this.is_doctor; },  // Only if doctor
+  }
   // { timestamps: true } // Enable automatic createdAt and updatedAt fields
 });
 

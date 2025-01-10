@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const userInQueueSchema = new Schema({
+const appointmentSchema = new Schema({
     registered_at: { type: Date, default: Date.now },
     remaining_at_the_time_of_register: { type: Number },
     // Reference to the VisitCategory model
@@ -37,13 +37,16 @@ const userInQueueSchema = new Schema({
         ref: "User",
     },
 
-    doctor_id: {
-        type: Schema.Types.ObjectId,
-        ref: "User", // Reference to the Doctor model
-        default: null,
-    },
     is_suspended: { type: Boolean, default: false },
     suspended_at: { type: Date, default: null },
+
+    is_operated: { type: Boolean, default: false },
+    operated_at: { type: Date, default: null },
+    operated_by: {
+      type: Schema.Types.ObjectId,
+      ref: "User", // Reference to the Doctor
+      default: null,
+    },
     is_completed: { type: Boolean, default: false },
     completed_at: { type: Date, default: null },
 });
@@ -58,5 +61,5 @@ const userInQueueSchema = new Schema({
 //   next();
 // });
 
-const userInQueueModel = mongoose.model("userInQueue", userInQueueSchema);
-export { userInQueueModel, userInQueueSchema };
+const appointmentModel = mongoose.model("Appointment", appointmentSchema);
+export { appointmentModel, appointmentSchema };
