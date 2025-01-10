@@ -1,0 +1,25 @@
+.booking-page-wrapper {
+    background-color: #f9fafb;
+  
+    .chakra-input,
+    .chakra-select {
+      font-size: 16px;
+      border-radius: 8px;
+  
+      &:focus {
+        border-color: #3182ce; // Chakra blue.500
+        box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.2);
+      }
+    }
+  
+    .chakra-button {
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 8px;
+    }
+  
+    .chakra-container {
+      margin-top: 40px;
+    }
+  }
+  

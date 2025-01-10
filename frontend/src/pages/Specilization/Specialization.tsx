@@ -2,7 +2,8 @@ import React from 'react';
 import { Box, Text, Container, Grid, GridItem, Flex } from '@chakra-ui/react';
 import PageContainer from '../../components/PageContainer/PageContainer';
 import Icon from '../../components/Icon/Icon';
-import './Specilization.scss';
+import './Specialization.scss';
+import { useNavigate, Link } from 'react-router-dom';
 
 const specializations = [
   { id: 1, name: 'Cardiology', description: 'Heart-related issues and conditions' },
@@ -17,7 +18,14 @@ const specializations = [
   { id: 10, name: 'Gastroenterology', description: 'Digestive system and stomach care' },
 ];
 
+
 const DoctorSpecializations: React.FC = () => {
+    const navigate = useNavigate();
+
+    const handleCardClick = (name: string) => {
+        navigate(`/specialiazations/${name}`);
+    };
+
   return (
     <PageContainer>
       <Box minH="100vh" pt="80px" className="doctor-specializations-wrapper">
@@ -41,18 +49,23 @@ const DoctorSpecializations: React.FC = () => {
                 p={6}
                 _hover={{ transform: 'scale(1.05)', boxShadow: 'lg' }}
                 transition="transform 0.3s ease"
+                // onClick={() => handleCardClick(specialization.name)}
               >
-                <Flex direction="column" align="center" textAlign="center">
-                  <Box bg="green.500" p={4} borderRadius="full" mb={4}>
-                    <Icon name="stethoscope" />
-                  </Box>
-                  <Text fontSize="xl" fontWeight="bold" mb={2}>
-                    {specialization.name}
-                  </Text>
-                  <Text fontSize="sm" color="gray.600">
-                    {specialization.description}
-                  </Text>
-                </Flex>
+
+
+                <Link to={`/specializations/${specialization.name.toLowerCase()}`}>
+                  <Flex direction="column" align="center" textAlign="center">
+                    <Box bg="green.500" p={4} borderRadius="full" mb={4}>
+                      <Icon name="stethoscope" />
+                    </Box>
+                    <Text fontSize="xl" fontWeight="bold" mb={2}>
+                      {specialization.name}
+                    </Text>
+                    <Text fontSize="sm" color="gray.600">
+                      {specialization.description}
+                    </Text>
+                  </Flex>
+                </Link>
               </GridItem>
             ))}
           </Grid>
