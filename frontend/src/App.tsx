@@ -1,27 +1,49 @@
-import React from "react";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-// import { Button, Typography } from "@mui/material";
-import theme from './theme';
-import { ThemeProvider } from "@mui/material/styles";
-import CssBaseline from "@mui/material/CssBaseline";
+import { useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { Box } from '@chakra-ui/react';
 
-// Pages
-import Login from "./components/Login/login";
-// import Home from "./pages/Home/home";  // Assuming you have a Home component
+import Home from './pages/Home/Home';
+import Login from './pages/Login/Login';
+// import Register from './pages/Register/Register';
+// import MyAccount from './pages/MyAccount/MyAccount';
 
-const App: React.FC = () => {
+
+import './App.scss';
+
+const App = () => {
+    // return (
+    //     <Box className='app'>
+    //         <NavBar />
+
+    //         <Flex>
+    //         {/*Sidebar here */}
+    //         <Sidebar />
+
+    //         <Box flex="1">
+    //         <Routes>
+    //             <Route path='/' element={<Home />} />
+    //             <Route path='/auth/login' element={<Login />} />
+
+    //             {/* <Route path="/calendar" element={<Calender />} />
+    //             <Route path="/kanban" element={<Kanban />} /> */}
+
+    // try to fetch user on site load
+    // const { fetchUser } = useUserContext();
+    // useEffect(() => {
+    //     fetchUser();
+    // }, []);
+
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Router>
+        <Box className='app'>
+            {/* <CalendarContextProvider> */}
                 <Routes>
-                    <Route path="/" element={<Navigate to="/home" />} />
-                    {/* <Route path="/home" element={<Home />} /> */}
-                    <Route path="/login" element={<Login />} />
-                    {/* Add other routes here */}
+                    <Route path='/' element={<Home />} />
+                    <Route path='/login' element={<Login />} />
+                    {/* <Route path='/register' element={<Register />} />
+                    <Route path='/my-account' element={<MyAccount />} /> */}
                 </Routes>
-            </Router>
-        </ThemeProvider>
+            {/* </CalendarContextProvider> */}
+        </Box>
     );
 };
 
