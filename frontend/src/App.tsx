@@ -8,8 +8,13 @@ import Login from './pages/Login/Login';
 import Reports from './pages/Report/Report';
 import DoctorSpecializations from './pages/Specilization/Specialization';
 import LabTests from './pages/LabTest/LabTest';
+import LabTestDetails from './components/LabTestDetails/LabTestDetails';
+
 import PaymentPage from './pages/Payment/Payment';
 import QueuePage from './components/Queue/QueuePage';
+import BookTest from './pages/BookTest/BookTest';
+import Confirmation from './components/Confirmation/Confirmation';
+import TestStatus from './components/TestStatus/TestStatus';
 
 
 // import Register from './pages/Register/Register';
@@ -21,7 +26,6 @@ import SpecializationDetails from './components/Specilization/SpecilizationDetai
 import BookAppointment from './components/BookAppointment/BookAppointment';
 
 const App = () => {
-    const [isLoggedIn, setLoggedIn] = useState(false);
     // return (
     //     <Box className='app'>
     //         <NavBar />
@@ -58,6 +62,10 @@ const App = () => {
                     <Route path='/payment' element={<PaymentPage/> } />
                     <Route path='/queue' element={<QueuePage />} />
                     <Route path='/lab-tests' element={<LabTests />} />
+                    <Route path="/labtests/:testName" element={<LabTestDetails />} />
+                    <Route path='/book-test' element={<BookTest />} />
+                    <Route path='/confirmation' element={<Confirmation />} />
+                    <Route path='/test-status' element={<TestStatus />} />
 
                     {/* <Route path='/register' element={<Register />} />*/}
                     <Route path='/my-account' element={<MyAccount />} /> 
