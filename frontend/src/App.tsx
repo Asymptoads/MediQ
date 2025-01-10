@@ -4,6 +4,9 @@ import { Box } from '@chakra-ui/react';
 
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
+import Reports from './pages/Report/Report';
+import Specilization from './pages/Specilization/Specilization';
+
 // import Register from './pages/Register/Register';
 // import MyAccount from './pages/MyAccount/MyAccount';
 
@@ -39,6 +42,8 @@ const App = () => {
                 <Routes>
                     <Route path='/' element={<Home />} />
                     <Route path='/login' element={<Login />} />
+                    <Route path='/reports' element={<Reports />} />
+                    <Route path='/specialization' element={<Specilization />} />
                     {/* <Route path='/register' element={<Register />} />
                     <Route path='/my-account' element={<MyAccount />} /> */}
                 </Routes>
