@@ -283,3 +283,34 @@ export const getPatientById = async (
             .json({ message: "Error fetching patient by ID" });
     }
 };
+
+// Update is_busy Controller
+export const updateIsBusy = async ( req: express.Request, res: express.Response) => {
+  const { doctor_id } = req.params; // ID of the user to update
+  const { is_busy } = req.body; // New value for is_busy
+
+  try {
+    // Validate input
+    if (typeof is_busy !== 'boolean') {
+      return res.status(400).json({ error: 'Invalid value for is_busy. Must be a boolean.' });
+    }
+
+    console.log(doctor_id)
+    // Find user and update is_busy
+    userModel.findById(doctor_id)
+    const user = await userModel.findByIdAndUpdate(
+      doctor_id,
+      { is_busy },
+      { new: false, runValidators: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+
+    res.status(200).json({ message: 'is_busy updated successfully.', user });
+  } catch (error) {
+    console.error('Error updating is_busy:', error);
+    res.status(500).json({ error: 'Internal server error.' });
+  }
+};
