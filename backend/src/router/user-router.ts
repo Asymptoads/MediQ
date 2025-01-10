@@ -9,6 +9,7 @@ import {
     getAllPatients,
     getDoctorById,
     validateObjectId,
+    getPatientById,
 } from "../controllers/user-controllers";
 import { isAuthenticated } from "../middlewares/index";
 
@@ -24,5 +25,11 @@ export default (router: express.Router) => {
         isAuthenticated,
         validateObjectId,
         getDoctorById
+    );
+    router.get(
+        "/api/user/:id",
+        isAuthenticated,
+        validateObjectId,
+        getPatientById
     );
 };
