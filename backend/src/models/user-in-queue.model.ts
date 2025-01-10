@@ -7,9 +7,21 @@ const userInQueueSchema = new Schema({
   remaining_at_the_time_of_register: { type: Number },
   // Reference to the VisitCategory model
   category: {
-    type: Schema.Types.ObjectId,
+    type: String,
     required: true,
-    ref: 'VisitCategory',  // This is where you reference the VisitCategory model
+    enum: [
+      'Emergency Cases',
+      'Follow-up Visits',
+      'First-time Consultations',
+      'Lab Tests Only',
+      'Report Collections',
+      'Prescription Refills',
+      // 'X-ray',         // Added as example
+      // 'MRI Scan',      // Added as example
+      // 'General Checkup',  // Added as example
+      // 'Blood Test',    // Added as example
+      // Add more categories as needed
+    ],
   },
   description: { type: String, default: null },
 
@@ -27,7 +39,7 @@ const userInQueueSchema = new Schema({
 
   doctor_id: {
     type: Schema.Types.ObjectId, 
-    ref: 'Doctor',  // Reference to the Doctor model
+    ref: 'User',  // Reference to the Doctor model
     default: null 
   },
   is_suspended: { type: Boolean, default: false },

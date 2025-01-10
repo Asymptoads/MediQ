@@ -44,3 +44,16 @@ mongoose.connect(mongo_uri);
 mongoose.connection.on('error', (err: Error) => {
   console.log(err);
 });
+
+// Delete all the users
+// import { userModel } from './models/user.model';
+// const clearUsers = async () => {
+//   try {
+//     await userModel.deleteMany({});
+//     console.log('All users have been deleted');
+//   } catch (error) {
+//     console.error('Error clearing users:', error);
+//   }
+// };
+//
+// clearUsers();

@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+const { Schema } = mongoose;
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true },  
@@ -11,8 +12,19 @@ const userSchema = new mongoose.Schema({
     salt: { type: String, select: false },
     sessionToken: { type: String, select: false },
   },
-  // created_at: { type: Date, default: Date.now },
-  // updated_at: { type: Date, default: Date.now },
+  is_doctor: {type: Boolean, default: false},
+  specialization: {
+    type: String, 
+    enum: [
+      'OPD', 'Eye', 'Ear', 'Cardiology', 'Orthopedics', 'Dermatology', 
+      'Neurology', 'X-ray', 'Ultrasound', 'MRI', 'CT Scan', 'Pathology', 
+      'Radiology', 'Pediatrics', 'Gynaecology', 'Dentistry', 'ENT', 
+      'Gastroenterology', 'Hematology', 'Oncology', 'Rheumatology', 
+      'Urology', 'Pulmonology', 'Endocrinology'
+    ],  // Enum for specializations directly in the user schema
+    required: function () { return this.is_doctor; },  // Only if doctor
+  },
+  // { timestamps: true } // Enable automatic createdAt and updatedAt fields
 });
 
 const userModel = mongoose.model('user', userSchema);

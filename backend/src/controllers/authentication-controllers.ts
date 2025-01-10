@@ -84,7 +84,7 @@ import  {userModel}  from '../models/user.model';
 
   export const register = async (req: express.Request, res: express.Response) => {
     try {
-      const { name, email, password, date_of_birth, phone_number } = req.body;
+      const { name, email, password, date_of_birth, phone_number, is_doctor, specialization } = req.body;
 
       console.log("Request body:", req.body);
 
@@ -99,11 +99,17 @@ import  {userModel}  from '../models/user.model';
         return res.status(400).json({ message: 'User already exists!' });
       }
 
-      const salt = String(random()); // console.log("Generated salt:", salt);
-      // const _id = uuidv4(); // console.log("Generated user ID:", _id);
+      const salt = String(random());
       const hashedPassword = authentication(salt, password); 
-      // console.log("Hashed password:", hashedPassword);
 
+      // Handle doctor registration
+      if (is_doctor) {
+        if (!specialization) {
+          return res.status(400).json({ message: 'Specialization is required for doctors!' });
+        }
+      }
+
+      // Create new user document
       const user = await userModel.create({
         email,
         name,
@@ -112,15 +118,19 @@ import  {userModel}  from '../models/user.model';
         password, // Store the plain password in the main password field
         authentication: {
           salt,
-          password: hashedPassword, // Store the hashed password in authentication
+          hashed_password: hashedPassword, // Store only the hashed password
         },
+        is_doctor,
+        specialization: is_doctor ? specialization : undefined, // Store specialization if doctor
       });
 
       const createdUser = {
         name: user.name,
         email: user.email,
         phone_number: user.phone_number,
-        date_of_birth: user.date_of_birth
+        date_of_birth: user.date_of_birth,
+        is_doctor: user.is_doctor,
+        specialization: user.is_doctor ? user.specialization : undefined, // Include specialization if doctor
       };
 
       return res.status(200).json({ message: 'Registered Successfully', createdUser }).end();
