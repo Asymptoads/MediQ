@@ -49,7 +49,7 @@ const SpecializationDetails: React.FC = () => {
 
     return (
         <PageContainer>
-            <Container maxW="1000px" py={6} bg='#f9fafb'>
+            <Container maxW="1280px" py={6} bg='#f9fafb'>
                 <Box mb={6} textAlign="center" marginTop="50px" className="page-wrapper">
                     <Text fontSize="2xl" fontWeight="bold" >
                         {specializationDetails.name}
