@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import { secret, token_expire, jwt_token_expire } from '../envconfig';
 import { authentication, random } from '../helpers/authentication-helpers';
 import  {userModel}  from '../models/user.model';
-import { v4 as uuidv4 } from 'uuid'; // For generating _id
+// import { v4 as uuidv4 } from 'uuid'; // For generating _id
 
   // Helper function to get user by email
   const getUserByEmail = async (email: string) => {
@@ -21,7 +21,6 @@ import { v4 as uuidv4 } from 'uuid'; // For generating _id
         .json({ message: 'Email and Password required!' })
         .end();
       }
-
       const user = await userModel
       .findOne({ email })
       .select('+authentication.salt +authentication.password');
