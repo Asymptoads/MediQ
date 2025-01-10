@@ -1,105 +1,39 @@
-.specializations-wrapper {
-    background-color: #f3f4f6;
-    font-family: 'Roboto', sans-serif;
-    padding: 1rem;
-  
-    // Search Section
-    .search-section {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-  
-      input {
-        flex: 1;
-        padding: 0.75rem 1rem;
-        border: 1px solid #d9d9d9;
-        border-radius: 8px;
-        font-size: 1rem;
-        margin-right: 1rem;
-        transition: border-color 0.3s ease;
-  
-        &:focus {
-          outline: none;
-          border-color: #3182ce; // Blue border on focus
-        }
-      }
-  
-      button {
-        padding: 0.75rem 1.5rem;
-        background-color: #3182ce;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-  
-        &:hover {
-          background-color: #2b6cb0; // Darker blue on hover
-        }
-      }
-    }
-  
-    // Specializations Grid
-    .specializations-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-  
-      .specialization-card {
-        background-color: #ffffff;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        cursor: pointer;
-  
-        &:hover {
-          transform: scale(1.05);
-          box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-  
-        .specialization-name {
-          font-size: 1.25rem;
-          font-weight: bold;
-          color: #2d3748;
-          margin-bottom: 0.5rem;
-        }
-  
-        .specialization-description {
-          font-size: 1rem;
-          color: #718096;
-        }
-      }
-    }
-  
-    // Responsive Design
-    @media (max-width: 768px) {
-      .search-section {
-        flex-direction: column;
-  
-        input {
-          margin-right: 0;
-          margin-bottom: 1rem;
-          width: 100%;
-        }
-  
-        button {
-          width: 100%;
-        }
-      }
-  
-      .specializations-grid {
-        grid-template-columns: 1fr;
-  
-        .specialization-card {
-          &:hover {
-            transform: none;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-          }
-        }
-      }
+@use '../../variables.module';
+
+.doctor-specializations-wrapper {
+  background-color: #f9fafb;
+
+  .chakra-grid__item {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
     }
   }
-  
+
+  .chakra-box {
+    background-color: #f1f5f9;
+    color: #000000;
+  }
+
+  .chakra-text {
+    font-family: variables.$primary-font;
+    color: #1a202c;
+  }
+}
+
+@media (max-width: 768px) {
+  .doctor-specializations-wrapper {
+    padding: 16px;
+
+    .chakra-grid {
+      gap: 12px;
+    }
+
+    .chakra-text {
+      font-size: 1rem;
+    }
+  }
+}
