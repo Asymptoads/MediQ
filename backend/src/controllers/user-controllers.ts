@@ -247,3 +247,39 @@ export const getDoctorById = async (
         return res.status(500).json({ message: "Error fetching doctor by ID" });
     }
 };
+
+export const getPatientById = async (
+    req: express.Request,
+    res: express.Response
+) => {
+    try {
+        const patientId = req.params.id;
+
+        // Validate if the ID is a valid MongoDB ObjectId
+        if (!mongoose.Types.ObjectId.isValid(patientId)) {
+            return res
+                .status(400)
+                .json({ message: "Invalid patient ID format" });
+        }
+
+        // Fetch patient by ID and ensure they are not marked as a doctor
+        const patient = await userModel.findOne({
+            _id: patientId,
+            is_doctor: false,
+        });
+
+        if (!patient) {
+            return res.status(404).json({ message: "Patient not found" });
+        }
+
+        // Optionally exclude sensitive fields
+        // .select('-authentication -password');
+
+        return res.status(200).json(patient);
+    } catch (error) {
+        console.error(error);
+        return res
+            .status(500)
+            .json({ message: "Error fetching patient by ID" });
+    }
+};
