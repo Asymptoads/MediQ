@@ -33,8 +33,8 @@ const SpecializationDetails: React.FC = () => {
     if (name !== specializationDetails.name.toLowerCase()) {
         return (
             <PageContainer>
-                <Container maxW="container.md" height="100vh" display="flex" alignItems="center" justifyContent="center">
-                    <Text className="page-wrapper" fontSize="xl" color="gray.600">
+                <Container maxW="container.md" height="100vh" display="flex" alignItems="center" justifyContent="center" bg='#f9fafb'>
+                    <Text className="page-wrapper" fontSize="xl" >
                         Specialization not found
                     </Text>
                 </Container>
@@ -49,12 +49,12 @@ const SpecializationDetails: React.FC = () => {
 
     return (
         <PageContainer>
-            <Container maxW="1000px" py={6}>
+            <Container maxW="1000px" py={6} bg='#f9fafb'>
                 <Box mb={6} textAlign="center" marginTop="50px" className="page-wrapper">
-                    <Text fontSize="2xl" fontWeight="bold" color="gray.700">
+                    <Text fontSize="2xl" fontWeight="bold" >
                         {specializationDetails.name}
                     </Text>
-                    <Text fontSize="lg" color="gray.500">
+                    <Text fontSize="lg" >
                         {specializationDetails.description}
                     </Text>
                 </Box>
@@ -65,7 +65,7 @@ const SpecializationDetails: React.FC = () => {
                         <Text fontSize="lg" fontWeight="bold">
                             Additional Information:
                         </Text>
-                        <Text color="gray.600">{specializationDetails.details}</Text>
+                        <Text >{specializationDetails.details}</Text>
                     </VStack>
                 </Box>
 
@@ -89,13 +89,13 @@ const SpecializationDetails: React.FC = () => {
                                     <Text fontSize="lg" fontWeight="bold" mb={2}>
                                         {doctor.name}
                                     </Text>
-                                    <Text fontSize="sm" color="gray.600" mb={2}>
+                                    <Text fontSize="sm" mb={2}>
                                         {doctor.specialization}
                                     </Text>
-                                    <Text fontSize="sm" color="gray.600" mb={4}>
+                                    <Text fontSize="sm"  mb={4}>
                                         Contact: {doctor.contact}
                                     </Text>
-                                    <Text fontSize="sm" color="gray.600" mb={4}>
+                                    <Text fontSize="sm"  mb={4}>
                                         Location: {doctor.location}
                                     </Text>
                                     <Button
