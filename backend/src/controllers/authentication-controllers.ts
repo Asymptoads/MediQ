@@ -85,25 +85,27 @@ import { v4 as uuidv4 } from 'uuid'; // For generating _id
 
   export const register = async (req: express.Request, res: express.Response) => {
     try {
-      const { name, email, password, phone_number, date_of_birth } = req.body;
-      console.log("hello")
+      const { name, email, password, date_of_birth, phone_number } = req.body;
 
-      if (!email || !password || !name || !phone_number || !date_of_birth) {
-        return res
-        .status(400)
-        .json({ message: 'All fields are required!' });
+      console.log("Request body:", req.body);
+
+      if (!name || !email || !password || !date_of_birth || !phone_number) {
+        console.error("Missing fields in request body!");
+        return res.status(400).json({ message: 'All fields are required!' });
       }
 
       const existingUser = await getUserByEmail(email);
       if (existingUser) {
+        console.error("User already exists with email:", email);
         return res.status(400).json({ message: 'User already exists!' });
       }
 
-      const salt = random();
-      const _id = uuidv4(); // Generate unique ID
-      
+      const salt = String(random()); // console.log("Generated salt:", salt);
+      // const _id = uuidv4(); // console.log("Generated user ID:", _id);
+      const hashedPassword = authentication(salt, password); 
+      // console.log("Hashed password:", hashedPassword);
+
       const user = await userModel.create({
-        _id,
         email,
         name,
         phone_number,
@@ -111,24 +113,20 @@ import { v4 as uuidv4 } from 'uuid'; // For generating _id
         password, // Store the plain password in the main password field
         authentication: {
           salt,
-          password: authentication(salt, password), // Store the hashed password in authentication
+          password: hashedPassword, // Store the hashed password in authentication
         },
       });
 
       const createdUser = {
-        id: user._id,
         name: user.name,
         email: user.email,
         phone_number: user.phone_number,
         date_of_birth: user.date_of_birth
       };
 
-      return res
-      .status(200)
-      .json({ message: 'Registered Successfully', createdUser })
-      .end();
+      return res.status(200).json({ message: 'Registered Successfully', createdUser }).end();
     } catch (error) {
-      console.log(error);
+      console.error("Error during registration:\n", error);
       return res.status(400).json({ message: 'Something went wrong!' }).end();
     }
   };
