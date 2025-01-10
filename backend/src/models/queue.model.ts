@@ -3,14 +3,20 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const queueSchema = new Schema({
-  specialization: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'Specialization',  // Reference to the Specialization model
-    required: true 
+  specialization: {
+    type: String, 
+    enum: [
+      'OPD', 'Eye', 'Ear', 'Cardiology', 'Orthopedics', 'Dermatology', 
+      'Neurology', 'X-ray', 'Ultrasound', 'MRI', 'CT Scan', 'Pathology', 
+      'Radiology', 'Pediatrics', 'Gynaecology', 'Dentistry', 'ENT', 
+      'Gastroenterology', 'Hematology', 'Oncology', 'Rheumatology', 
+      'Urology', 'Pulmonology', 'Endocrinology'
+    ],
+    required: true
   },
   doctors: [{ 
     type: Schema.Types.ObjectId, 
-    ref: 'Doctor',  // Reference to the Doctor model, allowing multiple doctors
+    ref: 'User',  // Reference to the User model, allowing multiple doctors
     required: true 
   }],
   created_at: { type: Date, default: Date.now },

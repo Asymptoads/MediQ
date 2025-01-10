@@ -1,17 +1,40 @@
 import express from 'express';
 import  {userModel}  from '../models/user.model';
 
-// Get all users
+// Get all users both doctor and user
 export const getAllUsers = async (req: express.Request, res: express.Response) => {
   try {
     const users = await userModel
       .find({})
-      .select('-authentication -password');
-
+      // .select('-authentication -password');
     return res.status(200).json(users);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'Error fetching users' });
+  }
+};
+
+export const getAllDoctors = async (req: express.Request, res: express.Response) => {
+  try {
+    const doctors = await userModel
+      .find({ is_doctor: true })  // Filter users who are doctors
+      // .select('-authentication -password');  // Uncomment this if you want to exclude sensitive fields
+    return res.status(200).json(doctors);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Error fetching doctors' });
+  }
+};
+
+export const getAllPatients = async (req: express.Request, res: express.Response) => {
+  try {
+    const doctors = await userModel
+      .find({ is_doctor: false })  
+      // .select('-authentication -password');  // Uncomment this if you want to exclude sensitive fields
+    return res.status(200).json(doctors);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Error fetching doctors' });
   }
 };
 
@@ -29,7 +52,7 @@ export const getCurrentUser = async (
 
     const user = await userModel
       .findById(userId)
-      .select('-authentication -password');
+      // .select('-authentication -password');
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
