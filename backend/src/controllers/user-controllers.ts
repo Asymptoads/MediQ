@@ -72,7 +72,6 @@ export const getCurrentUser = async (
     }
 };
 
-// Update user
 export const updateUser = async (
     req: any, // Using any for req to access user property
     res: express.Response
@@ -86,7 +85,8 @@ export const updateUser = async (
                 .json({ message: "User ID not found in request" });
         }
 
-        const { name, email, phone_number, date_of_birth } = req.body;
+        const { name, email, phone_number, date_of_birth, specialization } =
+            req.body;
 
         // Validate email if it's being updated
         if (email) {
@@ -100,6 +100,13 @@ export const updateUser = async (
                     .status(400)
                     .json({ message: "Email already in use" });
             }
+        }
+
+        // First get the current user to check if they're a doctor
+        const currentUser = await userModel.findById(userId);
+
+        if (!currentUser) {
+            return res.status(404).json({ message: "User not found" });
         }
 
         const updatedUser = await userModel.findByIdAndUpdate(
@@ -119,14 +126,44 @@ export const updateUser = async (
                 // select: '-authentication -password'
             }
         );
+        const validSpecializations = (userModel.schema as any).paths
+            .specialization.enumValues;
+
+        // Add validation before the update
+        if (specialization && !validSpecializations.includes(specialization)) {
+            return res.status(400).json({
+                message: `Invalid specialization. Must be one of: ${validSpecializations.join(
+                    ", "
+                )}`,
+            });
+        }
+        const updatedDoctor = await userModel.findByIdAndUpdate(
+            userId,
+            {
+                $set: {
+                    ...(name && { name }),
+                    ...(email && { email }),
+                    ...(phone_number && { phone_number }),
+                    ...(date_of_birth && {
+                        date_of_birth: new Date(date_of_birth),
+                    }),
+                    ...(specialization && { specialization }),
+                },
+            },
+            {
+                new: true,
+                // select: '-authentication -password'
+            }
+        );
 
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });
         }
 
+        // Return appropriate response based on user type
         return res.status(200).json({
             message: "User updated successfully",
-            user: updatedUser,
+            user: currentUser.is_doctor ? updatedDoctor : updatedUser,
         });
     } catch (error) {
         console.log(error);
