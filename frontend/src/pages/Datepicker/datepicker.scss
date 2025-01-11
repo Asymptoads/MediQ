@@ -1,3 +1,9 @@
+@use '../../variables.module';
+
+.appointment-wrapper{
+    font-family: variables.$primary-font;
+}
+
 // // @use '../../_variables.module' as variables;
 // // .appointment-container {
 // //     max-width: 440px;

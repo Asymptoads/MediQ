@@ -27,11 +27,9 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
     const [phone_number, setPhone] = useState("");
-
     const [isLoading, setIsLoading] = useState(false);
 
     const handleRegister = async () => {
-        setIsLoading(true);
         setIsLoading(true);
         const userDetails = {
             name,
@@ -57,6 +55,7 @@ const Register = () => {
         e.preventDefault();
         handleRegister();
     };
+
     return (
         <Box className="register-page">
             {/* <NavBar /> */}
@@ -66,16 +65,6 @@ const Register = () => {
                     Create your new account!
                 </Text>
                 <form className="register-form" onSubmit={handleSubmit}>
-                    {/* <CustomTextInput
-                        label="Full Name"
-                        type="name"
-                        value={name}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setName(e.target.value);
-                        }}
-                        placeholder="Full Name"
-                        className="custom-input custom-input-username"
-                    /> */}
                     <CustomTextInput
                         label="Name"
                         type="name"
@@ -84,6 +73,7 @@ const Register = () => {
                             setName(e.target.value);
                         }}
                         placeholder="Name"
+
                         className="custom-input custom-input-username"
                         required
                     />
@@ -143,6 +133,7 @@ const Register = () => {
                         className="form-submit-btn"
                         background={"#000000"}
                         color={"#d9d9d9"}
+
                         borderRadius={"8px"}
                         marginTop={"15px"}
                         height={"50px"}
@@ -181,7 +172,7 @@ const Register = () => {
                     <Icon name="bx-arrow-back" className="arrow" />
                     Back to Home
                 </ChakraLink>
-            </Box>
+            </VStack>
         </Box>
     );
 };

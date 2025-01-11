@@ -1,18 +1,19 @@
-import { Link as ReactRouterLink } from "react-router-dom";
 import React, { useState } from "react";
 import {
     Box,
-    Heading,
     Text,
-    Link as ChakraLink,
     Button,
-    Image,
+    Link,
+    VStack,
+    Icon,
+    Spinner,
 } from "@chakra-ui/react";
-
+import "./Login.scss";
+import "boxicons";
 import { useBackendAPIContext } from "../../contexts/BackendAPIContext/BackendAPIContext";
 import { useUserContext } from "../../contexts/UserContext/UserContext";
-
-import Icon from "../../components/Icon/Icon";
+import { useNavigate } from "react-router-dom";
+import PageContainer from "../../components/PageContainer/PageContainer";
 import CustomTextInput from "../../components/CustomTextInput/CustomTextInput";
 import FormBorder from "../../components/FormBorder/FormBorder";
 import "./Login.scss";
@@ -20,7 +21,6 @@ import "./Login.scss";
 const Login = () => {
     const { client } = useBackendAPIContext();
     const { fetchUser } = useUserContext();
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -31,17 +31,19 @@ const Login = () => {
             email,
             password,
         };
-        client
-            .post("http://localhost:4200/auth/login", userDetails)
-            .then((res) => {
-                console.log(res.data);
-                fetchUser();
-                setIsLoading(false);
-            })
-            .catch((err) => {
-                console.error(err);
-                setIsLoading(false);
-            });
+        try {
+            const res = await client.post(
+                "http://localhost:4200/auth/login",
+                userDetails
+            );
+            console.log(res.data);
+            fetchUser();
+            navigate("/home");
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {

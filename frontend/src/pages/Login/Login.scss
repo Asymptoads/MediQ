@@ -1,4 +1,4 @@
-@use '../../variables.module';
+@use "../../variables.module";
 
 .login-page {
     padding: 0 25px;
@@ -28,6 +28,7 @@
 
             .custom-input {
                 margin-top: 25px;
+                background-color: white;
             }
 
             .forgot-password-link {
@@ -37,7 +38,7 @@
                 align-self: flex-end;
                 font-size: 14px;
                 font-weight: 600;
-                color: variables.$pure-black-60;
+                // color: variables.$pure-black-60;
                 margin-top: 15px;
             }
             .form-submit-btn {
