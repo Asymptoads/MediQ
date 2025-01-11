@@ -101,7 +101,7 @@ const AppointmentBooking: React.FC = () => {
       await client.post('/appointments/return', appointmentDetails);
       toast({
         title: 'Appointment Confirmed',
-        description: Appointment booked for ${appointmentDetails.date} at ${appointmentDetails.time},
+        description: `Appointment booked for ${appointmentDetails.date} at ${appointmentDetails.time}`,
         status: 'success',
         duration: 5000,
         isClosable: true,

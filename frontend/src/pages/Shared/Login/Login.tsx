@@ -147,21 +147,6 @@ const Login: React.FC = () => {
                         Don’t have an account?{" "}
                         <Link href="/register">Register</Link>
                     </Text>
-
-                    {/* Back Home Link */}
-                    <Link
-                        href="/"
-                        className="back-home-link"
-                        display="inline-flex"
-                        alignSelf="flex-end"
-                        fontSize="15px"
-                        fontWeight="700"
-                        fontFamily="variables.$primary-font"
-                        textDecoration="none"
-                        marginTop="25px"
-                    >
-                        <Icon name="bx-left-arrow-alt" /> Back to Home
-                    </Link>
                 </VStack>
             </Box>
         </PageContainer>
