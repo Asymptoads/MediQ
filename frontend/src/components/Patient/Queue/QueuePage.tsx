@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
     Box,
@@ -8,25 +8,35 @@ import {
     VStack,
     HStack,
     Flex,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
+    Badge,
     useDisclosure,
     Icon,
+    Stack,
+    Alert,
+    AlertIcon,
+    AlertTitle,
 } from '@chakra-ui/react';
-import { FiClock, FiUser, FiCalendar, FiXCircle } from 'react-icons/fi';
+import { FiClock, FiUser, FiCalendar } from 'react-icons/fi';
 import PageContainer from '../../Shared/PageContainer/PageContainer';
 
 const QueuePage: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
-
     const { doctor, date, time } = location.state || {};
 
-    // If data is not available, display a message
+    const [patientsAhead, setPatientsAhead] = useState(4); // Example initial value
+    const avgTimePerPatient = 15; // Example time per patient in minutes
+    const waitTime = patientsAhead * avgTimePerPatient;
+
+    const { isOpen, onOpen, onClose } = useDisclosure();
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setPatientsAhead((prev) => (prev > 0 ? prev - 1 : 0));
+        }, 5000); // Simulate patient updates every 5 seconds
+        return () => clearInterval(interval);
+    }, []);
+
     if (!doctor || !date || !time) {
         return (
             <Flex align="center" justify="center" minH="100vh">
@@ -36,23 +46,6 @@ const QueuePage: React.FC = () => {
             </Flex>
         );
     }
-
-    const patientsAhead = 4; // Example value (can be dynamic)
-    const avgTimePerPatient = 15; // Example time per patient in minutes
-    const waitTime = patientsAhead * avgTimePerPatient;
-
-    // Modal state for confirmation before exiting the queue
-    const { isOpen, onOpen, onClose } = useDisclosure();
-
-    const handleExitQueue = () => {
-        // Logic to remove the user from the queue
-        alert('You have been removed from the queue.');
-        navigate('/'); // Redirect to dashboard or homepage
-    };
-
-    const handleDashboardRedirect = () => {
-        navigate('/home'); // Navigate to the dashboard
-    };
 
     return (
         <PageContainer>
@@ -65,86 +58,110 @@ const QueuePage: React.FC = () => {
                 boxShadow="lg"
                 marginTop="75px"
             >
+                {/* Page Title */}
                 <Box mb={6} textAlign="center">
                     <Text fontSize="2xl" fontWeight="bold" color="blue.600">
                         Your Queue Status
                     </Text>
                 </Box>
 
+                {/* Main Queue Information */}
                 <VStack spacing={5} align="stretch" bg="white" p={6} borderRadius="md" boxShadow="sm">
+                    {/* Doctor Information */}
                     <Flex justify="space-between" align="center">
                         <HStack spacing={4}>
                             <Icon as={FiUser} color="blue.500" boxSize={5} />
-                            <Text fontSize="lg" fontWeight="medium">
+                            <Text fontSize="lg" fontWeight="medium" color="blue.600">
                                 {doctor.name}
                             </Text>
                         </HStack>
-                        <Text color="gray.500" fontSize="sm">
+                        <Badge colorScheme="purple" fontSize="sm">
                             {doctor.specialization}
-                        </Text>
+                        </Badge>
                     </Flex>
 
+                    {/* Appointment Details */}
                     <HStack spacing={4}>
                         <Icon as={FiCalendar} color="green.500" boxSize={5} />
-                        <Text fontSize="md">{date}</Text>
+                        <Text fontSize="md">
+                            <strong>Date:</strong> {date}
+                        </Text>
                     </HStack>
-
                     <HStack spacing={4}>
                         <Icon as={FiClock} color="orange.500" boxSize={5} />
-                        <Text fontSize="md">{time}</Text>
-                    </HStack>
-
-                    <HStack spacing={4}>
-                        <Text fontWeight="bold" fontSize="md">
-                            Patients Ahead:
-                        </Text>
-                        <Text fontSize="md" color="red.500">
-                            {patientsAhead}
+                        <Text fontSize="md">
+                            <strong>Time:</strong> {time}
                         </Text>
                     </HStack>
 
-                    <HStack spacing={4}>
-                        <Text fontWeight="bold" fontSize="md">
-                            Estimated Wait Time:
+                    {/* Dynamic Queue Details */}
+                    <Box mt={4} textAlign="center">
+                        <Text fontWeight="bold" fontSize="xl" color="red.500">
+                            Patients Ahead: {patientsAhead}
                         </Text>
-                        <Text fontSize="md" color="blue.500">
-                            {waitTime} minutes
+                        <Text fontWeight="medium" fontSize="lg" color="blue.500">
+                            Estimated Wait Time: {waitTime} minutes
                         </Text>
-                    </HStack>
+                    </Box>
                 </VStack>
 
+                {/* Encouraging Message or Status */}
+                <Box mt={4}>
+                    {patientsAhead > 2 ? (
+                        <Alert status="info" borderRadius="md">
+                            <AlertIcon />
+                            <AlertTitle>
+                                Your turn is coming soon! Please be prepared.
+                            </AlertTitle>
+                        </Alert>
+                    ) : patientsAhead > 0 ? (
+                        <Alert status="success" borderRadius="md">
+                            <AlertIcon />
+                            <AlertTitle>
+                                Almost there! Just {patientsAhead} patient(s) ahead.
+                            </AlertTitle>
+                        </Alert>
+                    ) : (
+                        <Alert status="success" borderRadius="md">
+                            <AlertIcon />
+                            <AlertTitle>
+                                It's your turn! Please proceed to the doctor's room.
+                            </AlertTitle>
+                        </Alert>
+                    )}
+                </Box>
+
+                {/* Action Buttons */}
                 <VStack mt={6} spacing={4}>
                     <Button colorScheme="red" width="full" onClick={onOpen}>
                         Remove from Queue
                     </Button>
-                    <Button colorScheme="blue" width="full" onClick={handleDashboardRedirect}>
+                    <Button colorScheme="blue" width="full" onClick={() => navigate('/home')}>
                         Go to Dashboard
                     </Button>
                 </VStack>
 
-                {/* Modal for confirming removal from queue */}
-                <Modal isOpen={isOpen} onClose={onClose}>
-                    <ModalOverlay />
-                    <ModalContent>
-                        <ModalHeader>Exit Queue</ModalHeader>
-                        <ModalBody>
-                            <Text>
-                                Are you sure you want to exit the queue? You will no longer be able to proceed with the appointment.
-                            </Text>
-                        </ModalBody>
-                        <ModalFooter>
+                {/* Modal for Queue Removal Confirmation */}
+                {isOpen && (
+                    <Box>
+                        <Text fontSize="sm" textAlign="center" mt={4} color="gray.600">
+                            Are you sure you want to exit the queue? This action cannot be undone.
+                        </Text>
+                        <HStack justify="center" mt={2}>
                             <Button variant="outline" onClick={onClose}>
                                 Cancel
                             </Button>
-                            <Button colorScheme="red" ml={3} onClick={handleExitQueue}>
+                            <Button colorScheme="red" onClick={() => navigate('/')}>
                                 Yes, Exit Queue
                             </Button>
-                        </ModalFooter>
-                    </ModalContent>
-                </Modal>
+                        </HStack>
+                    </Box>
+                )}
             </Container>
         </PageContainer>
     );
 };
 
 export default QueuePage;
+
+
