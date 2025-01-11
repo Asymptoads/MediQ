@@ -5,13 +5,14 @@ import {
   Grid,
   Heading,
   Text,
-  VStack,
   Flex,
-  IconButton,
   Container,
+  useToast,
   SimpleGrid
 } from '@chakra-ui/react';
-import { ChevronLeftIcon, ChevronRightIcon, ArrowBackIcon, InfoIcon } from '@chakra-ui/icons';
+import Icon from '../../components/Icon/Icon';
+import { useBackendAPIContext } from '../../contexts/BackendAPIContext/BackendAPIContext';
+
 
 interface CalendarDay {
   day: number | '';
@@ -22,6 +23,8 @@ interface CalendarDay {
 const AppointmentBooking: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string>('');
+  const { client } = useBackendAPIContext(); // Properly destructure client
+  const toast = useToast(); // Initialize toast
   
   const getDaysInMonth = (year: number, month: number): number => {
     return new Date(year, month + 1, 0).getDate();
@@ -62,9 +65,37 @@ const AppointmentBooking: React.FC = () => {
 
   const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+  const handleConfirmAppointment = async () => {
+    if (!selectedDate || !selectedTime) return;
+
+    const appointmentDetails = {
+      date: selectedDate.toISOString().split('T')[0],
+      time: selectedTime,
+    };
+
+    try {
+      await client.post('/appointments/return', appointmentDetails);
+      toast({
+        title: 'Appointment Confirmed',
+        description: `Appointment booked for ${appointmentDetails.date} at ${appointmentDetails.time}`,
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: 'Error',
+        description: 'Failed to confirm the appointment. Please try again.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
-    <Container maxW="440px" py={4}>
+    <Container maxW="440px" py={4} className='appointment-wrapper'>
       {/* MediQ Logo */}
       <Flex justify="center" mb={6}>
         <Heading size="lg">
@@ -82,26 +113,14 @@ const AppointmentBooking: React.FC = () => {
         mb={6}
         alignItems="center"
       >
-        <IconButton
-          aria-label="Go back"
-          icon={<ArrowBackIcon />}
-          variant="ghost"
-          color="white"
-          _hover={{ bg: 'blue.500' }}
-        />
+        <Icon name='bx-left-arrow-alt' />
         <Flex flex={1} ml={3} direction="column">
           <Text fontSize="lg" fontWeight="medium">
             Book Your Appointment
           </Text>
           <Text fontSize="sm" opacity={0.9}>1 hour</Text>
         </Flex>
-        <IconButton
-          aria-label="Information"
-          icon={<InfoIcon />}
-          variant="ghost"
-          color="white"
-          _hover={{ bg: 'blue.500' }}
-        />
+        <Icon name='bx-info-circle' />
       </Flex>
 
       {/* Calendar Section */}
@@ -109,19 +128,9 @@ const AppointmentBooking: React.FC = () => {
         <Heading size="md" mb={4}>Select Date</Heading>
         
         <Flex justify="space-between" align="center" mb={4}>
-          <IconButton
-            aria-label="Previous month"
-            icon={<ChevronLeftIcon />}
-            variant="ghost"
-            size="sm"
-          />
+          <Icon name='bx-chevron-left' />
           <Text fontSize="md" fontWeight="medium">{currentMonth}</Text>
-          <IconButton
-            aria-label="Next month"
-            icon={<ChevronRightIcon />}
-            variant="ghost"
-            size="sm"
-          />
+          <Icon name='bx-chevron-right' />
         </Flex>
 
         <Grid templateColumns="repeat(7, 1fr)" gap={1} mb={2}>
@@ -189,9 +198,10 @@ const AppointmentBooking: React.FC = () => {
         w="full"
         size="lg"
         colorScheme="blue"
-        // isDisabled={!selectedDate || !selectedTime}
+        isDisabled={!selectedDate || !selectedTime}
         bg="navy.900"
         _hover={{ bg: 'navy.800' }}
+        onClick={handleConfirmAppointment}
       >
         Confirm Appointment
       </Button>
