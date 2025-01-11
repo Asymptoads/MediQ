@@ -24,7 +24,7 @@ import MyAccount from './pages/Patient/MyAccount/MyAccount';
 import './App.scss';
 import SpecializationDetails from './components/Patient/Specilization/SpecilizationDetails';
 import BookAppointment from './pages/Patient/BookAppointment/BookAppointment';
-
+import Appointmentsch from './pages/Patient/appointmentsch/appointmentsch';
 const App = () => {
     // return (
     //     <Box className='app'>
@@ -68,7 +68,8 @@ const App = () => {
                     {/* <Route path='/test-status' element={<TestStatus />} /> */}
 
                     <Route path='/register' element={<Register />} />
-                    <Route path='/my-account' element={<MyAccount />} /> 
+                    <Route path='/my-account' element={<MyAccount />} />
+                    <Route path='/appointmentsch' element={<Appointmentsch />} /> 
                 </Routes>
             {/* </CalendarContextProvider> */}
         </Box>
