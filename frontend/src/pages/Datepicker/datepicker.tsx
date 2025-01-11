@@ -1,0 +1,202 @@
+import React, { useState } from 'react';
+import {
+  Box,
+  Button,
+  Grid,
+  Heading,
+  Text,
+  VStack,
+  Flex,
+  IconButton,
+  Container,
+  SimpleGrid
+} from '@chakra-ui/react';
+import { ChevronLeftIcon, ChevronRightIcon, ArrowBackIcon, InfoIcon } from '@chakra-ui/icons';
+
+interface CalendarDay {
+  day: number | '';
+  disabled: boolean;
+  isToday: boolean;
+}
+
+const AppointmentBooking: React.FC = () => {
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string>('');
+  
+  const getDaysInMonth = (year: number, month: number): number => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const generateCalendarDays = (): CalendarDay[] => {
+    const today = new Date();
+    const daysInMonth = getDaysInMonth(today.getFullYear(), today.getMonth());
+    const firstDay = new Date(today.getFullYear(), today.getMonth(), 1).getDay();
+    
+    const days: CalendarDay[] = [];
+    
+    for (let i = 0; i < firstDay; i++) {
+      days.push({ day: '', disabled: true, isToday: false });
+    }
+    
+    for (let i = 1; i <= daysInMonth; i++) {
+      const date = new Date(today.getFullYear(), today.getMonth(), i);
+      const isDisabled = date < new Date(today.setHours(0, 0, 0, 0));
+      days.push({ 
+        day: i, 
+        disabled: isDisabled,
+        isToday: i === today.getDate()
+      });
+    }
+    
+    return days;
+  };
+
+  const timeSlots = [
+    '9:00 am',
+    '10:00 am',
+    '11:00 am',
+    '1:00 pm',
+    '2:00 pm',
+    '3:00 pm'
+  ];
+
+  const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+  const currentMonth = new Date().toLocaleString('default', { month: 'long' });
+
+  return (
+    <Container maxW="440px" py={4}>
+      {/* MediQ Logo */}
+      <Flex justify="center" mb={6}>
+        <Heading size="lg">
+          <Text as="span" color="green.500">Medi</Text>
+          <Text as="span" color="blue.500">Q</Text>
+        </Heading>
+      </Flex>
+
+      {/* Header */}
+      <Flex
+        bg="blue.400"
+        color="white"
+        p={4}
+        borderRadius="xl"
+        mb={6}
+        alignItems="center"
+      >
+        <IconButton
+          aria-label="Go back"
+          icon={<ArrowBackIcon />}
+          variant="ghost"
+          color="white"
+          _hover={{ bg: 'blue.500' }}
+        />
+        <Flex flex={1} ml={3} direction="column">
+          <Text fontSize="lg" fontWeight="medium">
+            Book Your Appointment
+          </Text>
+          <Text fontSize="sm" opacity={0.9}>1 hour</Text>
+        </Flex>
+        <IconButton
+          aria-label="Information"
+          icon={<InfoIcon />}
+          variant="ghost"
+          color="white"
+          _hover={{ bg: 'blue.500' }}
+        />
+      </Flex>
+
+      {/* Calendar Section */}
+      <Box bg="white" borderRadius="xl" p={6} boxShadow="sm" mb={6}>
+        <Heading size="md" mb={4}>Select Date</Heading>
+        
+        <Flex justify="space-between" align="center" mb={4}>
+          <IconButton
+            aria-label="Previous month"
+            icon={<ChevronLeftIcon />}
+            variant="ghost"
+            size="sm"
+          />
+          <Text fontSize="md" fontWeight="medium">{currentMonth}</Text>
+          <IconButton
+            aria-label="Next month"
+            icon={<ChevronRightIcon />}
+            variant="ghost"
+            size="sm"
+          />
+        </Flex>
+
+        <Grid templateColumns="repeat(7, 1fr)" gap={1} mb={2}>
+          {weekDays.map(day => (
+            <Text
+              key={day}
+              fontSize="xs"
+              textAlign="center"
+              color="gray.500"
+              fontWeight="medium"
+            >
+              {day}
+            </Text>
+          ))}
+        </Grid>
+
+        <Grid templateColumns="repeat(7, 1fr)" gap={1}>
+          {generateCalendarDays().map((date, index) => (
+            <Button
+              key={index}
+              size="sm"
+              variant="ghost"
+              isDisabled={date.disabled}
+              bg={date.isToday ? 'blue.50' : undefined}
+              color={selectedDate?.getDate() === date.day ? 'white' : 'inherit'}
+              bgColor={selectedDate?.getDate() === date.day ? 'blue.400' : undefined}
+              borderRadius="full"
+              onClick={() => date.day && setSelectedDate(new Date(new Date().getFullYear(), new Date().getMonth(), date.day))}
+              _hover={{
+                bg: date.day ? 'blue.50' : undefined
+              }}
+            >
+              {date.day}
+            </Button>
+          ))}
+        </Grid>
+      </Box>
+
+      {/* Time Selection */}
+      <Box bg="white" borderRadius="xl" p={6} boxShadow="sm" mb={6}>
+        <Heading size="md" mb={4}>Select Time</Heading>
+        <SimpleGrid columns={3} spacing={3}>
+          {timeSlots.map((time) => (
+            <Button
+              key={time}
+              variant="outline"
+              isActive={selectedTime === time}
+              onClick={() => setSelectedTime(time)}
+              colorScheme="blue"
+              size="md"
+              _active={{
+                bg: 'blue.400',
+                color: 'white',
+                borderColor: 'blue.400'
+              }}
+            >
+              {time}
+            </Button>
+          ))}
+        </SimpleGrid>
+      </Box>
+
+      {/* Confirm Button */}
+      <Button
+        w="full"
+        size="lg"
+        colorScheme="blue"
+        // isDisabled={!selectedDate || !selectedTime}
+        bg="navy.900"
+        _hover={{ bg: 'navy.800' }}
+      >
+        Confirm Appointment
+      </Button>
+    </Container>
+  );
+};
+
+export default AppointmentBooking;

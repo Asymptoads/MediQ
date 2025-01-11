@@ -1,11 +1,12 @@
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Box } from '@chakra-ui/react';
 
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
-import MyAccount from './pages/MyAccount/MyAccount';
+// import MyAccount from './pages/MyAccount/MyAccount';
+import Datepicker from './pages/Datepicker/datepicker';
 
 
 import './App.scss';
@@ -35,14 +36,13 @@ const App = () => {
 
     return (
         <Box className='app'>
-            {/* <CalendarContextProvider> */}
-                <Routes>
-                    <Route path='/' element={<Home />} />
-                    <Route path='/login' element={<Login />} />
-                    <Route path='/register' element={<Register />} />
-                    <Route path='/my-account' element={<MyAccount />} />
-                </Routes>
-            {/* </CalendarContextProvider> */}
+            <Routes>
+                <Route path='/' element={<Home />} />
+                <Route path='/login' element={<Login />} />
+                <Route path='/register' element={<Register />} />
+                <Route path='/datepicker' element={<Datepicker />} />
+                {/* <Route path='/datepicker' element={<datepicker />} /> */}
+            </Routes>
         </Box>
     );
 };
