@@ -2,8 +2,13 @@
 import express from "express";
 import {
   createAppointment,
+
   getAppointments,
+  getSuspendedAppointments,
+  queueStatusForUser,
+
   getAppointmentsByUserId,
+
   markAppointmentAsSuspended,
   markAppointmentAsOperated,
   markAppointmentAsCompleted,
@@ -13,9 +18,13 @@ import { isAuthenticated } from "../middlewares/index";
 
 export default (router: express.Router) => {
     router.post("/api/create-appointment", isAuthenticated, createAppointment);
-    router.get("/api/appointments/:queue_id", isAuthenticated, getAppointments);
+
+    router.get("/api/appointments/:queue_id", isAuthenticated, getAppointments);          // for getting all
+    router.get("/api/appointments/:queue_id", isAuthenticated, getSuspendedAppointments); // for both doctor and user-view
+
     router.put("/api/appointments/suspended/:appointment_id", isAuthenticated, markAppointmentAsSuspended);
     router.put("/api/appointments/operated/:appointment_id", isAuthenticated, markAppointmentAsOperated);
     router.put("/api/appointments/completed/:appointment_id", isAuthenticated, markAppointmentAsCompleted);
     router.get("/api/user/appointments/:status/:user_id", isAuthenticated, getAppointmentsByUserId);
+    router.get("/api/user/appointments/:status/:user_id", getAppointmentsByUserId);
 };

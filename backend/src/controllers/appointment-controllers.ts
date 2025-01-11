@@ -1,6 +1,7 @@
 import express from "express";
 import { appointmentModel } from "../models/appointment.model";
 import { queueModel } from "../models/queue.model";
+import { estimatedTimeModel } from "../models/estimated-time.model";
 import mongoose from "mongoose";
 
 export const createAppointment = async (
@@ -114,6 +115,34 @@ export const getAppointments = async ( req: express.Request, res: express.Respon
   }
 };
 
+export const getSuspendedAppointments = async ( req: express.Request, res: express.Response) => {
+  try {
+    const { queue_id } = req.params; // Extract queue_id from URL parameter
+
+    // Validate if queue_id is provided
+    if (!queue_id) {
+      return res.status(400).json({ error: "queue_id is required" });
+    }
+
+    // Fetch appointments filtered by queue_id and is_suspended=true
+    const suspendedAppointments = await appointmentModel
+      .find({
+        queue_id,           // Filter by queue_id
+        is_suspended: true, // Include only suspended appointments
+      })
+      .sort({ suspended_at: 1 }); // Sort by suspended_at in ascending order
+
+    // Return the appointments if found
+    if (suspendedAppointments.length > 0) {
+      return res.status(200).json(suspendedAppointments);
+    } else {
+      return res.status(404).json({ message: "No suspended appointments found" });
+    }
+  } catch (error) {
+    console.error("Error fetching suspended appointments:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
 
 export const getAppointmentsByUserId = async (
   req: express.Request,
@@ -256,35 +285,137 @@ export const markAppointmentAsOperated = async (
     const appointmentSchedule: WeeklySchedule = appointment.schedule as unknown as WeeklySchedule;
 
     // Check if the schedule exists in the queue's weekly_schedule
-    const validSchedule = queue.weekly_schedule.find((entry: WeeklySchedule) =>
-                                                     entry.day === appointmentSchedule.day &&
-                                                       entry.start_time === appointmentSchedule.start_time &&
-                                                       entry.end_time === appointmentSchedule.end_time
-                                                    );
+    const validSchedule = queue.weekly_schedule.find((entry: WeeklySchedule) => entry.day === appointmentSchedule.day && entry.start_time === appointmentSchedule.start_time && entry.end_time === appointmentSchedule.end_time);
 
-                                                    if (!validSchedule) {
-                                                      return res
-                                                      .status(400)
-                                                      .json({ error: "The schedule for the appointment is invalid" });
-                                                    }
+    if (!validSchedule) {
+      return res
+      .status(400)
+      .json({ error: "The schedule for the appointment is invalid" });
+    }
 
-                                                    // Check if the doctor is part of the specific schedule's doctors
-                                                    if (!validSchedule.doctors.includes(doctor_id)) {
-                                                      return res
-                                                      .status(400)
-                                                      .json({ error: "Doctor is not part of this schedule" });
-                                                    }
+    // Check if the doctor is part of the specific schedule's doctors
+    if (!validSchedule.doctors.includes(doctor_id)) {
+      return res
+      .status(400)
+      .json({ error: "Doctor is not part of this schedule" });
+    }
 
-                                                    // Mark appointment as operated
-                                                    appointment.is_operated = true;
-                                                    appointment.operated_at = now;
-                                                    appointment.operated_by = doctor_id; // Set the doctor who performed the operation
+    // Mark appointment as operated
+    appointment.is_operated = true;
+    appointment.operated_at = now;
+    appointment.operated_by = doctor_id; // Set the doctor who performed the operation
 
-                                                    // Save the updated appointment
-                                                    await appointment.save();
+    // Save the updated appointment
+    await appointment.save();
 
-                                                    // Return the updated appointment as the response
-                                                    return res.status(200).json(appointment);
+    // Return the updated appointment as the response
+    return res.status(200).json(appointment);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
+export const queueStatusForUser = async ( req: express.Request, res: express.Response) => {
+  try {
+    const { queue_id, user_id } = req.params; // Extract queue_id and user_id from URL parameters
+
+    // Validate if queue_id and user_id are provided
+    if (!queue_id) {
+      return res.status(400).json({ error: "queue_id is required" });
+    }
+    if (!user_id) {
+      return res.status(400).json({ error: "user_id is required" });
+    }
+
+    // Check if the user has an appointment in this queue
+    const userAppointment = await appointmentModel.findOne({
+      queue_id,
+      user_id,
+    });
+
+    if (!userAppointment) {
+      return res.status(404).json({
+        error: "The user does not have an appointment in this queue.",
+      });
+    }
+
+    // Get all active appointments in the queue, sorted by registered_at
+    const activeAppointments = await appointmentModel
+    .find({
+      queue_id,
+      is_operated: false,
+      is_completed: false,
+      is_suspended: false,
+    })
+    .sort({ registered_at: 1 });
+
+    // Get the number of users before the current user
+    const userIndex = activeAppointments.findIndex(
+      (appointment) => appointment.user_id.toString() === user_id
+    );
+    const usersBefore = userIndex;
+
+    // Get the number of suspended users in the queue
+    const suspendedCount = await appointmentModel.countDocuments({
+      queue_id,
+      is_suspended: true,
+    });
+
+    // Calculate the estimated wait time for each user
+    const estimatedTimes = await Promise.all(
+      activeAppointments.map(async (appointment) => {
+        const estimatedTime = await estimatedTimeModel.findOne({
+          category: appointment.category,
+          queue_id,
+        });
+
+        const averageTime = estimatedTime ? estimatedTime.average_time : 0;
+
+        return {
+          user_id: appointment.user_id,
+          estimated_time: averageTime,
+        };
+      })
+    );
+
+    // Calculate the total wait time for the current user
+    const userWaitTime = estimatedTimes
+    .slice(0, usersBefore)
+    .reduce((acc, curr) => acc + curr.estimated_time, 0);
+
+    // Get the user currently being operated (if any)
+    const userBeingOperated = await appointmentModel.findOne({
+      queue_id,
+      is_operated: true,
+    });
+
+    let operatingUserEstimatedTime = 0;
+    let operatedAt = null;
+
+    if (userBeingOperated) {
+      const estimatedTimeForUserBeingOperated = await estimatedTimeModel.findOne({
+        category: userBeingOperated.category,
+        queue_id,
+      });
+
+      operatingUserEstimatedTime =
+        estimatedTimeForUserBeingOperated?.average_time || 0;
+
+      // Get the operated_at timestamp
+      operatedAt = userBeingOperated.operated_at;
+    }
+
+    // Return the results
+    return res.status(200).json({
+      user_appointment: userAppointment,
+      users_before: usersBefore,
+      suspended_count: suspendedCount,
+      total_wait_time: userWaitTime,
+      estimated_times: estimatedTimes,
+      operating_user_estimated_time: operatingUserEstimatedTime,
+      operated_at: operatedAt, // Timestamp of the user being operated
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Server error" });
