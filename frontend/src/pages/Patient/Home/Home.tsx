@@ -9,7 +9,6 @@ import "./Home.scss";
 const Home: React.FC = () => {
     const { client } = useBackendAPIContext();
     const [currentUser, setCurrentUser] = useState<any>(null);
-
     useEffect(() => {
         const fetchCurrentUser = async () => {
             try {
@@ -19,7 +18,6 @@ const Home: React.FC = () => {
                 console.error(err);
             }
         };
-
         fetchCurrentUser();
     }, [client]);
     return (

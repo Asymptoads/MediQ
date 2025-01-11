@@ -196,15 +196,6 @@ const Register = () => {
                     </form>
                     <FormBorder />
                     <Text className="or-continue-with">Or continue with</Text>
-                    <Button className="google-sign-in-btn">
-                        <Text as={"span"} className="google-logo-container">
-                            <Image
-                                src="/googlelogo.png"
-                                className="google-logo"
-                            />
-                        </Text>
-                        Sign in with Google
-                    </Button>
                     <ChakraLink
                         as={ReactRouterLink}
                         to={"/login"}
