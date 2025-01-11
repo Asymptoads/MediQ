@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, Text, Input, Button, Link, VStack, HStack, Image, Icon } from '@chakra-ui/react';
-import { ArrowBackIcon } from '@chakra-ui/icons';
+// import { ArrowBackIcon } from '@chakra-ui/icons';
 import './Login.scss';
 import 'boxicons';
 

@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
-import { Route, Routes, Router } from 'react-router-dom';
+// import { useEffect, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import { Box } from '@chakra-ui/react';
 
-import Logo from './components/HeaderRenderer/HeaderRenderer';
+// import Logo from './components/HeaderRenderer/HeaderRenderer';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Reports from './pages/Report/Report';
@@ -23,7 +23,7 @@ import MyAccount from './pages/MyAccount/MyAccount';
 
 import './App.scss';
 import SpecializationDetails from './components/Specilization/SpecilizationDetails';
-import BookAppointment from './components/BookAppointment/BookAppointment';
+import BookAppointment from './pages/BookAppointment/BookAppointment';
 
 const App = () => {
     // return (
