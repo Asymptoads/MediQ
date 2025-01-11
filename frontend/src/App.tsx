@@ -3,27 +3,27 @@ import { Route, Routes } from 'react-router-dom';
 import { Box } from '@chakra-ui/react';
 
 // import Logo from './components/HeaderRenderer/HeaderRenderer';
-import Home from './pages/Home/Home';
-import Login from './pages/Login/Login';
-import Reports from './pages/Report/Report';
-import DoctorSpecializations from './pages/Specilization/Specialization';
-import LabTests from './pages/LabTest/LabTest';
-import LabTestDetails from './components/LabTestDetails/LabTestDetails';
+import Home from './pages/Patient/Home/Home';
+import Login from './pages/Shared/Login/Login';
+import Reports from './pages/Patient/Report/Report';
+import DoctorSpecializations from './pages/Patient/Specilization/Specialization';
+import LabTests from './pages/Patient/LabTest/LabTest';
+import LabTestDetails from './components/Patient/LabTestDetails/LabTestDetails';
 
-import PaymentPage from './pages/Payment/Payment';
-import QueuePage from './components/Queue/QueuePage';
-import BookTest from './pages/BookTest/BookTest';
-import Confirmation from './components/Confirmation/Confirmation';
+import PaymentPage from './pages/Patient/Payment/Payment';
+import QueuePage from './components/Patient/Queue/QueuePage';
+import BookTest from './pages/Patient/BookTest/BookTest';
+import Confirmation from './components/Patient/Confirmation/Confirmation';
 // import TestStatus from './components/TestStatus/TestStatus';
 
 
-import Register from './pages/Register/Register';
-import MyAccount from './pages/MyAccount/MyAccount';
+import Register from './pages/Patient/Register/Register';
+import MyAccount from './pages/Patient/MyAccount/MyAccount';
 
 
 import './App.scss';
-import SpecializationDetails from './components/Specilization/SpecilizationDetails';
-import BookAppointment from './pages/BookAppointment/BookAppointment';
+import SpecializationDetails from './components/Patient/Specilization/SpecilizationDetails';
+import BookAppointment from './pages/Patient/BookAppointment/BookAppointment';
 
 const App = () => {
     // return (
