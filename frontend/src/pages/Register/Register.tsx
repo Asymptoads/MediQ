@@ -27,15 +27,19 @@ const Register = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
+    const [dateOfBirth, setDateOfBirth] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const handleRegister = async () => {
         setIsLoading(true);
         const userDetails = {
             name,
-            username,
             email,
             password,
+            date_of_birth: dateOfBirth,
+            phone_number: phoneNumber,
+            username,
         };
         client
             .post("/auth/register", userDetails)
@@ -97,7 +101,7 @@ const Register = () => {
                     </Text>
                     <form className="register-form" onSubmit={handleSubmit}>
                         <CustomTextInput
-                            label="Full Name"
+                            label="Name"
                             type="name"
                             value={name}
                             onChange={(
@@ -105,21 +109,8 @@ const Register = () => {
                             ) => {
                                 setName(e.target.value);
                             }}
-                            placeholder="Full Name"
+                            placeholder="Name"
                             className="custom-input custom-input-username"
-                        />
-                        <CustomTextInput
-                            label="Username"
-                            type="text"
-                            value={username}
-                            onChange={(
-                                e: React.ChangeEvent<HTMLInputElement>
-                            ) => {
-                                setUsername(e.target.value);
-                            }}
-                            placeholder="Username"
-                            className="custom-input custom-input-username"
-                            required
                         />
                         <CustomTextInput
                             label="Email"
@@ -147,6 +138,41 @@ const Register = () => {
                             placeholder="********"
                             required
                         />
+                        <CustomTextInput
+                            label="Date of Birth"
+                            type="date"
+                            value={dateOfBirth}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => setDateOfBirth(e.target.value)}
+                            className="custom-input custom-input-password"
+                            required
+                        />
+
+                        <CustomTextInput
+                            label="Phone Number"
+                            type="tel"
+                            value={phoneNumber}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => setPhoneNumber(e.target.value)}
+                            className="custom-input custom-input-password"
+                            placeholder="9800000000"
+                            required
+                        />
+                        {/* <CustomTextInput
+                            label="Username"
+                            type="text"
+                            value={username}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                                setUsername(e.target.value);
+                            }}
+                            placeholder="Username"
+                            className="custom-input custom-input-username"
+                            required
+                        /> */}
                         <ChakraLink
                             as={ReactRouterLink}
                             to="/"
