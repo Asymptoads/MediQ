@@ -1,27 +1,12 @@
 import React from 'react';
 import { Flex, Text, chakra, IconButton, Box, Container } from '@chakra-ui/react';
 import { BiUser } from 'react-icons/bi';
-import { useNavigate } from 'react-router-dom';
 
 interface LogoProps {
-  isLoggedIn: boolean; // Prop to indicate if the user is logged in
+  onUserClick?: () => void;
 }
 
-const Logo: React.FC<LogoProps> = ({ isLoggedIn }) => {
-  const navigate = useNavigate();
-
-  const handleLogoClick = () => {
-    navigate('/home'); // Redirect to the homepage
-  };
-
-  const handleUserClick = () => {
-    if (isLoggedIn) {
-      navigate('/my-account'); // Redirect to the My Account page if logged in
-    } else {
-      navigate('/login'); // Redirect to the Login page if not logged in
-    }
-  };
-
+const Logo: React.FC<LogoProps> = ({ onUserClick }) => {
   return (
     <Box 
       as="header" 
@@ -36,7 +21,7 @@ const Logo: React.FC<LogoProps> = ({ isLoggedIn }) => {
       width="100%"
     >
       <Container 
-        maxW="1280px" // Stops shrinking beyond 1280px
+        maxW="1280px" // Stops shrinking beyond 1920px
         width="100%" // Ensures full width before maxW is reached
         px={6}
       >
@@ -45,28 +30,23 @@ const Logo: React.FC<LogoProps> = ({ isLoggedIn }) => {
           align="center"
           height="64px"
         >
-          {/* Logo */}
-          <Text
-            fontSize={{ base: 'xl', md: '2xl' }}
-            fontWeight="bold"
+          <Text 
+            fontSize={{ base: "xl", md: "2xl" }} 
+            fontWeight="bold" 
             letterSpacing="tight"
             userSelect="none"
-            cursor="pointer" // Makes it look clickable
-            onClick={handleLogoClick} // Click handler for redirect
           >
             <chakra.span color="green.500">Medi</chakra.span>
             <chakra.span color="blue.500">Q</chakra.span>
           </Text>
-
-          {/* User Icon */}
+          
           <IconButton
             aria-label="User profile"
             icon={<BiUser size="24px" />}
             variant="ghost"
             colorScheme="gray"
             size="lg"
-            onClick={handleUserClick} // Check login status and redirect
-            cursor="pointer"
+            onClick={onUserClick}
             _hover={{ bg: 'gray.100' }}
             _active={{ bg: 'gray.200' }}
           />
