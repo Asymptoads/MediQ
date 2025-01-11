@@ -10,8 +10,8 @@ import {
   useToast,
   SimpleGrid
 } from '@chakra-ui/react';
-import Icon from '../../components/Icon/Icon';
-import { useBackendAPIContext } from '../../contexts/BackendAPIContext/BackendAPIContext';
+import Icon from '../../../components/Shared/Icon/Icon';
+import { useBackendAPIContext } from '../../../contexts/BackendAPIContext/BackendAPIContext';
 
 
 interface CalendarDay {
