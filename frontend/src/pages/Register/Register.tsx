@@ -145,18 +145,18 @@ const Register = () => {
                             onChange={(
                                 e: React.ChangeEvent<HTMLInputElement>
                             ) => setDateOfBirth(e.target.value)}
-                            className="custom-input custom-input-password"
+                            className="custom-input custom-input-dob"
                             required
                         />
 
                         <CustomTextInput
                             label="Phone Number"
-                            type="tel"
+                            type="phone_number"
                             value={phoneNumber}
                             onChange={(
                                 e: React.ChangeEvent<HTMLInputElement>
                             ) => setPhoneNumber(e.target.value)}
-                            className="custom-input custom-input-password"
+                            className="custom-input custom-input-phone-number"
                             placeholder="9800000000"
                             required
                         />
