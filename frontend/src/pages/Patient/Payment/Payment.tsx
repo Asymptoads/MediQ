@@ -8,7 +8,7 @@ import {
     Divider,
     VStack,
 } from '@chakra-ui/react';
-import PageContainer from '../../components/PageContainer/PageContainer';
+import PageContainer from '../../../components/Shared/PageContainer/PageContainer';
 
 const PaymentPage: React.FC = () => {
     const navigate = useNavigate();

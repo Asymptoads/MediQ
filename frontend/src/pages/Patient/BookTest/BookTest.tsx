@@ -12,7 +12,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
-import PageContainer from '../../components/PageContainer/PageContainer';
+import PageContainer from '../../../components/Shared/PageContainer/PageContainer';
 import './BookTest.scss';
 
 const testOptions = [

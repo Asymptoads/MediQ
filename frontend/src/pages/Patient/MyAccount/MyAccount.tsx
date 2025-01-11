@@ -11,7 +11,7 @@ import {
     Stack,
 } from '@chakra-ui/react';
 import { FiLogOut } from 'react-icons/fi';
-import PageContainer from '../../components/PageContainer/PageContainer';
+import PageContainer from '../../../components/Shared/PageContainer/PageContainer';
 
 const ProfilePage: React.FC = () => {
     // Profile data dictionary

@@ -10,12 +10,11 @@ import {
     VStack,
 } from "@chakra-ui/react";
 
-import { useBackendAPIContext } from "../../contexts/BackendAPIContext/BackendAPIContext";
-
-import Icon from "../../components/Icon/Icon";
-import CustomTextInput from "../../components/CustomTextInput/CustomTextInput";
-import FormBorder from "../../components/FormBorder/FormBorder";
-import PageContainer from "../../components/PageContainer/PageContainer";
+import { useBackendAPIContext } from "../../../contexts/BackendAPIContext/BackendAPIContext";
+import Icon from "../../../components/Shared/Icon/Icon";
+import CustomTextInput from "../../../components/Shared/CustomTextInput/CustomTextInput";
+import FormBorder from "../../../components/Patient/FormBorder/FormBorder";
+import PageContainer from "../../../components/Shared/PageContainer/PageContainer";
 
 import "./Register.scss";
 

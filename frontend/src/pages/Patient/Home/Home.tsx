@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Box, Text, Container, Grid, GridItem, Flex } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
-import { useBackendAPIContext } from "../../contexts/BackendAPIContext/BackendAPIContext";
-import PageContainer from "../../components/PageContainer/PageContainer";
+import { useBackendAPIContext } from "../../../contexts/BackendAPIContext/BackendAPIContext";
+import PageContainer from "../../../components/Shared/PageContainer/PageContainer";
+import Icon from "../../../components/Shared/Icon/Icon";
 import "./Home.scss";
-import Icon from "../../components/Icon/Icon";
 
 const Home: React.FC = () => {
     const { client } = useBackendAPIContext();
