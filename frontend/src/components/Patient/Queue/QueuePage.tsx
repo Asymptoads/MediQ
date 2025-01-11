@@ -18,7 +18,7 @@ import {
     Icon,
 } from '@chakra-ui/react';
 import { FiClock, FiUser, FiCalendar, FiXCircle } from 'react-icons/fi';
-import PageContainer from '../PageContainer/PageContainer';
+import PageContainer from '../../Shared/PageContainer/PageContainer';
 
 const QueuePage: React.FC = () => {
     const navigate = useNavigate();

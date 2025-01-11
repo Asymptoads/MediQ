@@ -8,7 +8,7 @@ import {
   Flex,
   VStack,
 } from '@chakra-ui/react';
-import PageContainer from '../../components/PageContainer/PageContainer';
+import PageContainer from '../../../components/Shared/PageContainer/PageContainer';
 import './Reports.scss';
 
 const Reports: React.FC = () => {

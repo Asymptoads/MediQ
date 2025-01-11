@@ -11,7 +11,7 @@ import {
     Grid,
     GridItem,
 } from '@chakra-ui/react';
-import PageContainer from '../PageContainer/PageContainer';
+import PageContainer from '../../Shared/PageContainer/PageContainer';
 import './SpecilizationDetails.scss';
 
 const doctors = [

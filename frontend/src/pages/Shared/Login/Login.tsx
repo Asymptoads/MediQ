@@ -10,11 +10,11 @@ import {
 } from "@chakra-ui/react";
 import "./Login.scss";
 import "boxicons";
-import { useBackendAPIContext } from "../../contexts/BackendAPIContext/BackendAPIContext";
-import { useUserContext } from "../../contexts/UserContext/UserContext";
+import { useBackendAPIContext } from "../../../contexts/BackendAPIContext/BackendAPIContext";
+import { useUserContext } from "../../../contexts/UserContext/UserContext";
 import { useNavigate } from "react-router-dom";
-import PageContainer from "../../components/PageContainer/PageContainer";
-import CustomTextInput from "../../components/CustomTextInput/CustomTextInput";
+import PageContainer from "../../../components/Shared/PageContainer/PageContainer";
+import CustomTextInput from "../../../components/Shared/CustomTextInput/CustomTextInput";
 
 const Login: React.FC = () => {
     const { client } = useBackendAPIContext();

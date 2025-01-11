@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { Box, Flex, Grid, GridItem } from '@chakra-ui/react';
+import { Flex, Grid, GridItem } from '@chakra-ui/react';
 
 import HeaderRenderer from '../HeaderRenderer/HeaderRenderer';
 
@@ -25,7 +24,7 @@ const PageContainer: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
                 gridTemplateRows={'min-content 1fr'}
             >
                 <GridItem>
-                    <HeaderRenderer />
+                    <HeaderRenderer isLoggedIn={true}/>
                 </GridItem>
                 <GridItem maxH={'100%'} overflowY={'auto'}>
                     {children}

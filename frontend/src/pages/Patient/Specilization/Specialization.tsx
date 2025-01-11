@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Text, Container, Grid, GridItem, Flex } from '@chakra-ui/react';
-import PageContainer from '../../components/PageContainer/PageContainer';
-import Icon from '../../components/Icon/Icon';
+import PageContainer from '../../../components/Shared/PageContainer/PageContainer';
+import Icon from '../../../components/Shared/Icon/Icon';
 import './Specialization.scss';
 import { useNavigate, Link } from 'react-router-dom';
 
