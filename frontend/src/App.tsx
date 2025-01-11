@@ -6,9 +6,12 @@ import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
 import MyAccount from './pages/MyAccount/MyAccount';
-
-
+import Reports from './pages/Report/Report';
+import DoctorSpecializations from './pages/Specilization/Specialization';
+import LabTests from './pages/LabTest/LabTest';
 import './App.scss';
+import SpecializationDetails from './components/Specilization/SpecilizationDetails';
+import BookAppointment from './components/BookAppointment/BookAppointment';
 
 const App = () => {
     // return (
@@ -41,6 +44,12 @@ const App = () => {
                     <Route path='/login' element={<Login />} />
                     <Route path='/register' element={<Register />} />
                     <Route path='/my-account' element={<MyAccount />} />
+                    <Route path='/reports' element={<Reports />} />
+                    <Route path='/specialization' element={<DoctorSpecializations />} />
+                    <Route path='/specializations/:name' element={<SpecializationDetails />} />
+                    <Route path='/appointment/book/:doctorID' element={<BookAppointment />} />
+                    <Route path='/lab-tests' element={<LabTests />} />
+
                 </Routes>
             {/* </CalendarContextProvider> */}
         </Box>
