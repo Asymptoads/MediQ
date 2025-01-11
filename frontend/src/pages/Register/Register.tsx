@@ -13,8 +13,8 @@ import { useBackendAPIContext } from "../../contexts/BackendAPIContext/BackendAP
 
 import Icon from "../../components/Icon/Icon";
 import CustomTextInput from "../../components/CustomTextInput/CustomTextInput";
-// import NavBar from '../../components/NavBar/NavBar';
 import FormBorder from "../../components/FormBorder/FormBorder";
+import PageContainer from "../../components/PageContainer/PageContainer";
 
 import "./Register.scss";
 
@@ -57,123 +57,155 @@ const Register = () => {
     };
 
     return (
-        <Box className="register-page">
-            {/* <NavBar /> */}
-            <Box className="register-stuff-container">
-                <Heading className="greeting">Create Account</Heading>
-                <Text className="register-info-text">
-                    Create your new account!
-                </Text>
-                <form className="register-form" onSubmit={handleSubmit}>
-                    <CustomTextInput
-                        label="Name"
-                        type="name"
-                        value={name}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setName(e.target.value);
-                        }}
-                        placeholder="Name"
+        <PageContainer>
+            <Box
+                className="register-page"
+                padding="0 25px"
+                minHeight="100vh"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+            >
+                <VStack
+                    className="register-stuff-container"
+                    spacing={4}
+                    align="stretch"
+                    width="100%"
+                    maxW="650px"
+                    boxShadow="0 4px 12px rgba(0, 0, 0, 0.1)" // Updated shadow
+                    borderRadius="8px" // Optional: Add border radius for a smoother look
+                    p={6} // Optional: Add padding inside the container
+                    bg="white" // Optional: Ensure background is white
+                >
+                    {/* Logo */}
+                    <Text
+                        fontSize="32px"
+                        fontWeight="bold"
+                        fontFamily="variables.$primary-font"
+                        textAlign="center"
+                        mb={10}
+                    >
+                        <Text as="span" color="green.400">
+                            Medi
+                        </Text>
+                        <Text as="span" color="blue.600">
+                            Q
+                        </Text>
+                    </Text>
+                    <Heading className="greeting">Create Account</Heading>
+                    <Text className="register-info-text">
+                        Create your new account!
+                    </Text>
+                    <form className="register-form" onSubmit={handleSubmit}>
+                        <CustomTextInput
+                            label="Full Name"
+                            type="name"
+                            value={name}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                                setName(e.target.value);
+                            }}
+                            placeholder="Full Name"
+                            className="custom-input custom-input-username"
+                        />
+                        <CustomTextInput
+                            label="Username"
+                            type="text"
+                            value={username}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                                setUsername(e.target.value);
+                            }}
+                            placeholder="Username"
+                            className="custom-input custom-input-username"
+                            required
+                        />
+                        <CustomTextInput
+                            label="Email"
+                            type="email"
+                            value={email}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                                setEmail(e.target.value);
+                            }}
+                            placeholder="example@email.com"
+                            className="custom-input custom-input-email"
+                            required
+                        />
+                        <CustomTextInput
+                            label="Password"
+                            type="password"
+                            value={password}
+                            onChange={(
+                                e: React.ChangeEvent<HTMLInputElement>
+                            ) => {
+                                setPassword(e.target.value);
+                            }}
+                            className="custom-input custom-input-password"
+                            placeholder="********"
+                            required
+                        />
+                        <ChakraLink
+                            as={ReactRouterLink}
+                            to="/"
+                            className="forgot-password-link"
+                        >
+                            Forgot Password?
+                        </ChakraLink>
+                        <Button
+                            type="submit"
+                            className="form-submit-btn"
+                            colorScheme="blue"
+                            // color={"#d9d9d9"}
+                            borderRadius={"8px"}
+                            marginTop={"15px"}
+                            height={"50px"}
+                            fontSize={"22px"}
+                            fontWeight={600}
+                            isLoading={isLoading}
+                        >
+                            Sign Up
+                        </Button>
+                    </form>
+                    <FormBorder />
+                    <Text className="or-continue-with">Or continue with</Text>
+                    <Button className="google-sign-in-btn">
+                        <Text as={"span"} className="google-logo-container">
+                            <Image
+                                src="/googlelogo.png"
+                                className="google-logo"
+                            />
+                        </Text>
+                        Sign in with Google
+                    </Button>
 
-                        className="custom-input custom-input-username"
-                        required
-                    />
-                    <CustomTextInput
-                        label="Email"
-                        type="email"
-                        value={email}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setEmail(e.target.value);
-                        }}
-                        placeholder="example@email.com"
-                        className="custom-input custom-input-email"
-                        required
-                    />
-                    <CustomTextInput
-                        label="Password"
-                        type="password"
-                        value={password}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setPassword(e.target.value);
-                        }}
-                        className="custom-input custom-input-password"
-                        placeholder="********"
-                        required
-                    />
-                    <CustomTextInput
-                        label="Date of birth"
-                        type="date" // Changed to date_of_birth
-                        value={date_of_birth} // Update_of_birthd value
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setDateOfBirth(e.target.value); // Update_of_birthd onChange handler
-                        }}
-                        placeholder="Date of Birth"
-                        className="custom-input custom-input-dob"
-                        required
-                    />
-                    <CustomTextInput
-                        label="Phone number"
-                        type="phone_number" // Added phone_number type
-                        value={phone_number}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setPhone(e.target.value);
-                        }}
-                        placeholder="Phone Number"
-                        className="custom-input custom-input-phone_number"
-                        required
-                    />
                     <ChakraLink
                         as={ReactRouterLink}
-                        to="/"
-                        className="forgot-password-link"
+                        to={"/login"}
+                        className="login-page-link"
+                        textAlign={"center"}
+                        marginTop={"28px"}
                     >
-                        Forgot Password?
+                        Have an account?{" "}
+                        <Text as={"span"} fontWeight={700}>
+                            Sign In!
+                        </Text>
                     </ChakraLink>
-                    <Button
-                        type="submit"
-                        className="form-submit-btn"
-                        background={"#000000"}
-                        color={"#d9d9d9"}
+                    <ChakraLink
+                        as={ReactRouterLink}
+                        to={"/"}
+                        className="back-home-link"
 
-                        borderRadius={"8px"}
-                        marginTop={"15px"}
-                        height={"50px"}
-                        fontSize={"22px"}
-                        fontWeight={600}
-                        isLoading={isLoading}
                     >
-                        Sign Up
-                    </Button>
-                </form>
-                <FormBorder />
-                <Text className="or-continue-with">Or continue with</Text>
-                <Button className="google-sign-in-btn">
-                    <Text as={"span"} className="google-logo-container">
-                        <Image src="/googlelogo.png" className="google-logo" />
-                    </Text>
-                    Sign in with Google
-                </Button>
-                <ChakraLink
-                    as={ReactRouterLink}
-                    to={"/login"}
-                    className="login-page-link"
-                    textAlign={"center"}
-                    marginTop={"28px"}
-                >
-                    Have an account?{" "}
-                    <Text as={"span"} fontWeight={700}>
-                        Sign In!
-                    </Text>
-                </ChakraLink>
-                <ChakraLink
-                    as={ReactRouterLink}
-                    to={"/"}
-                    className="back-home-link"
-                >
-                    <Icon name="bx-arrow-back" className="arrow" />
-                    Back to Home
-                </ChakraLink>
-            </VStack>
-        </Box>
+                        <Icon name="bx-arrow-back" className="arrow" />
+                        Back to Home
+                    </ChakraLink>
+                </VStack>
+            </Box>
+        </PageContainer>
     );
 };
 
