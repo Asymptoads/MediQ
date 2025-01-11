@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-const estimatedTime = new Schema({ //estimated operating time
+const estimatedTimeSchema = new Schema({ //estimated operating time
     category: {                   // specific to this category
         type: String,
         required: true,
@@ -25,7 +25,7 @@ const estimatedTime = new Schema({ //estimated operating time
         required: true,
         ref: "queue",
     },
-    average_time: { type: Number, required: true } // average time
+    average_time: { type: Number, required: true }, // average time
     count: {type: Number, default: 0},  // average time of how many data
 });
 

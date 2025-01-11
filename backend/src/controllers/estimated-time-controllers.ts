@@ -43,3 +43,44 @@ export const updateOrCreateEstimatedTime = async (
     return res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
+
+export const getEstimatedTimeFor = async (req, res) => {
+  const { category, queue_id } = req.body;
+
+  try {
+    // Validate required fields
+    if (!category || !queue_id) {
+      return res.status(400).json({
+        success: false,
+        message: "Both 'category' and 'queue_id' are required.",
+      });
+    }
+
+    // Fetch the estimated time from the database
+    const estimatedTime = await estimatedTimeModel.findOne({
+      category,
+      queue_id,
+    });
+
+    // Check if the record exists
+    if (!estimatedTime) {
+      return res.status(404).json({
+        success: false,
+        message: "No estimated time found for the given category and queue_id.",
+      });
+    }
+
+    // Respond with the fetched data
+    return res.status(200).json({
+      success: true,
+      data: estimatedTime,
+    });
+  } catch (error) {
+    // Handle any errors during the query
+    console.error("Error fetching estimated time:", error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching the estimated time.",
+    });
+  }
+};
