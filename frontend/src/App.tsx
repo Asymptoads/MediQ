@@ -4,6 +4,12 @@ import { Box } from '@chakra-ui/react';
 import { AuthProvider } from './auth-context';  // import the AuthProvider
 import ProtectedRoute from './ProtectedRoute';  // import the ProtectedRoute component
 
+//AdminImport
+import Admin from './pages/Admin/AdminHome/adminHome';
+import DoctorRegistration from './pages/Doctor/DoctorRegistration/DoctorRegistration';
+import SuccessComponent from './components/Shared/Success/Success';
+
+// import Logo from './components/HeaderRenderer/HeaderRenderer';
 import Home from './pages/Patient/Home/Home';
 import Login from './pages/Shared/Login/Login';
 import Reports from './pages/Patient/Report/Report';
@@ -40,6 +46,12 @@ const App = () => {
                     <Route path="/confirmation" element={<ProtectedRoute element={<Confirmation />} />} />
                     <Route path="/my-account" element={<ProtectedRoute element={<MyAccount />} />} />
                     <Route path="/date-picker" element={<ProtectedRoute element={<AppointmentBooking />} />} />
+
+                    {/* Admin Route */}
+                    <Route path='/admin' element={<Admin />} />
+                    <Route path='/admin/doctor-registration' element={<DoctorRegistration />} />
+                    <Route path='/success' element={<SuccessComponent message='Doctor Registered Successfully' />} />
+
                 </Routes>
             </Box>
         </AuthProvider>
