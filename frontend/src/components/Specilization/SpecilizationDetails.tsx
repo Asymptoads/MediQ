@@ -98,20 +98,17 @@ const SpecializationDetails: React.FC = () => {
                                     <Text fontSize="sm"  mb={4}>
                                         Location: {doctor.location}
                                     </Text>
-                                </Flex>
-                            </GridItem>
-                            
-                        ))}
-                    </Grid>
-
-
-                    <Button
+                                    <Button
                                         colorScheme="green"
                                         size="sm"
                                         onClick={() => handleBookAppointment(doctor.id)} // Use navigate here
                                     >
                                         Book Appointment
                                     </Button>
+                                </Flex>
+                            </GridItem>
+                        ))}
+                    </Grid>
                 </Box>
             </Container>
         </PageContainer>
