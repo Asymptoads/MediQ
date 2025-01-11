@@ -5,19 +5,20 @@ import {
     Input,
     FormLabel,
     Text,
+    Select,
 } from "@chakra-ui/react";
 import Icon from "../Icon/Icon";
-
 import "./CustomTextInput.scss";
 
 type CustomTextInputProps = {
     label: string;
     className?: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
     value: string;
-    type: "email" | "date" | "password" | "name" | "phone_number";
+    type: "email" | "date" | "password" | "name" | "phone_number" | "select";
     required?: boolean;
     placeholder?: string;
+    options?: { label: string; value: string }[]; // Added for dropdown options
 };
 
 const CustomTextInput = ({
@@ -28,6 +29,7 @@ const CustomTextInput = ({
     type,
     required,
     placeholder,
+    options, // Adding options for select
 }: CustomTextInputProps) => {
     const getInputIcon = () => {
         if (type === "email") {
@@ -46,9 +48,7 @@ const CustomTextInput = ({
     };
 
     return (
-        <FormControl
-            className={`input-container ${className ? className : ""}`}
-        >
+        <FormControl className={`input-container ${className ? className : ""}`}>
             <FormLabel className="input-label">
                 {label}
                 {required && (
@@ -63,19 +63,34 @@ const CustomTextInput = ({
                     height={"100%"}
                     opacity={0.2}
                     marginLeft={"10px"}
-                    // backgroundColor={'black'}
                 >
                     {getInputIcon()}
                 </InputLeftElement>
-                <Input
-                    className="input-area"
-                    onChange={onChange}
-                    value={value}
-                    type={type}
-                    placeholder={placeholder}
-                    paddingLeft={"60px"}
-                    // backgroundColor={'yellow'}
-                />
+
+                {type === "select" ? (
+                    <Select
+                        className="input-area"
+                        value={value}
+                        onChange={onChange}
+                        placeholder={placeholder}
+                        paddingLeft={"0px"}
+                    >
+                        {options?.map((option) => (
+                            <option key={option.value} value={option.value}>
+                                {option.label}
+                            </option>
+                        ))}
+                    </Select>
+                ) : (
+                    <Input
+                        className="input-area"
+                        onChange={onChange}
+                        value={value}
+                        type={type}
+                        placeholder={placeholder}
+                        paddingLeft={"60px"}
+                    />
+                )}
             </InputGroup>
         </FormControl>
     );
