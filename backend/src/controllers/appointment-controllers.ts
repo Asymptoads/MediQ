@@ -8,7 +8,7 @@ export const createAppointment = async (
   res: express.Response
 ) => {
   try {
-    const { userId, queueId, category } = req.body;
+    const { userId, queueId, category, schedule } = req.body;
 
     // Validate if the IDs are valid MongoDB ObjectIds
     if (
@@ -16,14 +16,32 @@ export const createAppointment = async (
       !mongoose.Types.ObjectId.isValid(queueId)
     ) {
       return res
-        .status(400)
-        .json({ message: "Invalid user ID or queue ID format" });
+      .status(400)
+      .json({ message: "Invalid user ID or queue ID format" });
     }
 
     // Check if the queue exists
-    const queue = await queueModel.findById(queueId);
+    const queue = await queueModel.findById(queueId).lean(); // Use lean() for better performance
     if (!queue) {
       return res.status(404).json({ message: "Queue not found" });
+    }
+
+    // Validate the provided schedule against the queue's weekly schedule
+    const isValidSchedule = queue.weekly_schedule.some(
+      (entry: {
+        day: string;
+        start_time: string;
+        end_time: string;
+      }) =>
+      entry.day === schedule.day &&
+        entry.start_time === schedule.start_time &&
+        entry.end_time === schedule.end_time
+    );
+
+    if (!isValidSchedule) {
+      return res
+      .status(400)
+      .json({ message: "Invalid schedule for the selected queue" });
     }
 
     // Check if the user already has an appointment in the same queue that is not completed
@@ -34,16 +52,21 @@ export const createAppointment = async (
     });
 
     if (existingAppointment) {
-      return res
-        .status(400)
-        .json({ message: "User already has an active appointment in this queue" });
+      return res.status(400).json({
+        message: "User already has an active appointment in this queue",
+      });
     }
 
-    // Create a new appointment if no existing active appointment is found
+    // Create a new appointment with the validated schedule
     const appointment = new appointmentModel({
       user_id: userId,
       queue_id: queueId,
-      category: category, // Add category here
+      category: category,
+      schedule: {
+        day: schedule.day,
+        start_time: schedule.start_time,
+        end_time: schedule.end_time,
+      }, // Include the validated schedule
     });
 
     await appointment.save();
@@ -113,7 +136,7 @@ export const getAppointmentsByUserId = async (
     } else if (status !== 'all') {
       return res.status(400).json({ message: 'Invalid status value' });
     }
-    
+
     const appointments = await appointmentModel.find({
       user_id,
       ...statusFilter,  // Apply the status filter if provided
@@ -203,40 +226,67 @@ export const markAppointmentAsOperated = async (
 
     // Validate doctor_id for operated status
     if (!doctor_id) {
-      return res.status(400).json({ error: 'Doctor ID is required for operated status' });
+      return res
+      .status(400)
+      .json({ error: "Doctor ID is required for operated status" });
     }
 
     // Find the appointment by appointment_id
     const appointment = await appointmentModel.findById(appointment_id);
     if (!appointment) {
-      return res.status(404).json({ error: 'Appointment not found' });
+      return res.status(404).json({ error: "Appointment not found" });
     }
 
     const now = new Date();
 
     // Find the queue associated with the appointment
-    const queue = await queueModel.findById(appointment.queue_id);
+    const queue = await queueModel.findById(appointment.queue_id).lean(); // Use `lean` to get plain JavaScript objects
     if (!queue) {
-      return res.status(404).json({ error: 'Queue not found' });
+      return res.status(404).json({ error: "Queue not found" });
     }
 
-    // Check if the doctor is part of the queue's doctors
-    if (!queue.doctors.includes(doctor_id)) {
-      return res.status(400).json({ error: 'Doctor is not part of this queue' });
-    }
+    // Explicitly type the `weekly_schedule` and `schedule` objects
+    type WeeklySchedule = {
+      doctors: mongoose.Types.ObjectId[];
+      day: "Sunday" | "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday";
+      start_time: string;
+      end_time: string;
+    };
 
-    // Mark appointment as operated
-    appointment.is_operated = true;
-    appointment.operated_at = now;
-    appointment.operated_by = doctor_id; // Set the doctor who performed the operation
+    const appointmentSchedule: WeeklySchedule = appointment.schedule as unknown as WeeklySchedule;
 
-    // Save the updated appointment
-    await appointment.save();
+    // Check if the schedule exists in the queue's weekly_schedule
+    const validSchedule = queue.weekly_schedule.find((entry: WeeklySchedule) =>
+                                                     entry.day === appointmentSchedule.day &&
+                                                       entry.start_time === appointmentSchedule.start_time &&
+                                                       entry.end_time === appointmentSchedule.end_time
+                                                    );
 
-    // Return the updated appointment as the response
-    return res.status(200).json(appointment);
+                                                    if (!validSchedule) {
+                                                      return res
+                                                      .status(400)
+                                                      .json({ error: "The schedule for the appointment is invalid" });
+                                                    }
+
+                                                    // Check if the doctor is part of the specific schedule's doctors
+                                                    if (!validSchedule.doctors.includes(doctor_id)) {
+                                                      return res
+                                                      .status(400)
+                                                      .json({ error: "Doctor is not part of this schedule" });
+                                                    }
+
+                                                    // Mark appointment as operated
+                                                    appointment.is_operated = true;
+                                                    appointment.operated_at = now;
+                                                    appointment.operated_by = doctor_id; // Set the doctor who performed the operation
+
+                                                    // Save the updated appointment
+                                                    await appointment.save();
+
+                                                    // Return the updated appointment as the response
+                                                    return res.status(200).json(appointment);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'Server error' });
+    return res.status(500).json({ error: "Server error" });
   }
 };

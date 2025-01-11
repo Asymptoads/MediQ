@@ -46,23 +46,35 @@ mongoose.connection.on('error', (err: Error) => {
 });
 
 // Delete all the users
-// import { userModel } from './models/user.model';
-// const clearUsers = async () => {
-//   try {
-//     await userModel.deleteMany({});
-//     console.log('All users have been deleted');
-//   } catch (error) {
-//     console.error('Error clearing users:', error);
-//   }
-// };
+import { userModel } from './models/user.model';
+const clearUsers = async () => {
+  try {
+    await userModel.deleteMany({});
+    console.log('All users have been deleted');
+  } catch (error) {
+    console.error('Error clearing users:', error);
+  }
+};
+clearUsers();
+
 // import { queueModel } from './models/queue.model';
 // const clearQueue = async () => {
 //   try {
 //     await queueModel.deleteMany({});
 //     console.log('All queue have been deleted');
 //   } catch (error) {
-//     console.error('Error clearing users:', error);
+//     console.error('Error clearing queue:', error);
 //   }
 // };
 // clearQueue();
-// clearUsers();
+
+// import { appointmentModel } from './models/appointment.model';
+// const clearAppointments = async () => {
+//   try {
+//     await appointmentModel.deleteMany({});
+//     console.log('All appointments have been deleted');
+//   } catch (error) {
+//     console.error('Error clearing appointments:', error);
+//   }
+// };
+// clearAppointments();
