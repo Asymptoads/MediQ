@@ -17,7 +17,7 @@ import Confirmation from './components/Confirmation/Confirmation';
 // import TestStatus from './components/TestStatus/TestStatus';
 
 
-// import Register from './pages/Register/Register';
+import Register from './pages/Register/Register';
 import MyAccount from './pages/MyAccount/MyAccount';
 
 
@@ -67,7 +67,7 @@ const App = () => {
                     <Route path='/confirmation' element={<Confirmation />} />
                     {/* <Route path='/test-status' element={<TestStatus />} /> */}
 
-                    {/* <Route path='/register' element={<Register />} />*/}
+                    <Route path='/register' element={<Register />} />
                     <Route path='/my-account' element={<MyAccount />} /> 
                 </Routes>
             {/* </CalendarContextProvider> */}
