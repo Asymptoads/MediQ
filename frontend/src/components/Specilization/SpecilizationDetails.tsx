@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate instead of useHistory
+import { useParams, useNavigate } from 'react-router-dom';
 import {
     Box,
     Text,
@@ -28,7 +28,7 @@ const specializationDetails = {
 
 const SpecializationDetails: React.FC = () => {
     const { name } = useParams<{ name: string }>();
-    const navigate = useNavigate(); // Use useNavigate to navigate
+    const navigate = useNavigate();
 
     if (name !== specializationDetails.name.toLowerCase()) {
         return (
@@ -42,19 +42,19 @@ const SpecializationDetails: React.FC = () => {
         );
     }
 
-    const handleBookAppointment = (doctorId: number) => {
-        // Navigate to the appointment booking page for the selected doctor
-        navigate(`/appointment/book/${doctorId}`);
+    const handleBookAppointment = () => {
+        // Navigate to the generalized appointment booking page
+        navigate(`/appointment/book/${specializationDetails.name.toLowerCase()}`);
     };
 
     return (
         <PageContainer>
             <Container maxW="1280px" py={6} bg='#f9fafb'>
                 <Box mb={6} textAlign="center" marginTop="50px" className="page-wrapper">
-                    <Text fontSize="2xl" fontWeight="bold" >
+                    <Text fontSize="2xl" fontWeight="bold">
                         {specializationDetails.name}
                     </Text>
-                    <Text fontSize="lg" >
+                    <Text fontSize="lg">
                         {specializationDetails.description}
                     </Text>
                 </Box>
@@ -65,7 +65,7 @@ const SpecializationDetails: React.FC = () => {
                         <Text fontSize="lg" fontWeight="bold">
                             Additional Information:
                         </Text>
-                        <Text >{specializationDetails.details}</Text>
+                        <Text>{specializationDetails.details}</Text>
                     </VStack>
                 </Box>
 
@@ -92,26 +92,27 @@ const SpecializationDetails: React.FC = () => {
                                     <Text fontSize="sm" mb={2}>
                                         {doctor.specialization}
                                     </Text>
-                                    <Text fontSize="sm"  mb={4}>
+                                    <Text fontSize="sm" mb={4}>
                                         Contact: {doctor.contact}
                                     </Text>
-                                    <Text fontSize="sm"  mb={4}>
+                                    <Text fontSize="sm" mb={4}>
                                         Location: {doctor.location}
                                     </Text>
                                 </Flex>
                             </GridItem>
-                            
                         ))}
                     </Grid>
+                </Box>
 
-
+                {/* Single Book Appointment Button */}
+                <Box textAlign="center" mt={6}>
                     <Button
-                                        colorScheme="green"
-                                        size="sm"
-                                        onClick={() => handleBookAppointment(doctor.id)} // Use navigate here
-                                    >
-                                        Book Appointment
-                                    </Button>
+                        colorScheme="green"
+                        size="lg"
+                        onClick={handleBookAppointment}
+                    >
+                        Book Appointment
+                    </Button>
                 </Box>
             </Container>
         </PageContainer>
