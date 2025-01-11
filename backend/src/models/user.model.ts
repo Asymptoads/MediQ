@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     salt: { type: String, select: false },
     sessionToken: { type: String, select: false },
   },
+  is_admin: {type: Boolean, default: false},
   is_doctor: {type: Boolean, default: false},
   specialization: {
     type: String, 
@@ -33,4 +34,31 @@ const userSchema = new mongoose.Schema({
 });
 
 const userModel = mongoose.model('user', userSchema);
-export {userModel, userSchema};
+
+const createAdminUser = async () => {
+  const adminExists = await userModel.findOne({ is_admin: true });
+  if (!adminExists) {
+    const admin = new userModel({
+      name: 'Admin',
+      email: 'admin@example.com',
+      password: 'itsasecretwink',
+      date_of_birth: new Date('1990-01-01'),
+      phone_number: '1234567890',
+      authentication: {
+        hashed_password: 'hashedPassword', // Replace with a hashed password
+        salt: 'randomSalt',
+        sessionToken: 'randomSessionToken',
+      },
+      is_admin: true,
+      is_doctor: false, // Not a doctor
+    });
+
+    await admin.save();
+    console.log('Admin user created successfully!');
+  } else {
+    console.log('Admin user already exists.');
+  }
+};
+createAdminUser();
+
+export { userModel, userSchema };

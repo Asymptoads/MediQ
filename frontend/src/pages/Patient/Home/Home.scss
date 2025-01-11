@@ -1,0 +1,101 @@
+@use '../../../variables.module';
+
+.home-wrapper {
+  background-color: #f3f4f6;
+  font-family: variables.$primary-font;
+
+  .greeting-container {
+    display: flex;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin: 0 auto;
+    justify-content: space-between;
+  }
+
+  .greeting-text {
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  .search-container {
+    margin-top: 14px;
+    // background-color: #ffffff; // Pure white color
+    width: 100%;
+    padding: 20px; // Padding in pixels
+    display: flex;
+    align-items: center;
+    justify-content: space-between; // Space between the text and input
+    border-radius: 8px; // Rounded corners
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Subtle shadow
+
+    .search-text {
+      font-size: 1.25rem; // Font size for the text
+      color: #000000; // Black color for the text
+      font-weight: bold;
+    }
+
+    .search-input {
+      padding: 10px; // Padding for the input field
+      border: 1px solid #d9d9d9; // Light grey border color
+      border-radius: 8px; // Rounded corners
+      font-size: 1rem; // Font size for the input
+      width: 100%; // Adjust the input width to fit the container
+      transition: border-color 0.3s ease; // Smooth border transition on focus
+
+      &:focus {
+        outline: none; // Remove the default outline on focus
+        border-color: #4f83cc; // Change border color to blue on focus
+      }
+
+      &::placeholder {
+        color: #d9d9d9; // Placeholder color
+      }
+
+      &:hover {
+        border-color: #00000033; // Slightly darker border color on hover
+      }
+    }
+  }
+
+  .assistant-grid-container {
+    width: 100%;
+    max-width: 1280px;
+    gap: 16px;
+    margin-top: 14px;
+  
+    .chakra-grid__item {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 16px;
+      transition: all 0.3s ease;
+  
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+  
+      .icon-wrapper {
+        background: #f8f9fa;
+        border-radius: 50%;
+        padding: 12px;
+        margin-right: 16px;
+      }
+  
+      .main-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 8px;
+      }
+  
+      .description {
+        font-size: 14px;
+        color: #4a5568;
+      }
+    }
+  }
+  
+}
