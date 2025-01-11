@@ -7,6 +7,7 @@ import {
     Link as ChakraLink,
     Button,
     Image,
+    VStack,
 } from "@chakra-ui/react";
 
 import { useBackendAPIContext } from "../../contexts/BackendAPIContext/BackendAPIContext";
@@ -22,24 +23,22 @@ const Register = () => {
     const navigate = useNavigate();
     const { client } = useBackendAPIContext();
 
-    const [date_of_birth, setDateOfBirth] = useState("");
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [name, setName] = useState("");
-    const [phone_number, setPhone] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const handleRegister = async () => {
         setIsLoading(true);
         const userDetails = {
             name,
-            date_of_birth,
+            username,
             email,
             password,
-            phone_number,
         };
         client
-            .post("http://localhost:4200/auth/register", userDetails)
+            .post("/auth/register", userDetails)
             .then((res) => {
                 console.log(res.data);
                 setIsLoading(false);
@@ -181,7 +180,6 @@ const Register = () => {
                         </Text>
                         Sign in with Google
                     </Button>
-
                     <ChakraLink
                         as={ReactRouterLink}
                         to={"/login"}
@@ -198,7 +196,6 @@ const Register = () => {
                         as={ReactRouterLink}
                         to={"/"}
                         className="back-home-link"
-
                     >
                         <Icon name="bx-arrow-back" className="arrow" />
                         Back to Home
