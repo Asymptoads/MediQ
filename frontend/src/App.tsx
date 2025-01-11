@@ -2,6 +2,11 @@
 import { Route, Routes } from 'react-router-dom';
 import { Box } from '@chakra-ui/react';
 
+//AdminImport
+import Admin from './pages/Admin/AdminHome/adminHome';
+import DoctorRegistration from './pages/Doctor/DoctorRegistration/DoctorRegistration';
+import SuccessComponent from './components/Shared/Success/Success';
+
 // import Logo from './components/HeaderRenderer/HeaderRenderer';
 import Home from './pages/Patient/Home/Home';
 import Login from './pages/Shared/Login/Login';
@@ -71,6 +76,12 @@ const App = () => {
                     <Route path='/register' element={<Register />} />
                     <Route path='/my-account' element={<MyAccount />} /> 
                     <Route path='/date-picker' element={<AppointmentBooking />} />
+
+
+                    {/* Admin Route */}
+                    <Route path='/admin' element={<Admin />} />
+                    <Route path='/admin/doctor-registration' element={<DoctorRegistration />} />
+                    <Route path='/success' element={<SuccessComponent message='Doctor Registered Successfully' />} />
                 </Routes>
             {/* </CalendarContextProvider> */}
         </Box>
