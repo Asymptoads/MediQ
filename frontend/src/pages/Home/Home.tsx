@@ -1,14 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Text, Container, Grid, GridItem, Flex } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
+import { useBackendAPIContext } from "../../contexts/BackendAPIContext/BackendAPIContext";
 import PageContainer from "../../components/PageContainer/PageContainer";
 import "./Home.scss";
 import Icon from "../../components/Icon/Icon";
 
 const Home: React.FC = () => {
+    const { client } = useBackendAPIContext();
+    const [currentUser, setCurrentUser] = useState<any>(null);
+
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            try {
+                const res = await client.get("http://localhost:4200/api/user");
+                setCurrentUser(res.data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        fetchCurrentUser();
+    }, [client]);
     return (
         <PageContainer>
-            <Box minH="100vh" pt="80px" className="home-wrapper" mb={20}>
+            <Box minH="100vh" pt="80px" className="home-wrapper">
                 <Container maxW="1280px" px={6}>
                     <Box className="greeting-container" bg="white" width="100%">
                         <Text
@@ -17,7 +33,9 @@ const Home: React.FC = () => {
                             color="gray.700"
                             className="greeting-text"
                         >
-                            Hello! Saurav Dhoju
+                            {currentUser
+                                ? `Hello! ${currentUser.name}`
+                                : "Loading..."}
                         </Text>
                         <Icon name="bxs-ghost" />
                     </Box>
