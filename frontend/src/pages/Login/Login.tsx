@@ -1,21 +1,3 @@
-import { Link as ReactRouterLink } from "react-router-dom";
-import React, { useState } from "react";
-import {
-    Box,
-    Heading,
-    Text,
-    Link as ChakraLink,
-    Button,
-    Image,
-} from "@chakra-ui/react";
-
-import { useBackendAPIContext } from "../../contexts/BackendAPIContext/BackendAPIContext";
-import { useUserContext } from "../../contexts/UserContext/UserContext";
-
-import Icon from "../../components/Icon/Icon";
-import CustomTextInput from "../../components/CustomTextInput/CustomTextInput";
-import FormBorder from "../../components/FormBorder/FormBorder";
-import "./Login.scss";
 import React from 'react';
 import { Box, Text, Input, Button, Link, VStack, HStack, Image, Icon } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
@@ -25,33 +7,6 @@ import 'boxicons';
 // type IconName = string;
 
 const LoginPage: React.FC = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-
-    const handleLogin = async () => {
-        setIsLoading(true);
-        const userDetails = {
-            email,
-            password,
-        };
-        client
-            .post("http://localhost:4200/auth/login", userDetails)
-            .then((res) => {
-                console.log(res.data);
-                fetchUser();
-                setIsLoading(false);
-            })
-            .catch((err) => {
-                console.error(err);
-                setIsLoading(false);
-            });
-    };
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        handleLogin();
-    };
   return (
     <Box className="login-page" padding="0 25px" minHeight="100vh" position="relative">
       <VStack className="login-stuff-container" marginTop="52px" spacing={4} align="stretch">
@@ -90,7 +45,6 @@ const LoginPage: React.FC = () => {
         <Text className="or-continue-with" textAlign="center" fontSize="18px" fontWeight="200" color="variables.$pure-black-80">
           Or Continue With
         </Text>
-
 
         {/* Google Sign In Button */}
         <Button
