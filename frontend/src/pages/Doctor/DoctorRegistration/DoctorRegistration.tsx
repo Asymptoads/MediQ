@@ -7,15 +7,12 @@ import {
     VStack,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import { useBackendAPIContext } from "../../../contexts/BackendAPIContext/BackendAPIContext";
 import CustomTextInput from "../../../components/Shared/CustomTextInput/CustomTextInput";
 import PageContainer from "../../../components/Shared/PageContainer/PageContainer";
-import FormBorder from "../../../components/Patient/FormBorder/FormBorder";
 import "./DoctorRegistration.scss";
 
 const DoctorRegistration = () => {
     const navigate = useNavigate();
-    const { client } = useBackendAPIContext();
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
