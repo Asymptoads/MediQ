@@ -16,11 +16,15 @@ import Icon from "../../components/Icon/Icon";
 import CustomTextInput from "../../components/CustomTextInput/CustomTextInput";
 import FormBorder from "../../components/FormBorder/FormBorder";
 import "./Login.scss";
+import React from 'react';
+import { Box, Text, Input, Button, Link, VStack, HStack, Image, Icon } from '@chakra-ui/react';
+import { ArrowBackIcon } from '@chakra-ui/icons';
+import './Login.scss';
+import 'boxicons';
 
-const Login = () => {
-    const { client } = useBackendAPIContext();
-    const { fetchUser } = useUserContext();
+// type IconName = string;
 
+const LoginPage: React.FC = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -48,87 +52,84 @@ const Login = () => {
         e.preventDefault();
         handleLogin();
     };
-    return (
-        <Box className="login-page">
-            <Box className="login-stuff-container">
-                <Heading className="greeting">Welcome Back</Heading>
-                <Text className="login-info-text">Login to your account</Text>
-                <form className="login-form" onSubmit={handleSubmit}>
-                    <CustomTextInput
-                        label="Email"
-                        type="email"
-                        value={email}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setEmail(e.target.value);
-                        }}
-                        placeholder="example@email.com"
-                        className="custom-input custom-input-email"
-                        required
-                    />
-                    <CustomTextInput
-                        label="Password"
-                        type="password"
-                        value={password}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setPassword(e.target.value);
-                        }}
-                        className="custom-input custom-input-password"
-                        placeholder="********"
-                        required
-                    />
-                    <ChakraLink
-                        as={ReactRouterLink}
-                        to="/"
-                        className="forgot-password-link"
-                    >
-                        Forgot Password?
-                    </ChakraLink>
-                    <Button
-                        type="submit"
-                        className="form-submit-btn"
-                        background={"#000000"}
-                        color={"#d9d9d9"}
-                        borderRadius={"8px"}
-                        marginTop={"15px"}
-                        height={"50px"}
-                        fontSize={"22px"}
-                        fontWeight={600}
-                        isLoading={isLoading}
-                    >
-                        Sign In
-                    </Button>
-                </form>
-                <FormBorder />
-                <Text className="or-continue-with">Or continue with</Text>
-                <Button className="google-sign-in-btn">
-                    <Text as={"span"} className="google-logo-container">
-                        <Image src="/googlelogo.png" className="google-logo" />
-                    </Text>
-                    Sign in with Google
-                </Button>
-                <ChakraLink
-                    as={ReactRouterLink}
-                    to={"/register"}
-                    className="register-page-link"
-                    textAlign={"center"}
-                    marginTop={"28px"}
-                >
-                    Don't have an account?{" "}
-                    <Text as={"span"} fontWeight={700}>
-                        Sign Up!
-                    </Text>
-                </ChakraLink>
-                <ChakraLink
-                    as={ReactRouterLink}
-                    to={"/"}
-                    className="back-home-link"
-                >
-                    <Icon name="bx-arrow-back" className="arrow" />
-                    Back to Home
-                </ChakraLink>
-            </Box>
-        </Box>
-    );
+  return (
+    <Box className="login-page" padding="0 25px" minHeight="100vh" position="relative">
+      <VStack className="login-stuff-container" marginTop="52px" spacing={4} align="stretch">
+        {/* Logo */}
+        <Text fontSize="32px" fontWeight="bold" fontFamily="variables.$primary-font" textAlign="center">
+          <Text as="span" color="green.400">Medi</Text>
+          <Text as="span" color="blue.6  00">Q</Text>
+        </Text>
+
+        {/* Login Form */}
+        <VStack className="login-form" spacing={4} align="stretch">
+          <Input placeholder="Username" className="custom-input" marginTop="25px" />
+          <Input placeholder="Password" type="password" className="custom-input" />
+          <Link
+            href="#"
+            className="forgot-password-link"
+            textAlign="right"
+            fontSize="14px"
+            fontWeight="600"
+            color="variables.$pure-black-60"
+            marginTop="15px"
+            alignSelf="flex-end"
+          >
+            Forgot Password?
+          </Link>
+          <Button
+            className="form-submit-btn"
+            fontFamily="variables.$primary-font"
+            _hover={{ backgroundColor: "variables.$pure-black-80" }}
+          >
+            Log In
+          </Button>
+        </VStack>
+
+        {/* Or Continue With */}
+        <Text className="or-continue-with" textAlign="center" fontSize="18px" fontWeight="200" color="variables.$pure-black-80">
+          Or Continue With
+        </Text>
+
+
+        {/* Google Sign In Button */}
+        <Button
+          className="google-sign-in-btn"
+          height="50px"
+          borderRadius="8px"
+          backgroundColor="variables.$pure-white"
+          fontFamily="variables.$primary-font"
+          fontSize="18px"
+          fontWeight="600"
+          color="variables.$pure-black-80"
+        >
+          <HStack spacing={3} align="center">
+            <Text>Sign in with Google</Text>
+          </HStack>
+        </Button>
+
+        {/* Register Page Link */}
+        <Text className="register-page-link" fontFamily="variables.$primary-font" fontWeight="400" fontSize="18px">
+          Don’t have an account? <Link href="/register">Register</Link>
+        </Text>
+
+        {/* Back Home Link */}
+        <Link
+          href="/"
+          className="back-home-link"
+          display="inline-flex"
+          alignSelf="flex-end"
+          fontSize="15px"
+          fontWeight="700"
+          fontFamily="variables.$primary-font"
+          textDecoration="none"
+          marginTop="25px"
+        >
+          <Icon as={ArrowBackIcon} marginRight="3px" boxSize={5} /> Back to Home
+        </Link>
+      </VStack>
+    </Box>
+  );
 };
 
-export default Login;
+export default LoginPage;
