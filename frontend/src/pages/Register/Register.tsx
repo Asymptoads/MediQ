@@ -13,7 +13,7 @@ import { useBackendAPIContext } from '../../contexts/BackendAPIContext/BackendAP
 
 import Icon from '../../components/Icon/Icon';
 import CustomTextInput from '../../components/CustomTextInput/CustomTextInput';
-import NavBar from '../../components/NavBar/NavBar';
+// import NavBar from '../../components/NavBar/NavBar';
 import FormBorder from '../../components/FormBorder/FormBorder';
 
 import './Register.scss';
@@ -56,7 +56,7 @@ const Register = () => {
     };
     return (
         <Box className='register-page'>
-            <NavBar />
+            {/* <NavBar /> */}
             <Box className='register-stuff-container'>
                 <Heading className='greeting'>Create Account</Heading>
                 <Text className='register-info-text'>
