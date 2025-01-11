@@ -1,28 +1,28 @@
-import { Link as ReactRouterLink } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
     Box,
-    Heading,
     Text,
-    Link as ChakraLink,
     Button,
-    Image,
-} from '@chakra-ui/react';
+    Link,
+    VStack,
+    Icon,
+    Spinner,
+} from "@chakra-ui/react";
+import "./Login.scss";
+import "boxicons";
+import { useBackendAPIContext } from "../../contexts/BackendAPIContext/BackendAPIContext";
+import { useUserContext } from "../../contexts/UserContext/UserContext";
+import { useNavigate } from "react-router-dom";
+import PageContainer from "../../components/PageContainer/PageContainer";
+import CustomTextInput from "../../components/CustomTextInput/CustomTextInput";
 
-import { useBackendAPIContext } from '../../contexts/BackendAPIContext/BackendAPIContext';
-import { useUserContext } from '../../contexts/UserContext/UserContext';
-
-import Icon from '../../components/Icon/Icon';
-import CustomTextInput from '../../components/CustomTextInput/CustomTextInput';
-import FormBorder from '../../components/FormBorder/FormBorder';
-import './Login.scss';
-
-const Login = () => {
+const Login: React.FC = () => {
     const { client } = useBackendAPIContext();
     const { fetchUser } = useUserContext();
+    const navigate = useNavigate();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async () => {
@@ -31,103 +31,140 @@ const Login = () => {
             email,
             password,
         };
-        client
-            .post('/auth/login', userDetails)
-            .then((res) => {
-                console.log(res.data);
-                fetchUser();
-                setIsLoading(false);
-            })
-            .catch((err) => {
-                console.error(err);
-                setIsLoading(false);
-            });
+        try {
+            const res = await client.post(
+                "http://localhost:4200/auth/login",
+                userDetails
+            );
+            console.log(res.data);
+            fetchUser();
+            navigate("/home");
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         handleLogin();
     };
+
     return (
-        <Box className='login-page'>
-            <Box className='login-stuff-container'>
-                <Heading className='greeting'>Welcome Back</Heading>
-                <Text className='login-info-text'>Login to your account</Text>
-                <form className='login-form' onSubmit={handleSubmit}>
-                    <CustomTextInput
-                        label='Email'
-                        type='email'
-                        value={email}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setEmail(e.target.value);
-                        }}
-                        placeholder='example@email.com'
-                        className='custom-input custom-input-email'
-                        required
-                    />
-                    <CustomTextInput
-                        label='Password'
-                        type='password'
-                        value={password}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                            setPassword(e.target.value);
-                        }}
-                        className='custom-input custom-input-password'
-                        placeholder='********'
-                        required
-                    />
-                    <ChakraLink
-                        as={ReactRouterLink}
-                        to='/'
-                        className='forgot-password-link'
-                    >
-                        Forgot Password?
-                    </ChakraLink>
-                    <Button
-                        type='submit'
-                        className='form-submit-btn'
-                        background={'#000000'}
-                        color={'#d9d9d9'}
-                        borderRadius={'8px'}
-                        marginTop={'15px'}
-                        height={'50px'}
-                        fontSize={'22px'}
-                        fontWeight={600}
-                        isLoading={isLoading}
-                    >
-                        Sign In
-                    </Button>
-                </form>
-                <FormBorder />
-                <Text className='or-continue-with'>Or continue with</Text>
-                <Button className='google-sign-in-btn'>
-                    <Text as={'span'} className='google-logo-container'>
-                        <Image src='/googlelogo.png' className='google-logo' />
-                    </Text>
-                    Sign in with Google
-                </Button>
-                <ChakraLink
-                    as={ReactRouterLink}
-                    to={'/register'}
-                    className='register-page-link'
-                    textAlign={'center'}
-                    marginTop={'28px'}
+        <PageContainer>
+            <Box
+                className="login-page"
+                padding="0 25px"
+                minHeight="100vh"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+            >
+                <VStack
+                    className="login-stuff-container"
+                    marginTop="52px"
+                    spacing={4}
+                    align="stretch"
+                    width="100%"
+                    maxW="650px"
+                    boxShadow="0 4px 12px rgba(0, 0, 0, 0.1)" // Updated shadow
+                    borderRadius="8px" // Optional: Add border radius for a smoother look
+                    p={6} // Optional: Add padding inside the container
+                    bg="white" // Optional: Ensure background is white
                 >
-                    Don't have an account?{' '}
-                    <Text as={'span'} fontWeight={700}>
-                        Sign Up!
+                    {/* Logo */}
+                    <Text
+                        fontSize="32px"
+                        fontWeight="bold"
+                        fontFamily="variables.$primary-font"
+                        textAlign="center"
+                    >
+                        <Text as="span" color="green.400">
+                            Medi
+                        </Text>
+                        <Text as="span" color="blue.600">
+                            Q
+                        </Text>
                     </Text>
-                </ChakraLink>
-                <ChakraLink
-                    as={ReactRouterLink}
-                    to={'/'}
-                    className='back-home-link'
-                >
-                    <Icon name='bx-arrow-back' className='arrow' />
-                    Back to Home
-                </ChakraLink>
+
+                    {/* Login Form */}
+                    <VStack className="login-form" spacing={4} align="stretch">
+                        <form onSubmit={handleSubmit}>
+                            <CustomTextInput
+                                label="Email"
+                                type="email"
+                                value={email}
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) => setEmail(e.target.value)}
+                                placeholder="example@email.com"
+                                className="custom-input custom-input-email"
+                                required
+                            />
+                            <CustomTextInput
+                                label="Password"
+                                type="password"
+                                value={password}
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) => setPassword(e.target.value)}
+                                placeholder="********"
+                                className="custom-input custom-input-password"
+                                required
+                            />
+                            <Link
+                                href="#"
+                                className="forgot-password-link"
+                                textAlign="left"
+                                fontSize="14px"
+                                fontWeight="600"
+                                color="variables.$pure-black-60"
+                                marginTop="15px"
+                                alignSelf="flex-end"
+                            >
+                                Forgot Password?
+                            </Link>
+                            <Button
+                                type="submit"
+                                colorScheme="blue"
+                                isLoading={isLoading}
+                                width="100%"
+                                mt={4}
+                            >
+                                {isLoading ? <Spinner size="sm" /> : "Login"}
+                            </Button>
+                        </form>
+                    </VStack>
+
+                    {/* Register Page Link */}
+                    <Text
+                        className="register-page-link"
+                        fontFamily="variables.$primary-font"
+                        fontWeight="400"
+                        fontSize="18px"
+                    >
+                        Don’t have an account?{" "}
+                        <Link href="/register">Register</Link>
+                    </Text>
+
+                    {/* Back Home Link */}
+                    <Link
+                        href="/"
+                        className="back-home-link"
+                        display="inline-flex"
+                        alignSelf="flex-end"
+                        fontSize="15px"
+                        fontWeight="700"
+                        fontFamily="variables.$primary-font"
+                        textDecoration="none"
+                        marginTop="25px"
+                    >
+                        <Icon name="bx-left-arrow-alt" /> Back to Home
+                    </Link>
+                </VStack>
             </Box>
-        </Box>
+        </PageContainer>
     );
 };
 
