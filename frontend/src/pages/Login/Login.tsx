@@ -1,5 +1,5 @@
-import { Link as ReactRouterLink } from 'react-router-dom';
-import React, { useState } from 'react';
+import { Link as ReactRouterLink } from "react-router-dom";
+import React, { useState } from "react";
 import {
     Box,
     Heading,
@@ -7,22 +7,22 @@ import {
     Link as ChakraLink,
     Button,
     Image,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 
-import { useBackendAPIContext } from '../../contexts/BackendAPIContext/BackendAPIContext';
-import { useUserContext } from '../../contexts/UserContext/UserContext';
+import { useBackendAPIContext } from "../../contexts/BackendAPIContext/BackendAPIContext";
+import { useUserContext } from "../../contexts/UserContext/UserContext";
 
-import Icon from '../../components/Icon/Icon';
-import CustomTextInput from '../../components/CustomTextInput/CustomTextInput';
-import FormBorder from '../../components/FormBorder/FormBorder';
-import './Login.scss';
+import Icon from "../../components/Icon/Icon";
+import CustomTextInput from "../../components/CustomTextInput/CustomTextInput";
+import FormBorder from "../../components/FormBorder/FormBorder";
+import "./Login.scss";
 
 const Login = () => {
     const { client } = useBackendAPIContext();
     const { fetchUser } = useUserContext();
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async () => {
@@ -32,7 +32,7 @@ const Login = () => {
             password,
         };
         client
-            .post('/auth/login', userDetails)
+            .post("http://localhost:4200/auth/login", userDetails)
             .then((res) => {
                 console.log(res.data);
                 fetchUser();
@@ -49,49 +49,49 @@ const Login = () => {
         handleLogin();
     };
     return (
-        <Box className='login-page'>
-            <Box className='login-stuff-container'>
-                <Heading className='greeting'>Welcome Back</Heading>
-                <Text className='login-info-text'>Login to your account</Text>
-                <form className='login-form' onSubmit={handleSubmit}>
+        <Box className="login-page">
+            <Box className="login-stuff-container">
+                <Heading className="greeting">Welcome Back</Heading>
+                <Text className="login-info-text">Login to your account</Text>
+                <form className="login-form" onSubmit={handleSubmit}>
                     <CustomTextInput
-                        label='Email'
-                        type='email'
+                        label="Email"
+                        type="email"
                         value={email}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setEmail(e.target.value);
                         }}
-                        placeholder='example@email.com'
-                        className='custom-input custom-input-email'
+                        placeholder="example@email.com"
+                        className="custom-input custom-input-email"
                         required
                     />
                     <CustomTextInput
-                        label='Password'
-                        type='password'
+                        label="Password"
+                        type="password"
                         value={password}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             setPassword(e.target.value);
                         }}
-                        className='custom-input custom-input-password'
-                        placeholder='********'
+                        className="custom-input custom-input-password"
+                        placeholder="********"
                         required
                     />
                     <ChakraLink
                         as={ReactRouterLink}
-                        to='/'
-                        className='forgot-password-link'
+                        to="/"
+                        className="forgot-password-link"
                     >
                         Forgot Password?
                     </ChakraLink>
                     <Button
-                        type='submit'
-                        className='form-submit-btn'
-                        background={'#000000'}
-                        color={'#d9d9d9'}
-                        borderRadius={'8px'}
-                        marginTop={'15px'}
-                        height={'50px'}
-                        fontSize={'22px'}
+                        type="submit"
+                        className="form-submit-btn"
+                        background={"#000000"}
+                        color={"#d9d9d9"}
+                        borderRadius={"8px"}
+                        marginTop={"15px"}
+                        height={"50px"}
+                        fontSize={"22px"}
                         fontWeight={600}
                         isLoading={isLoading}
                     >
@@ -99,31 +99,31 @@ const Login = () => {
                     </Button>
                 </form>
                 <FormBorder />
-                <Text className='or-continue-with'>Or continue with</Text>
-                <Button className='google-sign-in-btn'>
-                    <Text as={'span'} className='google-logo-container'>
-                        <Image src='/googlelogo.png' className='google-logo' />
+                <Text className="or-continue-with">Or continue with</Text>
+                <Button className="google-sign-in-btn">
+                    <Text as={"span"} className="google-logo-container">
+                        <Image src="/googlelogo.png" className="google-logo" />
                     </Text>
                     Sign in with Google
                 </Button>
                 <ChakraLink
                     as={ReactRouterLink}
-                    to={'/register'}
-                    className='register-page-link'
-                    textAlign={'center'}
-                    marginTop={'28px'}
+                    to={"/register"}
+                    className="register-page-link"
+                    textAlign={"center"}
+                    marginTop={"28px"}
                 >
-                    Don't have an account?{' '}
-                    <Text as={'span'} fontWeight={700}>
+                    Don't have an account?{" "}
+                    <Text as={"span"} fontWeight={700}>
                         Sign Up!
                     </Text>
                 </ChakraLink>
                 <ChakraLink
                     as={ReactRouterLink}
-                    to={'/'}
-                    className='back-home-link'
+                    to={"/"}
+                    className="back-home-link"
                 >
-                    <Icon name='bx-arrow-back' className='arrow' />
+                    <Icon name="bx-arrow-back" className="arrow" />
                     Back to Home
                 </ChakraLink>
             </Box>
