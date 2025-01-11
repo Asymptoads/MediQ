@@ -5,17 +5,17 @@ import {
     Input,
     FormLabel,
     Text,
-} from '@chakra-ui/react';
-import Icon from '../Icon/Icon';
+} from "@chakra-ui/react";
+import Icon from "../Icon/Icon";
 
-import './CustomTextInput.scss';
+import "./CustomTextInput.scss";
 
 type CustomTextInputProps = {
     label: string;
     className?: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     value: string;
-    type: 'email' | 'text' | 'password' | 'name';
+    type: "email" | "date" | "password" | "name" | "phone_number";
     required?: boolean;
     placeholder?: string;
 };
@@ -30,14 +30,16 @@ const CustomTextInput = ({
     placeholder,
 }: CustomTextInputProps) => {
     const getInputIcon = () => {
-        if (type === 'email') {
-            return <Icon name='bxl-gmail' />;
-        } else if (type === 'password') {
-            return <Icon name='bxs-lock-open-alt' />;
-        } else if (type === 'text') {
-            return <Icon name='bxs-user' />;
-        } else if (type === 'name') {
-            return <Icon name='bxs-user-rectangle' />;
+        if (type === "email") {
+            return <Icon name="bxl-gmail" />;
+        } else if (type === "password") {
+            return <Icon name="bxs-lock-open-alt" />;
+        } else if (type === "date") {
+            return <Icon name="bxs-calendar" />;
+        } else if (type === "name") {
+            return <Icon name="bxs-user-rectangle" />;
+        } else if (type === "phone_number") {
+            return <Icon name="bxs-phone" />;
         } else {
             return null;
         }
@@ -45,33 +47,33 @@ const CustomTextInput = ({
 
     return (
         <FormControl
-            className={`input-container ${className ? className : ''}`}
+            className={`input-container ${className ? className : ""}`}
         >
-            <FormLabel className='input-label'>
+            <FormLabel className="input-label">
                 {label}
                 {required && (
-                    <Text as={'span'} className={'required-indicator'}>
+                    <Text as={"span"} className={"required-indicator"}>
                         *
                     </Text>
                 )}
             </FormLabel>
             <InputGroup>
                 <InputLeftElement
-                    pointerEvents={'none'}
-                    height={'100%'}
+                    pointerEvents={"none"}
+                    height={"100%"}
                     opacity={0.2}
-                    marginLeft={'10px'}
+                    marginLeft={"10px"}
                     // backgroundColor={'black'}
                 >
                     {getInputIcon()}
                 </InputLeftElement>
                 <Input
-                    className='input-area'
+                    className="input-area"
                     onChange={onChange}
                     value={value}
                     type={type}
                     placeholder={placeholder}
-                    paddingLeft={'60px'}
+                    paddingLeft={"60px"}
                     // backgroundColor={'yellow'}
                 />
             </InputGroup>
