@@ -9,21 +9,50 @@ import {
     VStack,
     Flex,
     Grid,
-    GridItem
+    GridItem,
 } from '@chakra-ui/react';
 import PageContainer from '../PageContainer/PageContainer';
 import './SpecilizationDetails.scss';
 
 const doctors = [
-    { id: 1, name: 'Dr. James Boyaju', specialization: 'Ophthalmology', contact: '123-456-7890', location: 'Ittachhen, Bhaktapur' },
-    { id: 2, name: 'Dr. Bibek Boyaju', specialization: 'Ophthalmology', contact: '987-654-3210', location: 'Ittachhen, Bhaktapur' },
-    { id: 3, name: 'Dr. Ali Vefa', specialization: 'Ophthalmology', contact: '456-789-1234', location: 'New Road, Kathmandu' },
+    {
+        id: 1,
+        name: 'Dr. James Boyaju',
+        specialization: 'Ophthalmology',
+        contact: '123-456-7890',
+        location: 'Ittachhen, Bhaktapur',
+        schedule: [
+            { day: 'Monday', time: '9:00 AM - 12:00 PM' },
+            { day: 'Wednesday', time: '2:00 PM - 5:00 PM' },
+        ],
+    },
+    {
+        id: 2,
+        name: 'Dr. Bibek Boyaju',
+        specialization: 'Ophthalmology',
+        contact: '987-654-3210',
+        location: 'Ittachhen, Bhaktapur',
+        schedule: [
+            { day: 'Tuesday', time: '10:00 AM - 1:00 PM' },
+            { day: 'Thursday', time: '3:00 PM - 6:00 PM' },
+        ],
+    },
+    {
+        id: 3,
+        name: 'Dr. Ali Vefa',
+        specialization: 'Ophthalmology',
+        contact: '456-789-1234',
+        location: 'New Road, Kathmandu',
+        schedule: [
+            { day: 'Friday', time: '9:00 AM - 12:00 PM' },
+        ],
+    },
 ];
 
 const specializationDetails = {
     name: 'Ophthalmology',
     description: 'Eye care and vision specialists',
-    details: 'Ophthalmologists deal with vision correction, eye surgery, and eye diseases. If you are experiencing any vision issues or need an eye check-up, consult an ophthalmologist for proper diagnosis and treatment.'
+    details: 'Ophthalmologists deal with vision correction, eye surgery, and eye diseases. If you are experiencing any vision issues or need an eye check-up, consult an ophthalmologist for proper diagnosis and treatment.',
 };
 
 const SpecializationDetails: React.FC = () => {
@@ -33,8 +62,8 @@ const SpecializationDetails: React.FC = () => {
     if (name !== specializationDetails.name.toLowerCase()) {
         return (
             <PageContainer>
-                <Container maxW="container.md" height="100vh" display="flex" alignItems="center" justifyContent="center" bg='#f9fafb'>
-                    <Text className="page-wrapper" fontSize="xl" >
+                <Container maxW="container.md" height="100vh" display="flex" alignItems="center" justifyContent="center" bg="#f9fafb">
+                    <Text className="page-wrapper" fontSize="xl">
                         Specialization not found
                     </Text>
                 </Container>
@@ -49,7 +78,7 @@ const SpecializationDetails: React.FC = () => {
 
     return (
         <PageContainer>
-            <Container maxW="1280px" py={6} bg='#f9fafb'>
+            <Container maxW="1280px" py={6} bg="#f9fafb">
                 <Box mb={6} textAlign="center" marginTop="50px" className="page-wrapper">
                     <Text fontSize="2xl" fontWeight="bold">
                         {specializationDetails.name}
@@ -98,6 +127,16 @@ const SpecializationDetails: React.FC = () => {
                                     <Text fontSize="sm" mb={4}>
                                         Location: {doctor.location}
                                     </Text>
+                                    <Box>
+                                        <Text fontSize="sm" fontWeight="bold" mb={2}>
+                                            Schedule:
+                                        </Text>
+                                        {doctor.schedule.map((slot, index) => (
+                                            <Text fontSize="sm" key={index}>
+                                                {slot.day}: {slot.time}
+                                            </Text>
+                                        ))}
+                                    </Box>
                                 </Flex>
                             </GridItem>
                         ))}
@@ -106,11 +145,7 @@ const SpecializationDetails: React.FC = () => {
 
                 {/* Single Book Appointment Button */}
                 <Box textAlign="center" mt={6}>
-                    <Button
-                        colorScheme="green"
-                        size="lg"
-                        onClick={handleBookAppointment}
-                    >
+                    <Button colorScheme="green" size="lg" onClick={handleBookAppointment}>
                         Book Appointment
                     </Button>
                 </Box>
