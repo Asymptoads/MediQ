@@ -1,89 +1,171 @@
-import React from 'react';
-import { Box, Text, Input, Button, Link, VStack, HStack, Image, Icon } from '@chakra-ui/react';
-// import { ArrowBackIcon } from '@chakra-ui/icons';
-import './Login.scss';
-import 'boxicons';
+import React, { useState } from "react";
+import {
+    Box,
+    Text,
+    Button,
+    Link,
+    VStack,
+    Icon,
+    Spinner,
+} from "@chakra-ui/react";
+import "./Login.scss";
+import "boxicons";
+import { useBackendAPIContext } from "../../contexts/BackendAPIContext/BackendAPIContext";
+import { useUserContext } from "../../contexts/UserContext/UserContext";
+import { useNavigate } from "react-router-dom";
+import PageContainer from "../../components/PageContainer/PageContainer";
+import CustomTextInput from "../../components/CustomTextInput/CustomTextInput";
 
-// type IconName = string;
+const Login: React.FC = () => {
+    const { client } = useBackendAPIContext();
+    const { fetchUser } = useUserContext();
+    const navigate = useNavigate();
 
-const LoginPage: React.FC = () => {
-  return (
-    <Box className="login-page" padding="0 25px" minHeight="100vh" position="relative">
-      <VStack className="login-stuff-container" marginTop="52px" spacing={4} align="stretch">
-        {/* Logo */}
-        <Text fontSize="32px" fontWeight="bold" fontFamily="variables.$primary-font" textAlign="center">
-          <Text as="span" color="green.400">Medi</Text>
-          <Text as="span" color="blue.6  00">Q</Text>
-        </Text>
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
-        {/* Login Form */}
-        <VStack className="login-form" spacing={4} align="stretch">
-          <Input placeholder="Username" className="custom-input" marginTop="25px" />
-          <Input placeholder="Password" type="password" className="custom-input" />
-          <Link
-            href="#"
-            className="forgot-password-link"
-            textAlign="right"
-            fontSize="14px"
-            fontWeight="600"
-            color="variables.$pure-black-60"
-            marginTop="15px"
-            alignSelf="flex-end"
-          >
-            Forgot Password?
-          </Link>
-          <Button
-            className="form-submit-btn"
-            fontFamily="variables.$primary-font"
-            _hover={{ backgroundColor: "variables.$pure-black-80" }}
-          >
-            Log In
-          </Button>
-        </VStack>
+    const handleLogin = async () => {
+        setIsLoading(true);
+        const userDetails = {
+            email,
+            password,
+        };
+        try {
+            const res = await client.post(
+                "http://localhost:4200/auth/login",
+                userDetails
+            );
+            console.log(res.data);
+            fetchUser();
+            navigate("/home");
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-        {/* Or Continue With */}
-        <Text className="or-continue-with" textAlign="center" fontSize="18px" fontWeight="200" color="variables.$pure-black-80">
-          Or Continue With
-        </Text>
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        handleLogin();
+    };
 
-        {/* Google Sign In Button */}
-        <Button
-          className="google-sign-in-btn"
-          height="50px"
-          borderRadius="8px"
-          backgroundColor="variables.$pure-white"
-          fontFamily="variables.$primary-font"
-          fontSize="18px"
-          fontWeight="600"
-          color="variables.$pure-black-80"
-        >
-          <HStack spacing={3} align="center">
-            <Text>Sign in with Google</Text>
-          </HStack>
-        </Button>
+    return (
+        <PageContainer>
+            <Box
+                className="login-page"
+                padding="0 25px"
+                minHeight="100vh"
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+            >
+                <VStack
+                    className="login-stuff-container"
+                    marginTop="52px"
+                    spacing={4}
+                    align="stretch"
+                    width="100%"
+                    maxW="650px"
+                    boxShadow="0 4px 12px rgba(0, 0, 0, 0.1)" // Updated shadow
+                    borderRadius="8px" // Optional: Add border radius for a smoother look
+                    p={6} // Optional: Add padding inside the container
+                    bg="white" // Optional: Ensure background is white
+                >
+                    {/* Logo */}
+                    <Text
+                        fontSize="32px"
+                        fontWeight="bold"
+                        fontFamily="variables.$primary-font"
+                        textAlign="center"
+                    >
+                        <Text as="span" color="green.400">
+                            Medi
+                        </Text>
+                        <Text as="span" color="blue.600">
+                            Q
+                        </Text>
+                    </Text>
 
-        {/* Register Page Link */}
-        <Text className="register-page-link" fontFamily="variables.$primary-font" fontWeight="400" fontSize="18px">
-          Don’t have an account? <Link href="/register">Register</Link>
-        </Text>
+                    {/* Login Form */}
+                    <VStack className="login-form" spacing={4} align="stretch">
+                        <form onSubmit={handleSubmit}>
+                            <CustomTextInput
+                                label="Email"
+                                type="email"
+                                value={email}
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) => setEmail(e.target.value)}
+                                placeholder="example@email.com"
+                                className="custom-input custom-input-email"
+                                required
+                            />
+                            <CustomTextInput
+                                label="Password"
+                                type="password"
+                                value={password}
+                                onChange={(
+                                    e: React.ChangeEvent<HTMLInputElement>
+                                ) => setPassword(e.target.value)}
+                                placeholder="********"
+                                className="custom-input custom-input-password"
+                                required
+                            />
+                            <Link
+                                href="#"
+                                className="forgot-password-link"
+                                textAlign="left"
+                                fontSize="14px"
+                                fontWeight="600"
+                                color="variables.$pure-black-60"
+                                marginTop="15px"
+                                alignSelf="flex-end"
+                            >
+                                Forgot Password?
+                            </Link>
+                            <Button
+                                type="submit"
+                                colorScheme="blue"
+                                isLoading={isLoading}
+                                width="100%"
+                                mt={4}
+                            >
+                                {isLoading ? <Spinner size="sm" /> : "Login"}
+                            </Button>
+                        </form>
+                    </VStack>
 
-        {/* Back Home Link */}
-        <Link
-          href="/"
-          className="back-home-link"
-          display="inline-flex"
-          alignSelf="flex-end"
-          fontSize="15px"
-          fontWeight="700"
-          fontFamily="variables.$primary-font"
-          textDecoration="none"
-          marginTop="25px"
-        >
-          <Icon as={ArrowBackIcon} marginRight="3px" boxSize={5} /> Back to Home
-        </Link>
-      </VStack>
-    </Box>
-  );
+                    {/* Register Page Link */}
+                    <Text
+                        className="register-page-link"
+                        fontFamily="variables.$primary-font"
+                        fontWeight="400"
+                        fontSize="18px"
+                    >
+                        Don’t have an account?{" "}
+                        <Link href="/register">Register</Link>
+                    </Text>
+
+                    {/* Back Home Link */}
+                    <Link
+                        href="/"
+                        className="back-home-link"
+                        display="inline-flex"
+                        alignSelf="flex-end"
+                        fontSize="15px"
+                        fontWeight="700"
+                        fontFamily="variables.$primary-font"
+                        textDecoration="none"
+                        marginTop="25px"
+                    >
+                        <Icon name="bx-left-arrow-alt" /> Back to Home
+                    </Link>
+                </VStack>
+            </Box>
+        </PageContainer>
+    );
 };
 
-export default LoginPage;
+export default Login;
