@@ -8,8 +8,6 @@ import Home from './pages/Patient/Home/Home';
 import Login from './pages/Shared/Login/Login';
 import Reports from './pages/Patient/Report/Report';
 import DoctorSpecializations from './pages/Patient/Specilization/Specialization';
-import LabTests from './pages/Patient/LabTest/LabTest';
-import LabTestDetails from './components/Patient/LabTestDetails/LabTestDetails';
 import PaymentPage from './pages/Patient/Payment/Payment';
 import QueuePage from './components/Patient/Queue/QueuePage';
 import BookTest from './pages/Patient/BookTest/BookTest';
@@ -38,8 +36,6 @@ const App = () => {
                     <Route path="/appointment/book/:doctorID" element={<ProtectedRoute element={<BookAppointment />} />} />
                     <Route path="/payment" element={<ProtectedRoute element={<PaymentPage />} />} />
                     <Route path="/queue" element={<ProtectedRoute element={<QueuePage />} />} />
-                    <Route path="/lab-tests" element={<ProtectedRoute element={<LabTests />} />} />
-                    <Route path="/labtests/:testName" element={<ProtectedRoute element={<LabTestDetails />} />} />
                     <Route path="/book-test" element={<ProtectedRoute element={<BookTest />} />} />
                     <Route path="/confirmation" element={<ProtectedRoute element={<Confirmation />} />} />
                     <Route path="/my-account" element={<ProtectedRoute element={<MyAccount />} />} />

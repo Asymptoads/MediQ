@@ -1,9 +1,4 @@
-import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
-import {
-    Box,
-    Heading,
-    Text,
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom"; import React, { useState } from "react"; import { Box, Heading, Text,
     Link as ChakraLink,
     Button,
     Image,
@@ -180,6 +175,7 @@ const Register = () => {
                             Forgot Password?
                         </ChakraLink>
                         <Button
+                            onSubmit={}
                             type="submit"
                             className="form-submit-btn"
                             colorScheme="blue"
@@ -195,7 +191,6 @@ const Register = () => {
                         </Button>
                     </form>
                     <FormBorder />
-                    <Text className="or-continue-with">Or continue with</Text>
                     <ChakraLink
                         as={ReactRouterLink}
                         to={"/login"}
