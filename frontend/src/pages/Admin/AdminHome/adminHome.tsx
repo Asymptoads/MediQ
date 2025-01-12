@@ -124,7 +124,7 @@ const Admin: React.FC = () => {
 
                             <GridItem
                                 as={Link}
-                                to="/admin/remove-doctor"
+                                to="/admin/doctor-schedules"
                                 width="100%"
                                 h="200"
                                 bg="white"
@@ -147,12 +147,12 @@ const Admin: React.FC = () => {
                                             <Icon name="flask" />
                                         </Box>
                                         <Text fontSize="xl" fontWeight="bold">
-                                            Remove Doctor
+                                            View Doctor Schedules
                                         </Text>
                                     </Flex>
                                     <Box flex={1}>
                                         <Text color="gray.600">
-                                            Remove the doctors from the patients
+                                            View the schedules of the doctor 
                                         </Text>
                                     </Box>
                                 </Flex>

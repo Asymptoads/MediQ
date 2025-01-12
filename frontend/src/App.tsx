@@ -4,9 +4,10 @@ import { Box } from '@chakra-ui/react';
 
 //AdminImport
 import Admin from './pages/Admin/AdminHome/adminHome';
-import DoctorRegistration from './pages/Doctor/DoctorRegistration/DoctorRegistration';
+import DoctorRegistration from './pages/Admin/DoctorRegistration/DoctorRegistration';
 import SuccessComponent from './components/Shared/Success/Success';
-import QueueCreation from './pages/Doctor/QueueCreation/QueueCreation';
+import DoctorSchedules from './pages/Admin/DoctorSchedule/DoctorSchedule';
+import QueueCreation from './pages/Admin/QueueCreation/QueueCreation';
 
 // import Logo from './components/HeaderRenderer/HeaderRenderer';
 import Home from './pages/Patient/Home/Home';
@@ -84,6 +85,7 @@ const App = () => {
                     <Route path='/admin/doctor-registration' element={<DoctorRegistration />} />
                     <Route path='/success' element={<SuccessComponent message='Doctor Registered Successfully' />} />
                     <Route path='/admin/queue-creation' element={<QueueCreation />} />
+                    <Route path='/admin/doctor-schedules' element={<DoctorSchedules />} />
                 </Routes>
             {/* </CalendarContextProvider> */}
         </Box>

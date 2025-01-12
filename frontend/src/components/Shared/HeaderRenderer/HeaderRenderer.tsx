@@ -10,9 +10,9 @@ interface LogoProps {
 const Logo: React.FC<LogoProps> = ({ isLoggedIn }) => {
   const navigate = useNavigate();
 
-  const handleLogoClick = () => {
-    navigate('/home'); // Redirect to the homepage
-  };
+  // const handleLogoClick = () => {
+  //   navigate('/home'); // Redirect to the homepage
+  // };
 
   const handleUserClick = () => {
     if (isLoggedIn) {
@@ -52,7 +52,7 @@ const Logo: React.FC<LogoProps> = ({ isLoggedIn }) => {
             letterSpacing="tight"
             userSelect="none"
             cursor="pointer" // Makes it look clickable
-            onClick={handleLogoClick} // Click handler for redirect
+            // onClick={handleLogoClick} // Click handler for redirect
           >
             <chakra.span color="green.500">Medi</chakra.span>
             <chakra.span color="blue.500">Q</chakra.span>
