@@ -1,10 +1,20 @@
+import { useNavigate } from 'react-router-dom';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';  // Updated to useNavigate
-import { Avatar, Box, Button, Flex, Grid, GridItem, Text, VStack } from '@chakra-ui/react';
-import { FaSignOutAlt } from 'react-icons/fa';
+import {
+  Box,
+  Avatar,
+  Flex,
+  Text,
+  Button,
+  Grid,
+  Badge,
+  useColorModeValue,
+  VStack,
+} from '@chakra-ui/react';
+import PageContainer from '../../../components/Shared/PageContainer/PageContainer';
 
-const UserProfileView = () => {
-  const navigate = useNavigate();  // useNavigate hook for redirection
+const UserProfileView: React.FC = () => {
+  const navigate = useNavigate();
 
   const profile = {
     name: 'John Doe',
@@ -12,27 +22,58 @@ const UserProfileView = () => {
     avatar: '/api/placeholder/100/100',
     memberType: 'member',
     age: 30,
-    gender: 'male'
+    gender: 'male',
   };
+    const appointments = [
+        {
+            id: 1,
+            date: '2025-01-15',
+            time: '10:00 AM',
+            doctorName: 'Dr. Sarah Smith',
+            department: 'Cardiology',
+            status: 'Scheduled', // Replaces 'upcoming'
+        },
+        {
+            id: 2,
+            date: '2025-01-20',
+            time: '2:30 PM',
+            doctorName: 'Dr. Michael Johnson',
+            department: 'Orthopedics',
+            status: 'Scheduled', // Replaces 'upcoming'
+        },
+        {
+            id: 3,
+            date: '2024-12-28',
+            time: '11:15 AM',
+            doctorName: 'Dr. Emily Brown',
+            department: 'Neurology',
+            status: 'Attended', // Replaces 'completed'
+        },
+        {
+            id: 4,
+            date: '2024-12-28',
+            time: '11:15 AM',
+            doctorName: 'Dr. Emily Brown',
+            department: 'Neurology',
+            status: 'Attended', // Replaces 'completed'
+        },
+      ];
+      
 
   const handleLogout = async () => {
     try {
-      // Making the API call to logout
       const response = await fetch('http://localhost:4200/auth/logout', {
-        method: 'POST',  // or 'GET' based on your API requirements
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include',  // To include cookies or session tokens if necessary
+        credentials: 'include',
       });
 
       if (response.ok) {
-        // Clear local storage or session storage if needed
         localStorage.removeItem('authToken');
         sessionStorage.removeItem('authToken');
-
-        // Redirect to login page or home page
-        navigate('/login');  // Navigate to the login page using useNavigate
+        navigate('/login');
       } else {
         console.error('Logout failed:', response.statusText);
       }
@@ -42,58 +83,113 @@ const UserProfileView = () => {
   };
 
   return (
-    <Box maxW="md" mx="auto" p={6} bg="white" rounded="lg" shadow="lg">
-      <Flex justify="space-between" align="start" mb={6}>
-        <Flex align="center" gap={4}>
-          <Avatar
-            src={profile.avatar}
-            alt="Profile"
-            boxSize="60px"
-            name={profile.name}
-            bg="gray.200"
-          />
-        </Flex>
-        <Button
-          onClick={handleLogout}
-          leftIcon={<FaSignOutAlt />}
-          colorScheme="red"
-          variant="outline"
-          borderRadius="md"
-        >
-          Logout
-        </Button>
-      </Flex>
+    <PageContainer>
 
-      <VStack align="start" spacing={4}>
-        <Box borderBottom="1px" borderColor="gray.200" pb={4}>
-          <Grid templateColumns="repeat(2, 1fr)" gap={4}>
-            <GridItem>
-              <Text fontSize="sm" color="gray.500">Name</Text>
-              <Text fontSize="md" fontWeight="medium">{profile.name}</Text>
-            </GridItem>
-            <GridItem>
-              <Text fontSize="sm" color="gray.500">Email</Text>
-              <Text fontSize="md" fontWeight="medium">{profile.email}</Text>
-            </GridItem>
+    <Box maxW="4xl" mx="auto" p={6} marginTop='55px' fontFamily='Jost'>
+      <Box
+        bg={useColorModeValue('white', 'gray.800')}
+        rounded="lg"
+        shadow="md"
+        p={6}
+        mb={6}
+      >
+        <Flex justify="space-between" align="start" mb={6}>
+          <Flex align="center" gap={4}>
+            <Avatar src={profile.avatar} size="lg" />
+            <Box>
+              <Text fontSize="xl" fontWeight="semibold">
+                {profile.name}
+              </Text>
+              <Text color="gray.500">{profile.email}</Text>
+            </Box>
+          </Flex>
+          <Button
+            onClick={handleLogout}
+            colorScheme="red"
+            variant="outline"
+            size="sm"
+          >
+            Logout
+          </Button>
+        </Flex>
+
+        <Grid templateColumns="repeat(3, 1fr)" gap={4} mb={8} pb={4} borderBottom="1px" borderColor="gray.200">
+          <Box>
+            <Text fontSize="sm" color="gray.500">
+              Member Type
+            </Text>
+            <Text fontWeight="medium" textTransform="capitalize">
+              {profile.memberType}
+            </Text>
+          </Box>
+          <Box>
+            <Text fontSize="sm" color="gray.500">
+              Age
+            </Text>
+            <Text fontWeight="medium">{profile.age}</Text>
+          </Box>
+          <Box>
+            <Text fontSize="sm" color="gray.500">
+              Gender
+            </Text>
+            <Text fontWeight="medium" textTransform="capitalize">
+              {profile.gender}
+            </Text>
+          </Box>
+        </Grid>
+
+        <Box>
+          <Text fontSize="lg" fontWeight="semibold" mb={4}>
+            My Appointments
+          </Text>
+          <Grid templateColumns="repeat(auto-fit, minmax(250px, 1fr))" gap={6}>
+            {appointments.map((appointment) => (
+              <Box
+                key={appointment.id}
+                p={4}
+                border="1px"
+                borderColor="gray.200"
+                rounded="lg"
+                shadow="md"
+                height="180px"
+                bg={useColorModeValue('white', 'gray.700')}
+                _hover={{ shadow: 'lg', bg: useColorModeValue('gray.50', 'gray.600') }}
+                transition="all 0.2s"
+              >
+                <Flex justify="space-between" align="start" mb={3}>
+                  <Box>
+                    <Text fontWeight="medium">{appointment.doctorName}</Text>
+                    <Text fontSize="sm" color="gray.500">
+                      {appointment.department}
+                    </Text>
+                  </Box>
+                  <Badge
+                    px={3}
+                    py={1}
+                    colorScheme={
+                        appointment.status === 'Scheduled'
+                        ? 'green'
+                        : appointment.status === 'Attended'
+                        ? 'blue'
+                        : 'red' // For other statuses like 'Canceled' or 'Missed'
+                    }
+                    rounded="full"
+                    >
+                    {appointment.status}
+                    </Badge>
+
+                </Flex>
+                <VStack align="start" spacing={1} fontSize="sm" color="gray.600">
+                  <Text>Date: {appointment.date}</Text>
+                  <Text>Time: {appointment.time}</Text>
+                </VStack>
+              </Box>
+            ))}
           </Grid>
         </Box>
-
-        <Grid templateColumns="repeat(3, 1fr)" gap={4}>
-          <GridItem>
-            <Text fontSize="sm" color="gray.500">Member Type</Text>
-            <Text fontSize="md" fontWeight="medium" textTransform="capitalize">{profile.memberType}</Text>
-          </GridItem>
-          <GridItem>
-            <Text fontSize="sm" color="gray.500">Age</Text>
-            <Text fontSize="md" fontWeight="medium">{profile.age}</Text>
-          </GridItem>
-          <GridItem>
-            <Text fontSize="sm" color="gray.500">Gender</Text>
-            <Text fontSize="md" fontWeight="medium" textTransform="capitalize">{profile.gender}</Text>
-          </GridItem>
-        </Grid>
-      </VStack>
+      </Box>
     </Box>
+    </PageContainer>
   );
 };
 
