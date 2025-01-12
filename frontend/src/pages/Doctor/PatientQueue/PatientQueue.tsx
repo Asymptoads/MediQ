@@ -10,7 +10,7 @@ interface Patient {
   age: number;
   condition: string;
   waitTime: string;
-  status: string; // "Waiting", "Called"
+  status: string; // "Waiting", "Called", "Suspended"
 }
 
 // Doctor information (can be dynamically passed or fetched)
@@ -26,16 +26,11 @@ const patients: Patient[] = [
   { id: 3, name: "Nachiani Manxe", age: 58, condition: "Consultation", waitTime: "20 mins", status: "Waiting" },
   { id: 4, name: "Lyang Garni manxe", age: 29, condition: "Routine Exam", waitTime: "5 mins", status: "Waiting" },
   { id: 5, name: "Mayalu", age: 37, condition: "Blood Test", waitTime: "8 mins", status: "Waiting" },
-  { id: 6, name: "Ramailo garam sathi ", age: 41, condition: "Checkup", waitTime: "12 mins", status: "Waiting" },
-  { id: 7, name: "James Harris", age: 54, condition: "Consultation", waitTime: "18 mins", status: "Waiting" },
-  { id: 8, name: "Olivia Martinez", age: 36, condition: "Follow-up", waitTime: "22 mins", status: "Waiting" },
-  { id: 9, name: "Liam Rodriguez", age: 49, condition: "Consultation", waitTime: "25 mins", status: "Waiting" },
-  // Add more patients as needed
 ];
 
 const PatientQueue = () => {
+  const [patientsData, setPatientsData] = useState<Patient[]>(patients);
   const [selectedPatientIndex, setSelectedPatientIndex] = useState<number>(0);
-  const [patientsData, setPatientsData] = useState<Patient[]>(patients); // Manage patients' status
   const toast = useToast();
 
   const handlePatientClick = (index: number) => {
@@ -43,19 +38,18 @@ const PatientQueue = () => {
   };
 
   const handleNextPatient = () => {
-    const nextIndex = selectedPatientIndex + 1;
+    const nextIndex = patientsData.findIndex(
+      (patient, index) => index > selectedPatientIndex && patient.status === "Waiting"
+    );
 
-    if (nextIndex < patientsData.length) {
-      // Update status of the current patient
+    if (nextIndex !== -1) {
       const updatedPatients = [...patientsData];
-      updatedPatients[selectedPatientIndex].status = "Called"; // Mark the current patient as "Called"
-      setPatientsData(updatedPatients); // Update the patients state
-
-      setSelectedPatientIndex(nextIndex); // Move to the next patient
-
+      updatedPatients[selectedPatientIndex].status = "Called";
+      setPatientsData(updatedPatients);
+      setSelectedPatientIndex(nextIndex);
       toast({
         title: "Next patient notified",
-        description: `Now seeing ${patientsData[nextIndex].name}`,
+        description: `Now seeing ${updatedPatients[nextIndex].name}`,
         status: "success",
         duration: 3000,
         isClosable: true,
@@ -71,7 +65,23 @@ const PatientQueue = () => {
     }
   };
 
-  // Dynamic function for rendering patient details
+  const handleMarkComplete = () => {
+    const updatedPatients = [...patientsData];
+    updatedPatients.splice(selectedPatientIndex, 1);
+    setPatientsData(updatedPatients);
+    const nextIndex = selectedPatientIndex >= updatedPatients.length ? 0 : selectedPatientIndex;
+    setSelectedPatientIndex(nextIndex);
+    toast ({
+      title: "Patient Completed",
+      description: `${updatedPatients[selectedPatientIndex].name} has been marked as completed.`,
+      status: "success",
+      duration: 3000,
+      isClosable: true
+    })
+  }
+
+
+
   const renderPatientDetail = (label: string, value: string | number) => (
     <Box>
       <Text fontSize="sm" color="gray.600">{label}</Text>
@@ -79,6 +89,29 @@ const PatientQueue = () => {
     </Box>
   );
 
+  const handleSuspendPatient = () => {
+    const updatedPatients = [...patientsData];
+    const suspendedPatient = updatedPatients.splice(selectedPatientIndex, 1)[0];
+    suspendedPatient.status = "Suspended";
+    updatedPatients.unshift(suspendedPatient);
+  
+    // Find the next available patient to select
+    const nextIndex = updatedPatients.findIndex(
+      (patient, index) => index !== 0 && patient.status === "Waiting"
+    );
+  
+    setPatientsData(updatedPatients);
+    setSelectedPatientIndex(nextIndex !== -1 ? nextIndex : 0); // Default to the first patient if no waiting patients are found
+  
+    toast({
+      title: "Patient Suspended",
+      description: `${suspendedPatient.name} has been moved to the top of the queue.`,
+      status: "warning",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+  
   return (
     <PageContainer>
       <Box w="full" maxW="6xl" mx="auto" p="4" bg="#f9fafb" marginTop="55px" fontFamily="Jost">
@@ -90,8 +123,8 @@ const PatientQueue = () => {
           </CardHeader>
         </Card>
 
-        <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap="4" marginTop='15px'>
-          {/* Patient List Column */}
+        <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap="4" marginTop="15px">
+          {/* Patient Queue */}
           <Card bg="white">
             <CardHeader pb="2">
               <Flex align="center" gap="2">
@@ -111,7 +144,13 @@ const PatientQueue = () => {
                       cursor="pointer"
                       transition="all 0.2s"
                       _hover={{ bg: 'gray.100' }}
-                      bg={selectedPatientIndex === index ? 'blue.100' : 'gray.50'}
+                      bg={
+                        patient.status === "Suspended"
+                          ? 'orange.100'
+                          : selectedPatientIndex === index
+                          ? 'blue.100'
+                          : 'gray.50'
+                      }
                     >
                       <Flex align="center" gap="3">
                         <Box bg="blue.500" borderRadius="full" p="2">
@@ -120,7 +159,7 @@ const PatientQueue = () => {
                         <Box flex="1">
                           <Text fontWeight="medium">{patient.name}</Text>
                           <Text fontSize="sm" color="gray.600">
-                            Wait time: {patient.waitTime}
+                            Wait time: {patient.waitTime} - Status: {patient.status}
                           </Text>
                         </Box>
                       </Flex>
@@ -131,7 +170,7 @@ const PatientQueue = () => {
             </CardBody>
           </Card>
 
-          {/* Statistics Column */}
+          {/* Queue Statistics */}
           <Card bg="white">
             <CardHeader pb="2">
               <Flex align="center" gap="2">
@@ -143,7 +182,8 @@ const PatientQueue = () => {
               <Stack spacing="4">
                 {[
                   { label: 'Total Patients', value: patientsData.length, bg: 'blue.50', color: 'blue.600' },
-                  { label: 'Remaining Patients', value: patientsData.filter(p => p.status === 'Waiting').length, bg: 'green.50', color: 'green.600' },
+                  { label: 'Remaining Patients', value: patientsData.filter(p => p.status === "Waiting").length, bg: 'green.50', color: 'green.600' },
+                  { label: 'Suspended Patients', value: patientsData.filter(p => p.status === "Suspended").length, bg: 'orange.50', color: 'orange.600' },
                 ].map(({ label, value, bg, color }) => (
                   <Box bg={bg} p="4" borderRadius="lg" key={label}>
                     <Text fontSize="lg" fontWeight="semibold">{label}</Text>
@@ -157,7 +197,7 @@ const PatientQueue = () => {
 
         {/* Patient Details Row */}
         {patientsData[selectedPatientIndex] && (
-          <Card bg="white" marginTop='15px'>
+          <Card bg="white" marginTop="15px">
             <CardHeader pb="2">
               <Flex align="center" gap="2">
                 <MdPerson size="20" />
@@ -173,16 +213,19 @@ const PatientQueue = () => {
                   { label: 'Wait Time', value: patientsData[selectedPatientIndex].waitTime },
                 ].map(({ label, value }) => renderPatientDetail(label, value))}
               </Grid>
+              <Flex justifyContent="space-between" marginTop="4">
+                <Button colorScheme="orange" onClick={handleSuspendPatient}>
+                  Suspend
+                </Button>
+                <Button colorScheme="green" onClick={handleMarkComplete}>
+                  Mark Complete
+                </Button>
+              </Flex>
             </CardBody>
           </Card>
         )}
 
-        {/* Next Button */}
-        <Box textAlign="center" marginTop="15px">
-          <Button colorScheme="blue" onClick={handleNextPatient}>
-            Next
-          </Button>
-        </Box>
+
       </Box>
     </PageContainer>
   );
