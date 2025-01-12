@@ -37,7 +37,12 @@ const App = () => {
                     <Route path="/specialization" element={<DoctorSpecializations />} />
                     <Route path="/specializations/:name" element={<SpecializationDetails />} />
                     <Route path="/appointment/book/:doctorID" element={<BookAppointment />} />
-
+                    <Route path="/payment" element={<PaymentPage />} />
+                    <Route path="/queue" element={<QueuePage />} />
+                    <Route path="/book-test" element={<BookTest />} />
+                    <Route path="/confirmation" element={<Confirmation />} />
+                    <Route path="/my-account" element={<MyAccount />} />
+                    <Route path="/date-picker" element={<AppointmentBooking />} />
 
                     {/* Protected Routes */}
                     {/* <Route path="/" element={<ProtectedRoute element={<Home />} />} /> */}
@@ -45,12 +50,11 @@ const App = () => {
                     {/* <Route path="/specialization" element={<ProtectedRoute element={<DoctorSpecializations />} />} /> */}
                     {/* <Route path="/specializations/:name" element={<ProtectedRoute element={<SpecializationDetails />} />} /> */}
                     {/* <Route path="/appointment/book/:doctorID" element={<ProtectedRoute element={<BookAppointment />} />} /> */}
-                    <Route path="/payment" element={<ProtectedRoute element={<PaymentPage />} />} />
-                    <Route path="/queue" element={<ProtectedRoute element={<QueuePage />} />} />
-                    <Route path="/book-test" element={<ProtectedRoute element={<BookTest />} />} />
-                    <Route path="/confirmation" element={<ProtectedRoute element={<Confirmation />} />} />
-                    <Route path="/my-account" element={<ProtectedRoute element={<MyAccount />} />} />
-                    <Route path="/date-picker" element={<ProtectedRoute element={<AppointmentBooking />} />} />
+                    {/* <Route path="/payment" element={<ProtectedRoute element={<PaymentPage />} />} /> */}
+                    {/* <Route path="/book-test" element={<ProtectedRoute element={<BookTest />} />} /> */}
+                    {/* <Route path="/confirmation" element={<ProtectedRoute element={<Confirmation />} />} /> */}
+                    {/* <Route path="/my-account" element={<ProtectedRoute element={<MyAccount />} />} /> */}
+                    {/* <Route path="/date-picker" element={<ProtectedRoute element={<AppointmentBooking />} />} /> */}
 
                     {/* Admin Route */}
                     <Route path='/admin' element={<Admin />} />

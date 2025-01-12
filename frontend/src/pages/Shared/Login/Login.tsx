@@ -39,11 +39,7 @@ const Login: React.FC = () => {
                 "/auth/login",
                 userDetails
             );
-
-            // Assuming successful login response contains user data
             console.log(res.data);
-
-            // Fetch user and navigate to the home page
             await fetchUser();
             navigate("/");
 
