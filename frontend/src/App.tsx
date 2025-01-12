@@ -6,6 +6,7 @@ import { Box } from '@chakra-ui/react';
 import Admin from './pages/Admin/AdminHome/adminHome';
 import DoctorRegistration from './pages/Doctor/DoctorRegistration/DoctorRegistration';
 import SuccessComponent from './components/Shared/Success/Success';
+import QueueCreation from './pages/Doctor/QueueCreation/QueueCreation';
 
 // import Logo from './components/HeaderRenderer/HeaderRenderer';
 import Home from './pages/Patient/Home/Home';
@@ -82,6 +83,7 @@ const App = () => {
                     <Route path='/admin' element={<Admin />} />
                     <Route path='/admin/doctor-registration' element={<DoctorRegistration />} />
                     <Route path='/success' element={<SuccessComponent message='Doctor Registered Successfully' />} />
+                    <Route path='/admin/queue-creation' element={<QueueCreation />} />
                 </Routes>
             {/* </CalendarContextProvider> */}
         </Box>
