@@ -161,12 +161,12 @@ const Home: React.FC = () => {
                                             <Icon name="stethoscope" />
                                         </Box>
                                         <Text fontSize="xl" fontWeight="bold">
-                                            Doctor Specializations
+                                          Departments
                                         </Text>
                                     </Flex>
                                     <Box flex={1}>
                                         <Text color="gray.600">
-                                            Explore and connect with specialists
+                                          explore our departments
                                         </Text>
                                     </Box>
                                 </Flex>

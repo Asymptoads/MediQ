@@ -33,6 +33,7 @@ const appointmentOptions = [
 const BookTest: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState('');
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
   const { specialization, schedule_id } = useParams<{ specialization: string; schedule_id: string }>();
@@ -45,7 +46,6 @@ const BookTest: React.FC = () => {
       try {
         const res = await client.get("http://localhost:4200/api/user");
         setCurrentUser(res.data);
-        console.log(currentUser)
       } catch (err) {
         console.error('Error fetching user:', err);
         toast({
@@ -81,14 +81,6 @@ const BookTest: React.FC = () => {
 
     try {
       setIsLoading(true); // Start loading
-      console.log(currentUser, specialization);
-      console.log("hello here", {
-        userId: currentUser?._id,
-        specialization,
-        category: selectedCategory,
-        schedule_id,
-      });
-
       const res = await client.post('create-appointment', {
         userId: currentUser?._id,
         specialization,
@@ -120,37 +112,42 @@ const BookTest: React.FC = () => {
 
   return (
     <PageContainer>
-    <Container maxW="600px" mt={10} marginTop="70px">
-    <Box textAlign="center" mb={6} className='page-wrapper'>
-    <Text fontSize="2xl" fontWeight="bold" color="gray.700">
-    Set Appointment
-    </Text>
-    <Text fontSize="md" color="gray.500" mt={2}>
-    Select an appointment category to continue.
-      </Text>
-    </Box>
+      <Container maxW="600px" mt={10} marginTop="70px">
+        <Box textAlign="center" mb={6} className='page-wrapper'>
+          <Text fontSize="2xl" fontWeight="bold" color="gray.700">
+            Set Appointment
+          </Text>
+          <Text fontSize="md" color="gray.500" mt={2}>
+            Select an appointment category to continue.
+          </Text>
+        </Box>
 
-    <Box as="form" p={6} boxShadow="md" borderRadius="md" bg="white">
-    <FormControl isInvalid={error} mb={4}>
-    <FormLabel>Select Appointment Category</FormLabel>
-    <Select
-    value={selectedCategory}
-    onChange={handleInputChange}
-    placeholder="Select a category"
-    >
-    {appointmentOptions.map((option) => (
-      <option key={option} value={option}>
-      {option}
-      </option>
-    ))}
-    </Select>
-    </FormControl>
+        <Box as="form" p={6} boxShadow="md" borderRadius="md" bg="white">
+          <FormControl isInvalid={error} mb={4}>
+            <FormLabel>Select Appointment Category</FormLabel>
+            <Select
+              value={selectedCategory}
+              onChange={handleInputChange}
+              placeholder="Select a category"
+            >
+              {appointmentOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
 
-    <Button colorScheme="green" size="lg" onClick={handleSubmit}>
-    Book
-    </Button>
-    </Box>
-    </Container>
+          <Button
+            colorScheme="green"
+            size="lg"
+            onClick={handleSubmit}
+            isLoading={isLoading}
+          >
+            Book
+          </Button>
+        </Box>
+      </Container>
     </PageContainer>
   );
 };
