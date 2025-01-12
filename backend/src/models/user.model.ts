@@ -22,11 +22,6 @@ const userSchema = new mongoose.Schema({
 "blood-test", "X-ray", "Ultrasound", "MRI", "CT Scan", ],
     required: function () { return this.is_doctor; },  // Only if doctor
   },
-  is_busy: {
-    type: Boolean,
-    default: false,
-    required: function () { return this.is_doctor; },  // Only if doctor
-  }
   // { timestamps: true } // Enable automatic createdAt and updatedAt fields
 });
 

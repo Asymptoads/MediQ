@@ -1,15 +1,16 @@
 import express from "express";
+import mongoose from "mongoose";
 import { appointmentModel } from "../models/appointment.model";
 import { queueModel } from "../models/queue.model";
+import { userModel } from "../models/user.model";
 import { estimatedTimeModel } from "../models/estimated-time.model";
-import mongoose from "mongoose";
 
 export const createAppointment = async (
   req: express.Request,
   res: express.Response
 ) => {
   try {
-    const { userId, specialization, category, schedule_id, } = req.body;
+    const { userId, specialization, category, schedule_id } = req.body;
 
     // Validate if the IDs are valid MongoDB ObjectIds
     if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(schedule_id)) {
@@ -49,7 +50,11 @@ export const createAppointment = async (
       user_id: userId,
       queue_id: queue._id,
       category: category,
-      schedule: validSchedule, // Include the validated schedule
+      schedule: {
+        day: validSchedule.day,
+        start_time: validSchedule.start_time,
+        end_time: validSchedule.end_time
+      },
     });
 
     await appointment.save();
@@ -67,64 +72,59 @@ export const createAppointment = async (
 
 // Controller function to get all appointments filtered by queue_id, sorted by registered_at,
 // excluding completed and suspended appointments
-export const getAppointments = async ( req: express.Request, res: express.Response) => {
+export const getAppointmentsBySpecialization = async (
+  req: express.Request,
+  res: express.Response
+) => {
   try {
-    const { queue_id } = req.params; // Extract queue_id from URL parameter
+    const { specialization, schedule_id } = req.params;
 
-    // Validate if queue_id is provided
-    if (!queue_id) {
-      return res.status(400).json({ error: 'queue_id is required' });
+    // Validate the schedule_id as a valid MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(schedule_id)) {
+      return res.status(400).json({ message: "Invalid schedule ID format" });
     }
 
-    // Fetch appointments filtered by queue_id and excluding completed and suspended
+    // Find the queue based on the specialization
+    const queue = await queueModel.findOne({ specialization }).populate({
+      path: "weekly_schedule.doctors",
+      model: "user",
+    });
+    if (!queue) {
+      return res.status(404).json({ message: "Queue not found" });
+    }
+
+    // Check if the schedule_id is valid and present in the queue's weekly schedule
+    const validSchedule = queue.weekly_schedule.find(
+      (entry) => entry._id.toString() === schedule_id
+    );
+    if (!validSchedule) {
+      return res.status(400).json({ message: "Invalid schedule for the selected queue" });
+    }
+
+    // Fetch appointments by the given schedule_id that are not completed
     const appointments = await appointmentModel.find({
-      queue_id,               // Filter by queue_id
-      is_operated: false,     // Exclude operated appointments
-      is_completed: false,    // Exclude completed appointments
-      is_suspended: false     // Exclude suspended appointments
-    })
-    .sort({ registered_at: 1 });  // Sort by registered_at in ascending order
+      queue_id: queue._id,
+      "schedule._id": schedule_id,
+      is_completed: false,
+    }).populate("user_id").lean();
 
-    // Return the appointments if found
-    if (appointments.length > 0) {
-      return res.status(200).json(appointments);
-    } else {
-      return res.status(404).json({ message: 'No appointments found' });
-    }
+    // Split users into suspended and waiting
+    const suspended = appointments.filter((appt) => appt.is_suspended).map((appt) => appt.user_id);
+    const waiting = appointments.filter((appt) => !appt.is_suspended).map((appt) => appt.user_id);
+
+    return res.status(200).json({
+      message: "Appointments fetched successfully",
+      schedule: validSchedule,
+      doctors: validSchedule.doctors,
+      suspended,
+      waiting,
+    });
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: 'Server error' });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 
-export const getSuspendedAppointments = async ( req: express.Request, res: express.Response) => {
-  try {
-    const { queue_id } = req.params; // Extract queue_id from URL parameter
-
-    // Validate if queue_id is provided
-    if (!queue_id) {
-      return res.status(400).json({ error: "queue_id is required" });
-    }
-
-    // Fetch appointments filtered by queue_id and is_suspended=true
-    const suspendedAppointments = await appointmentModel
-      .find({
-        queue_id,           // Filter by queue_id
-        is_suspended: true, // Include only suspended appointments
-      })
-      .sort({ suspended_at: 1 }); // Sort by suspended_at in ascending order
-
-    // Return the appointments if found
-    if (suspendedAppointments.length > 0) {
-      return res.status(200).json(suspendedAppointments);
-    } else {
-      return res.status(404).json({ message: "No suspended appointments found" });
-    }
-  } catch (error) {
-    console.error("Error fetching suspended appointments:", error);
-    return res.status(500).json({ error: "Server error" });
-  }
-};
 
 export const getAppointmentsByUserId = async (
   req: express.Request,

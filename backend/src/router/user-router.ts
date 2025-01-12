@@ -10,7 +10,6 @@ import {
     getDoctorById,
     validateObjectId,
     getPatientById,
-    updateIsBusy,
 } from "../controllers/user-controllers";
 import { isAuthenticated } from "../middlewares/index";
 
@@ -27,7 +26,6 @@ export default (router: express.Router) => {
         validateObjectId,
         getDoctorById
     );
-    router.patch( "/api/set-doctor-is-busy/:doctor_id", isAuthenticated, updateIsBusy);
     router.get(
         "/api/user/:id",
         isAuthenticated,

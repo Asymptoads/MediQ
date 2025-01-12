@@ -38,7 +38,6 @@ mongoose.connection.on('error', (err: Error) => {
 });
 
 
-// Delete all the users
 // import { userModel } from './models/user.model';
 // const clearUsers = async () => {
 //   try {

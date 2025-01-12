@@ -93,7 +93,6 @@ export const register = async (req: express.Request, res: express.Response) => {
       phone_number,
       is_doctor,
       specialization,
-      is_busy,
       is_admin,
     } = req.body;
 
@@ -148,7 +147,6 @@ export const register = async (req: express.Request, res: express.Response) => {
       sex: user.sex,
       is_doctor: user.is_doctor,
       specialization: user.is_doctor ? user.specialization : undefined, 
-      is_busy: user.is_doctor ? user.is_busy : undefined, 
     };
 
     return res

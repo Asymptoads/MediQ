@@ -3,10 +3,8 @@ import express from "express";
 import {
   createAppointment,
 
-  getAppointments,
-  getSuspendedAppointments,
-  queueStatusForUser,
-
+  // getAppointmentsForPatients,
+  getAppointmentsBySpecialization,
   getAppointmentsByUserId,
 
   markAppointmentAsSuspended,
@@ -19,8 +17,9 @@ import { isAuthenticated } from "../middlewares/index";
 export default (router: express.Router) => {
     router.post("/api/create-appointment", isAuthenticated, createAppointment);
 
-    router.get("/api/appointments/:queue_id", isAuthenticated, getAppointments);          // for getting all
-    router.get("/api/appointments/:queue_id", isAuthenticated, getSuspendedAppointments); // for both doctor and user-view
+    // router.get("/api/appointments/:queue_id", isAuthenticated, getAppointmentsBySpecializaton);          // for getting all
+      router.get("/appointments/:specialization/:schedule_id", getAppointmentsBySpecialization);
+
 
     router.put("/api/appointments/suspended/:appointment_id", isAuthenticated, markAppointmentAsSuspended);
     router.put("/api/appointments/operated/:appointment_id", isAuthenticated, markAppointmentAsOperated);
