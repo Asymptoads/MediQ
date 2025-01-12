@@ -9,6 +9,7 @@ const queueSchema = new Schema({
       "Gynaecology", "Dentistry", "ENT", "Gastroenterology", "Hematology", "Oncology" ],
     required: true,
   },
+  is_lab_test: { type: Boolean, default: false },
   description: { type: String, required: true },
   weekly_schedule: [{
     doctors: [{ 

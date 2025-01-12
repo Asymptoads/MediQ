@@ -5,7 +5,7 @@ import Icon from '../../../components/Shared/Icon/Icon';
 import { useNavigate } from 'react-router-dom';
 import { useBackendAPIContext } from '../../../contexts/BackendAPIContext/BackendAPIContext';
 
-const DoctorSpecializations: React.FC = () => {
+const LabTests: React.FC = () => {
   const [specializations, setSpecializations] = useState<{ specialization: string; description: string }[]>([]); // State to store the specializations
   const [isLoading, setIsLoading] = useState(true); // State to manage loading state
   const [error, setError] = useState<string | null>(null); // State to handle errors
@@ -18,9 +18,8 @@ const DoctorSpecializations: React.FC = () => {
   useEffect(() => {
     const fetchSpecializations = async () => {
       try {
-        const response = await client.get('/queue/specialization/');
+        const response = await client.get('/queue/labtest/');
         setSpecializations(response.data.data || []); // Assuming the API response has a `data` property
-        console.log(specializations)
         setIsLoading(false);
       } catch (err: any) {
         console.error('Error fetching specializations:', err);
@@ -113,4 +112,4 @@ const DoctorSpecializations: React.FC = () => {
   );
 };
 
-export default DoctorSpecializations;
+export default LabTests;

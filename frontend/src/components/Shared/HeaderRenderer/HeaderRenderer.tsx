@@ -11,7 +11,7 @@ const Logo: React.FC<LogoProps> = ({ isLoggedIn }) => {
   const navigate = useNavigate();
 
   const handleLogoClick = () => {
-    navigate('/home'); // Redirect to the homepage
+    navigate('/'); // Redirect to the homepage
   };
 
   const handleUserClick = () => {

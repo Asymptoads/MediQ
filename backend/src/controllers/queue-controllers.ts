@@ -19,20 +19,17 @@ export const getAllQueue = async (
 
 export const createQueue = async (req: Request, res: Response) => {
   try {
-    const { specialization, description, weekly_schedule, status } = req.body;
+    const { specialization, description, weekly_schedule, status, is_lab_test } = req.body;
 
     // Validate required fields
     if (!specialization || !weekly_schedule || !description) {
-      return res.status(400).json({ message: "Specialization and weekly schedule are required!" });
+      return res.status(400).json({ message: "Specialization, weekly schedule, and description are required!" });
     }
 
     // Validate specialization
-    const validSpecializations = [
-      "OPD", "Eye", "Ear", "Cardiology", "Orthopedics", "Dermatology", "Neurology",
-      "X-ray", "Ultrasound", "MRI", "CT Scan", "Pathology", "Radiology", "Pediatrics",
+    const validSpecializations = [      "OPD", "Ophthalmology", "Cardiology", "Orthopedics", "Dermatology", "Pediatrics", "Neurology", "Pathology", "Radiology",
       "Gynaecology", "Dentistry", "ENT", "Gastroenterology", "Hematology", "Oncology",
-      "Rheumatology", "Urology", "Pulmonology", "Endocrinology"
-    ];
+"Blood-test", "X-ray", "Ultrasound", "MRI", "CT Scan", ];
 
     if (!validSpecializations.includes(specialization)) {
       return res.status(400).json({ message: "Invalid specialization provided!" });
@@ -87,6 +84,7 @@ export const createQueue = async (req: Request, res: Response) => {
       description,
       weekly_schedule,
       status: queueStatus,
+      is_lab_test: is_lab_test !== undefined ? is_lab_test : false // Use the provided value or default to false
     });
 
     const savedQueue = await newQueue.save();
@@ -137,16 +135,35 @@ export const updateQueueStatus = async (req: Request, res: Response) => {
   }
 };
 
-
-export const getBySpecialization = async (req: Request, res: Response) => {
+export const getNonLabTestSpecializations = async (req: Request, res: Response) => {
   try {
-    // Query the database and only select the "specialization" field
-    const specializations = await queueModel.find({}, 'specialization'); // Only fetch the specialization field
+    // Query the database for specializations where is_lab_test is false
+    const specializations = await queueModel.find({ is_lab_test: false }, 'specialization');
+
+    if (specializations.length === 0) {
+      return res.status(404).json({ message: "No non-lab test specializations found." });
+    }
 
     return res.status(200).json(specializations);
   } catch (error) {
-    console.error("Error fetching specializations:", error);
-    return res.status(500).json({ message: "Error fetching specializations" });
+    console.error("Error fetching non-lab test specializations:", error);
+    return res.status(500).json({ message: "Error fetching non-lab test specializations" });
+  }
+};
+
+export const getLabTestSpecializations = async (req: Request, res: Response) => {
+  try {
+    // Query the database for specializations where is_lab_test is true
+    const specializations = await queueModel.find({ is_lab_test: true }, 'specialization');
+
+    if (specializations.length === 0) {
+      return res.status(404).json({ message: "No lab test specializations found." });
+    }
+
+    return res.status(200).json(specializations);
+  } catch (error) {
+    console.error("Error fetching lab test specializations:", error);
+    return res.status(500).json({ message: "Error fetching lab test specializations" });
   }
 };
 

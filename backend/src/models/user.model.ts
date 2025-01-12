@@ -17,9 +17,9 @@ const userSchema = new mongoose.Schema({
   is_doctor: {type: Boolean, default: false},
   specialization: {
     type: String, 
-    enum: [ "OPD", "Ophthalmology", "Cardiology", "Orthopedics", "Dermatology", "Pediatrics", "Neurology",
-      "X-ray", "Ultrasound", "MRI", "CT Scan", "Pathology", "Radiology",
-      "Gynaecology", "Dentistry", "ENT", "Gastroenterology", "Hematology", "Oncology", ],
+    enum: ["OPD", "Ophthalmology", "Cardiology", "Orthopedics", "Dermatology", "Pediatrics", "Neurology", "Pathology", "Radiology",
+      "Gynaecology", "Dentistry", "ENT", "Gastroenterology", "Hematology", "Oncology",
+"blood-test", "X-ray", "Ultrasound", "MRI", "CT Scan", ],
     required: function () { return this.is_doctor; },  // Only if doctor
   },
   is_busy: {
