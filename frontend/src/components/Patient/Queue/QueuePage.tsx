@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
     Box,
     Text,
@@ -17,28 +17,26 @@ import {
     useDisclosure,
     Icon,
 } from '@chakra-ui/react';
-import { FiClock, FiUser, FiCalendar, FiXCircle } from 'react-icons/fi';
+import { FiClock, FiUser, FiCalendar } from 'react-icons/fi';
 import PageContainer from '../../Shared/PageContainer/PageContainer';
 
 const QueuePage: React.FC = () => {
     const navigate = useNavigate();
-    const location = useLocation();
 
-    const { doctor, date, time } = location.state || {};
+    // Dummy data for testing
+    const dummyData = {
+        doctor: {
+            name: 'Dr. Jane Doe',
+            specialization: 'Cardiology',
+        },
+        date: '2025-01-15',
+        time: '10:30 AM',
+        patientsAhead: 4,
+        avgTimePerPatient: 15,
+    };
 
-    // If data is not available, display a message
-    if (!doctor || !date || !time) {
-        return (
-            <Flex align="center" justify="center" minH="100vh">
-                <Text fontSize="lg" color="gray.600">
-                    No data available for the queue.
-                </Text>
-            </Flex>
-        );
-    }
+    const { doctor, date, time, patientsAhead, avgTimePerPatient } = dummyData;
 
-    const patientsAhead = 4; // Example value (can be dynamic)
-    const avgTimePerPatient = 15; // Example time per patient in minutes
     const waitTime = patientsAhead * avgTimePerPatient;
 
     // Modal state for confirmation before exiting the queue

@@ -1,30 +1,71 @@
-import React from 'react';
-import { Box, Text, Container, Grid, GridItem, Flex } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
+import { Box, Text, Container, Grid, GridItem, Flex, useToast } from '@chakra-ui/react';
 import PageContainer from '../../../components/Shared/PageContainer/PageContainer';
 import Icon from '../../../components/Shared/Icon/Icon';
-import './Specialization.scss';
-import { useNavigate, Link } from 'react-router-dom';
-
-//const specializations = [
-//  { id: 1, name: 'Cardiology', description: 'Heart-related issues and conditions' },
-//  { id: 2, name: 'Dermatology', description: 'Skin, hair, and nail care' },
-//  { id: 3, name: 'Neurology', description: 'Nervous system specialists' },
-//  { id: 4, name: 'Orthopedics', description: 'Bone, joint, and muscle care' },
-//  { id: 5, name: 'Pediatrics', description: 'Health care for children and infants' },
-//  { id: 6, name: 'Gynecology', description: 'Women’s reproductive health' },
-//  { id: 7, name: 'Ophthalmology', description: 'Eye care and vision specialists' },
-//  { id: 8, name: 'Oncology', description: 'Cancer diagnosis and treatment' },
-//  { id: 9, name: 'Endocrinology', description: 'Hormonal and gland disorders' },
-//  { id: 10, name: 'Gastroenterology', description: 'Digestive system and stomach care' },
-//];
-
+import { useNavigate } from 'react-router-dom';
+import { useBackendAPIContext } from '../../../contexts/BackendAPIContext/BackendAPIContext';
 
 const DoctorSpecializations: React.FC = () => {
-    const navigate = useNavigate();
+  const [specializations, setSpecializations] = useState<{ specialization: string; description: string }[]>([]); // State to store the specializations
+  const [isLoading, setIsLoading] = useState(true); // State to manage loading state
+  const [error, setError] = useState<string | null>(null); // State to handle errors
 
-    const handleCardClick = (name: string) => {
-        navigate(`/specialiazations/${name}`);
+  const { client } = useBackendAPIContext(); // Get the API client
+  const navigate = useNavigate();
+  const toast = useToast(); // For showing toast notifications
+
+  // Fetch specializations from the API
+  useEffect(() => {
+    const fetchSpecializations = async () => {
+      try {
+        const response = await client.get('/queue/specialization/');
+        setSpecializations(response.data.data || []); // Assuming the API response has a `data` property
+        setIsLoading(false);
+      } catch (err: any) {
+        console.error('Error fetching specializations:', err);
+        setError(err.message || 'Failed to load specializations');
+        toast({
+          title: 'Error',
+          description: 'Failed to load specializations. Please try again later.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+        setIsLoading(false);
+      }
     };
+
+    fetchSpecializations();
+  }, [client, toast]);
+
+  const handleCardClick = (specialization: string) => {
+    // Navigate to the appointment page with the specialization name
+    navigate(`/specialization/${specialization}`);
+  };
+
+  if (isLoading) {
+    return (
+      <PageContainer>
+        <Box minH="100vh" pt="80px" textAlign="center">
+          <Text fontSize="lg" color="gray.500">
+            Loading specializations...
+          </Text>
+        </Box>
+      </PageContainer>
+    );
+  }
+
+  if (error) {
+    return (
+      <PageContainer>
+        <Box minH="100vh" pt="80px" textAlign="center">
+          <Text fontSize="lg" color="red.500">
+            {error}
+          </Text>
+        </Box>
+      </PageContainer>
+    );
+  }
 
   return (
     <PageContainer>
@@ -32,7 +73,7 @@ const DoctorSpecializations: React.FC = () => {
         <Container maxW="1280px" px={6}>
           <Box mb={6} textAlign="center">
             <Text fontSize="2xl" fontWeight="bold" color="gray.700">
-            Department
+              Department
             </Text>
             <Text fontSize="lg" color="gray.500">
               Find the right specialist for your needs
@@ -40,32 +81,28 @@ const DoctorSpecializations: React.FC = () => {
           </Box>
 
           <Grid templateColumns={['1fr', 'repeat(2, 1fr)', 'repeat(3, 1fr)']} gap={6}>
-            {specializations.map((specialization) => (
+            {specializations.map((specialization, index) => (
               <GridItem
-                key={specialization.id}
+                key={index}
                 bg="white"
                 borderRadius="lg"
                 boxShadow="md"
                 p={6}
                 _hover={{ transform: 'scale(1.05)', boxShadow: 'lg' }}
                 transition="transform 0.3s ease"
-                // onClick={() => handleCardClick(specialization.name)}
+                onClick={() => handleCardClick(specialization.specialization)} // Updated onClick handler
               >
-
-
-                <Link to={`/specializations/${specialization.name.toLowerCase()}`}>
-                  <Flex direction="column" align="center" textAlign="center">
-                    <Box bg="green.500" p={4} borderRadius="full" mb={4}>
-                      <Icon name="stethoscope" />
-                    </Box>
-                    <Text fontSize="xl" fontWeight="bold" mb={2}>
-                      {specialization.name}
-                    </Text>
-                    <Text fontSize="sm" color="gray.600">
-                      {specialization.description}
-                    </Text>
-                  </Flex>
-                </Link>
+                <Flex direction="column" align="center" textAlign="center">
+                  <Box bg="green.500" p={4} borderRadius="full" mb={4}>
+                    <Icon name="stethoscope" />
+                  </Box>
+                  <Text fontSize="xl" fontWeight="bold" mb={2}>
+                    {specialization.specialization}
+                  </Text>
+                  <Text fontSize="sm" color="gray.600">
+                    {specialization.description}
+                  </Text>
+                </Flex>
               </GridItem>
             ))}
           </Grid>

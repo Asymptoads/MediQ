@@ -2,17 +2,22 @@
 import express from 'express';
 import {
   createQueue,
-  getQueueById,
-  getBySpecialization,
-  getByDoctor,
-  getAllQueue
+  getAllQueue,
+  getSpecializations,
+  getQueueOfSpecialization,
+  // getQueueById,
+  // getBySpecialization,
+  // getByDoctor,
 } from '../controllers/queue-controllers';
 import { isAuthenticated } from '../middlewares/index';
 
 export default (router: express.Router) => {
-  router.post('/api/queue/create', createQueue);
-  router.get('/api/queue/', getAllQueue);
-  router.get('/api/queue/:queueId', getQueueById); // GET request to retrieve queue by ID
-  router.get('/api/queue/specialization/:specialization', getBySpecialization);
-  router.get('/api/queue/doctor/:doctorId', getByDoctor);
+  router.post('/api/queue/create', isAuthenticated, createQueue);
+  router.get('/api/queue/', isAuthenticated, getAllQueue);
+  router.get('/api/queue/specialization/', isAuthenticated, getSpecializations);
+  router.get('/api/queue/:specialization', isAuthenticated, getQueueOfSpecialization);
+
+  // router.get('/api/queue/:queueId', isAuthenticated, getQueueById); // GET request to retrieve queue by ID
+  // router.get('/api/queue/specialization/:specialization', isAuthenticated, getBySpecialization);
+  // router.get('/api/queue/doctor/:doctorId', isAuthenticated, getByDoctor);
 };
