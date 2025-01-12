@@ -46,6 +46,7 @@ const BookTest: React.FC = () => {
       try {
         const res = await client.get("http://localhost:4200/api/user");
         setCurrentUser(res.data);
+        console.log(currentUser);
       } catch (err) {
         console.error('Error fetching user:', err);
         toast({
@@ -87,6 +88,7 @@ const BookTest: React.FC = () => {
         category: selectedCategory,
         schedule_id,
       });
+      console.log(res)
 
       toast({
         title: 'Success',
