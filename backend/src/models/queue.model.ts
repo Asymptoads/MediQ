@@ -6,9 +6,11 @@ const queueSchema = new Schema({
     type: String,
     enum: [ "OPD", "Ophthalmology", "Cardiology", "Orthopedics", "Dermatology", "Pediatrics", "Neurology",
       "X-ray", "Ultrasound", "MRI", "CT Scan", "Pathology", "Radiology",
-      "Gynaecology", "Dentistry", "ENT", "Gastroenterology", "Hematology", "Oncology", ],
+      "Gynaecology", "Dentistry", "ENT", "Gastroenterology", "Hematology", "Oncology" ],
     required: true,
   },
+  is_lab_test: { type: Boolean, default: false },
+  description: { type: String, required: true },
   weekly_schedule: [{
     doctors: [{ 
       type: Schema.Types.ObjectId, 
@@ -22,7 +24,7 @@ const queueSchema = new Schema({
     },
     start_time: { type: String, required: true },  // Time in 24-hour format (e.g., "09:00")
     end_time: { type: String, required: true }     // Time in 24-hour format (e.g., "17:00")
-  }], // Reuse the shared subdocument schema
+  }],
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
   status: {

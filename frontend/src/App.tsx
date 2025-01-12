@@ -17,6 +17,7 @@ import Home from './pages/Patient/Home/Home';
 import Login from './pages/Shared/Login/Login';
 import Reports from './pages/Patient/Report/Report';
 import DoctorSpecializations from './pages/Patient/Specilization/Specialization';
+import Labtests from './pages/Patient/LabTest/LabTest';
 import PaymentPage from './pages/Patient/Payment/Payment';
 import QueuePage from './components/Patient/Queue/QueuePage';
 import BookTest from './pages/Patient/BookTest/BookTest';
@@ -37,8 +38,9 @@ const App = () => {
                     <Route path="/register" element={<Register />} />
                     <Route path="/" element={<Home />}  />
                     {/* <Route path="/reports" element={<Reports />} /> */}
+                    <Route path="/specialization/:name" element={<SpecializationDetails />} />
                     <Route path="/specialization" element={<DoctorSpecializations />} />
-                    <Route path="/specializations/:name" element={<SpecializationDetails />} />
+                    <Route path="/lab-tests" element={<Labtests />} />
                     <Route path="/appointment/book/:doctorID" element={<BookAppointment />} />
                     <Route path="/payment" element={<PaymentPage />} />
                     <Route path="/queue" element={<QueuePage />} />

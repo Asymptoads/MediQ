@@ -1,65 +1,35 @@
 import mongoose from "mongoose";
 import { Request, Response } from 'express';
 import { queueModel } from '../models/queue.model'; // Import the queue model
+import { userModel } from "../models/user.model";
 
 export const getAllQueue = async (
-    req: Request,
-    res: Response
+  req: Request,
+  res: Response
 ) => {
-    try {
-        const users = await queueModel.find({});
-        return res.status(200).json(users);
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Error fetching users" });
-    }
-};
-
-export const getQueueById = async (req: Request, res: Response) => {
   try {
-    const { queueId } = req.params;
-
-    // Validate the queue ID
-    if (!queueId) {
-      return res.status(400).json({ message: 'Queue ID is required!' });
-    }
-
-    // Find the queue by its ID
-    const queue = await queueModel
-    .findById(queueId)
-    .populate('doctors', 'name email phone_number') // Populates doctors' details
-    .exec();
-
-    if (!queue) {
-      return res.status(404).json({ message: 'Queue not found!' });
-    }
-
-    return res.status(200).json({
-      message: 'Queue retrieved successfully!',
-      queue,
-    });
+    const users = await queueModel.find({});
+    return res.status(200).json(users);
   } catch (error) {
-    console.error('Error retrieving queue by ID:', error);
-    return res.status(500).json({ message: 'Something went wrong while retrieving the queue!' });
+    console.log(error);
+    return res.status(500).json({ message: "Error fetching users" });
   }
 };
 
+
 export const createQueue = async (req: Request, res: Response) => {
   try {
-    const { specialization, weekly_schedule, status } = req.body;
+    const { specialization, description, weekly_schedule, status, is_lab_test } = req.body;
 
     // Validate required fields
-    if (!specialization || !weekly_schedule) {
-      return res.status(400).json({ message: "Specialization and weekly schedule are required!" });
+    if (!specialization || !weekly_schedule || !description) {
+      return res.status(400).json({ message: "Specialization, weekly schedule, and description are required!" });
     }
 
     // Validate specialization
-    const validSpecializations = [
-      "OPD", "Eye", "Ear", "Cardiology", "Orthopedics", "Dermatology", "Neurology",
-      "X-ray", "Ultrasound", "MRI", "CT Scan", "Pathology", "Radiology", "Pediatrics",
+    const validSpecializations = [      "OPD", "Ophthalmology", "Cardiology", "Orthopedics", "Dermatology", "Pediatrics", "Neurology", "Pathology", "Radiology",
       "Gynaecology", "Dentistry", "ENT", "Gastroenterology", "Hematology", "Oncology",
-      "Rheumatology", "Urology", "Pulmonology", "Endocrinology"
-    ];
+"Blood-test", "X-ray", "Ultrasound", "MRI", "CT Scan", ];
 
     if (!validSpecializations.includes(specialization)) {
       return res.status(400).json({ message: "Invalid specialization provided!" });
@@ -111,8 +81,10 @@ export const createQueue = async (req: Request, res: Response) => {
     // Create and save the new queue
     const newQueue = new queueModel({
       specialization,
+      description,
       weekly_schedule,
       status: queueStatus,
+      is_lab_test: is_lab_test !== undefined ? is_lab_test : false // Use the provided value or default to false
     });
 
     const savedQueue = await newQueue.save();
@@ -163,47 +135,130 @@ export const updateQueueStatus = async (req: Request, res: Response) => {
   }
 };
 
-// Get queues by specialization
-export const getBySpecialization = async (req: Request, res: Response) => {
+export const getNonLabTestSpecializations = async (req: Request, res: Response) => {
+  try {
+    // Query the database for specializations where is_lab_test is false
+    const specializations = await queueModel.find({ is_lab_test: false }, 'specialization');
+
+    if (specializations.length === 0) {
+      return res.status(404).json({ message: "No non-lab test specializations found." });
+    }
+
+    return res.status(200).json(specializations);
+  } catch (error) {
+    console.error("Error fetching non-lab test specializations:", error);
+    return res.status(500).json({ message: "Error fetching non-lab test specializations" });
+  }
+};
+
+export const getLabTestSpecializations = async (req: Request, res: Response) => {
+  try {
+    // Query the database for specializations where is_lab_test is true
+    const specializations = await queueModel.find({ is_lab_test: true }, 'specialization');
+
+    if (specializations.length === 0) {
+      return res.status(404).json({ message: "No lab test specializations found." });
+    }
+
+    return res.status(200).json(specializations);
+  } catch (error) {
+    console.error("Error fetching lab test specializations:", error);
+    return res.status(500).json({ message: "Error fetching lab test specializations" });
+  }
+};
+
+// // Get queues by specialization
+// export const getBySpecialization = async (req: Request, res: Response) => {
+//   try {
+//     const { specialization } = req.params;
+//
+//     // Find queues by specialization
+//     const queues = await queueModel
+//     .find({ specialization })
+//     .populate('doctors', 'name email') // Populate doctor information (name, email)
+//     .exec();
+//
+//     if (queues.length === 0) {
+//       return res.status(404).json({ message: 'No queues found for this specialization' });
+//     }
+//     return res.status(200).json(queues);
+//   } catch (error) {
+//     console.error("Error fetching queues by specialization:", error);
+//     return res.status(500).json({ message: 'Error fetching queues' });
+//   }
+// };
+
+// Get queues by doctor
+// export const getByDoctor = async (req: Request, res: Response) => {
+//   try {
+//     const { doctorId } = req.params;
+//
+//     // Find queues that contain the specified doctor
+//     const queues = await queueModel
+//     .find({ doctors: doctorId })
+//     .populate('doctors', 'name email') // Populate doctor information (name, email)
+//     .exec();
+//
+//     if (queues.length === 0) {
+//       return res.status(404).json({ message: 'No queues found for this doctor' });
+//     }
+//
+//     return res.status(200).json(queues);
+//   } catch (error) {
+//     console.error("Error fetching queues by doctor:", error);
+//     return res.status(500).json({ message: 'Error fetching queues' });
+//   }
+// };
+
+
+export const getSpecializations = async (req: Request, res: Response) => {
+  try {
+    // Query the database for specialization and description
+    const specializations = await queueModel.find({}, 'specialization description -_id'); // Exclude _id if not needed
+
+    if (specializations.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'No specializations found.',
+        data: [],
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Specializations retrieved successfully.',
+      data: specializations,
+    });
+  } catch (error) {
+    console.error('Error fetching specializations:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve specializations.',
+      error: error.message,
+    });
+  }
+};
+
+export const getQueueOfSpecialization = async (req: Request, res: Response) => {
   try {
     const { specialization } = req.params;
 
-    // Find queues by specialization
-    const queues = await queueModel
-    .find({ specialization })
-    .populate('doctors', 'name email') // Populate doctor information (name, email)
-    .exec();
+    // Fetch the first queue and populate doctors' details
+    const queue = await queueModel
+      .findOne({ specialization })
+      .populate({
+        path: "weekly_schedule.doctors",
+        model: "user", // Reference the correct model name
+        select: "name email date_of_birth sex phone_number", // Explicitly select fields
+      });
 
-    if (queues.length === 0) {
-      return res.status(404).json({ message: 'No queues found for this specialization' });
+    if (!queue) {
+      return res.status(404).json({ message: "No queue found for this specialization." });
     }
 
-    return res.status(200).json(queues);
+    res.status(200).json(queue);
   } catch (error) {
-    console.error("Error fetching queues by specialization:", error);
-    return res.status(500).json({ message: 'Error fetching queues' });
+    console.error("Error fetching queue:", error);
+    res.status(500).json({ message: "Internal server error." });
   }
 };
-
-// Get queues by doctor
-export const getByDoctor = async (req: Request, res: Response) => {
-  try {
-    const { doctorId } = req.params;
-
-    // Find queues that contain the specified doctor
-    const queues = await queueModel
-    .find({ doctors: doctorId })
-    .populate('doctors', 'name email') // Populate doctor information (name, email)
-    .exec();
-
-    if (queues.length === 0) {
-      return res.status(404).json({ message: 'No queues found for this doctor' });
-    }
-
-    return res.status(200).json(queues);
-  } catch (error) {
-    console.error("Error fetching queues by doctor:", error);
-    return res.status(500).json({ message: 'Error fetching queues' });
-  }
-};
-

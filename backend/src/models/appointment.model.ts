@@ -16,8 +16,6 @@ const appointmentSchema = new Schema({
       "Prescription Refills",
     ],
   },
-  description: { type: String, default: null },
-
   queue_id: {
     type: Schema.Types.ObjectId,
     required: true,
