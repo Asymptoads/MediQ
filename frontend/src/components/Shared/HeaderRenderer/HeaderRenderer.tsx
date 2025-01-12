@@ -38,12 +38,7 @@ const HeaderRenderer: React.FC = () => {
   };
 
   const handleUserClick = () => {
-    if (isLoggedIn) {
-      handleLogout(); // Logout if logged in and redirect to home page
-    } else {
-      
-      navigate('/login'); // Redirect to login page if not logged in
-    }
+      navigate('/my-account');
   };
 
   return (
