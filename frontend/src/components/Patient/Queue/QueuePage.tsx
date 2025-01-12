@@ -1,148 +1,163 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
-    Box,
-    Text,
-    Container,
-    Button,
-    VStack,
-    HStack,
-    Flex,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    useDisclosure,
-    Icon,
-} from '@chakra-ui/react';
-import { FiClock, FiUser, FiCalendar } from 'react-icons/fi';
+  Box,
+  Flex,
+  Heading,
+  Text,
+  Icon,
+  Button,
+  VStack,
+  Divider,
+  HStack,
+  Circle,
+  Stack,
+} from "@chakra-ui/react";
+import { FaCalendarAlt, FaClock } from "react-icons/fa";
+import { LuUser } from "react-icons/lu";
 import PageContainer from '../../Shared/PageContainer/PageContainer';
 
-const QueuePage: React.FC = () => {
-    const navigate = useNavigate();
+const QueueVisualization: React.FC = () => {
+  const doctorInfo = {
+    name: "Dr. Jane Doe",
+    specialty: "Cardiology",
+    appointmentDate: "2025-01-15",
+    appointmentTime: "10:30 AM",
+  };
 
-    // Dummy data for testing
-    const dummyData = {
-        doctor: {
-            name: 'Dr. Jane Doe',
-            specialization: 'Cardiology',
-        },
-        date: '2025-01-15',
-        time: '10:30 AM',
-        patientsAhead: 4,
-        avgTimePerPatient: 15,
-    };
+  const queueData = Array.from({ length: 20}, (_, index) => ({
+    position: index + 1,
+    isCurrentUser: index === 19, // Highlight the current user at position 5
+  }));
 
-    const { doctor, date, time, patientsAhead, avgTimePerPatient } = dummyData;
+  return (
+    <PageContainer>
 
-    const waitTime = patientsAhead * avgTimePerPatient;
+    <Box bg="white" w="full" maxW="1280px" mx="auto" p={6} boxShadow="md" borderRadius="md" marginTop='55px' fontFamily='Jost'>
+      {/* Card Header */}
+      <VStack spacing={2} textAlign="center">
+        <Heading size="lg" color="blue.600">Your Queue Status</Heading>
+      </VStack>
 
-    // Modal state for confirmation before exiting the queue
-    const { isOpen, onOpen, onClose } = useDisclosure();
+      <Divider my={4} />
 
-    const handleExitQueue = () => {
-        // Logic to remove the user from the queue
-        alert('You have been removed from the queue.');
-        navigate('/'); // Redirect to dashboard or homepage
-    };
+      {/* Doctor Info */}
+      <Flex justify="space-between" align="center" pb={4} borderBottom="1px" borderColor="gray.200">
+        <HStack spacing={2}>
+          <Icon as={LuUser} w={6} h={6} color="blue.500" />
+          <Text fontSize="lg" fontWeight="medium" color="gray.800">{doctorInfo.name}</Text>
+        </HStack>
+        <Text fontSize="sm" color="gray.500">{doctorInfo.specialty}</Text>
+      </Flex>
 
-    const handleDashboardRedirect = () => {
-        navigate('/home'); // Navigate to the dashboard
-    };
+      {/* Appointment Details */}
+      <VStack spacing={2} align="start" mt={4}>
+        <HStack spacing={2}>
+          <Icon as={FaCalendarAlt} w={5} h={5} color="green.500" />
+          <Text color="gray.700">{doctorInfo.appointmentDate}</Text>
+        </HStack>
+        <HStack spacing={2}>
+          <Icon as={FaClock} w={5} h={5} color="orange.500" />
+          <Text color="gray.700">{doctorInfo.appointmentTime}</Text>
+        </HStack>
+      </VStack>
 
-    return (
-        <PageContainer>
-            <Container
-                maxW="lg"
-                py={8}
-                px={6}
-                bg="gray.50"
-                borderRadius="lg"
-                boxShadow="lg"
-                marginTop="75px"
+      {/* Queue Visualization */}
+      <VStack spacing={4} mt={6}>
+        <Text fontSize="sm" fontWeight="medium" color="gray.700">Queue Position:</Text>
+
+
+        {/* Desktop View */}
+        <Flex
+        display={{ base: "none", md: "flex" }}
+        justify="center"
+        align="center"
+        gap={6}
+        wrap="wrap"
+        >
+        {queueData.map(({ position, isCurrentUser }) => (
+            <Box
+            key={position}
+            position="relative"
+            maxW="10%" // Maximum 10 items in a row
+            textAlign="center"
             >
-                <Box mb={6} textAlign="center">
-                    <Text fontSize="2xl" fontWeight="bold" color="blue.600">
-                        Your Queue Status
-                    </Text>
-                </Box>
+            <Circle
+                size="16"
+                bg={isCurrentUser ? "red.100" : "gray.100"}
+                borderWidth={isCurrentUser ? 3 : 0}
+                borderColor={isCurrentUser ? "red.500" : "transparent"}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                transition="transform 0.2s"
+                _hover={{ transform: "scale(1.1)" }}
+            >
+                <Icon as={LuUser} w={8} h={8} color={isCurrentUser ? "red.500" : "gray.500"} />
+            </Circle>
+            {isCurrentUser && (
+                <Text
+                position="absolute"
+                bottom="-6"
+                left="50%"
+                transform="translateX(-50%)"
+                fontSize="xs"
+                fontWeight="medium"
+                color="red.500"
+                >
+                You
+                </Text>
+            )}
+            </Box>
+        ))}
+        </Flex>
 
-                <VStack spacing={5} align="stretch" bg="white" p={6} borderRadius="md" boxShadow="sm">
-                    <Flex justify="space-between" align="center">
-                        <HStack spacing={4}>
-                            <Icon as={FiUser} color="blue.500" boxSize={5} />
-                            <Text fontSize="lg" fontWeight="medium">
-                                {doctor.name}
-                            </Text>
-                        </HStack>
-                        <Text color="gray.500" fontSize="sm">
-                            {doctor.specialization}
-                        </Text>
-                    </Flex>
+        {/* Mobile View */}
+        <Flex display={{ base: "flex", md: "none" }} justify="center" align="center" gap={6} wrap="wrap">
+        {queueData.map(({ position, isCurrentUser }) => (
+            <Box key={position} position="relative">
+            <Circle
+                size="16"
+                bg={isCurrentUser ? "red.100" : "gray.100"}
+                borderWidth={isCurrentUser ? 3 : 0}
+                borderColor={isCurrentUser ? "red.500" : "transparent"}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                transition="transform 0.2s"
+                _hover={{ transform: "scale(1.1)" }}
+            >
+                <Icon as={LuUser} w={8} h={8} color={isCurrentUser ? "red.500" : "gray.700"} />
+            </Circle>
+            {isCurrentUser && (
+                <Text
+                position="absolute"
+                bottom="-6"
+                left="50%"
+                transform="translateX(-50%)"
+                fontSize="xs"
+                fontWeight="medium"
+                color="red.500"
+                >
+                You
+                </Text>
+            )}
+            </Box>
+        ))}
+        </Flex>
+      </VStack>
 
-                    <HStack spacing={4}>
-                        <Icon as={FiCalendar} color="green.500" boxSize={5} />
-                        <Text fontSize="md">{date}</Text>
-                    </HStack>
-
-                    <HStack spacing={4}>
-                        <Icon as={FiClock} color="orange.500" boxSize={5} />
-                        <Text fontSize="md">{time}</Text>
-                    </HStack>
-
-                    <HStack spacing={4}>
-                        <Text fontWeight="bold" fontSize="md">
-                            Patients Ahead:
-                        </Text>
-                        <Text fontSize="md" color="red.500">
-                            {patientsAhead}
-                        </Text>
-                    </HStack>
-
-                    <HStack spacing={4}>
-                        <Text fontWeight="bold" fontSize="md">
-                            Estimated Wait Time:
-                        </Text>
-                        <Text fontSize="md" color="blue.500">
-                            {waitTime} minutes
-                        </Text>
-                    </HStack>
-                </VStack>
-
-                <VStack mt={6} spacing={4}>
-                    <Button colorScheme="red" width="full" onClick={onOpen}>
-                        Remove from Queue
-                    </Button>
-                    <Button colorScheme="blue" width="full" onClick={handleDashboardRedirect}>
-                        Go to Dashboard
-                    </Button>
-                </VStack>
-
-                {/* Modal for confirming removal from queue */}
-                <Modal isOpen={isOpen} onClose={onClose}>
-                    <ModalOverlay />
-                    <ModalContent>
-                        <ModalHeader>Exit Queue</ModalHeader>
-                        <ModalBody>
-                            <Text>
-                                Are you sure you want to exit the queue? You will no longer be able to proceed with the appointment.
-                            </Text>
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button variant="outline" onClick={onClose}>
-                                Cancel
-                            </Button>
-                            <Button colorScheme="red" ml={3} onClick={handleExitQueue}>
-                                Yes, Exit Queue
-                            </Button>
-                        </ModalFooter>
-                    </ModalContent>
-                </Modal>
-            </Container>
-        </PageContainer>
-    );
+      {/* Actions */}
+      <VStack spacing={4} mt={6}>
+        <Button colorScheme="red" size="lg" w="full">
+          Remove from Queue
+        </Button>
+        <Button colorScheme="blue" size="lg" w="full">
+          Go to Dashboard
+        </Button>
+      </VStack>
+    </Box>
+    </PageContainer>
+  );
 };
 
-export default QueuePage;
+export default QueueVisualization;
