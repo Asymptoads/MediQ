@@ -1,152 +1,100 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
-import {
-    Box,
-    Text,
-    VStack,
-    HStack,
-    Avatar,
-    IconButton,
-    Divider,
-    Container,
-    Stack,
-    Spinner,
-    useToast,
-} from '@chakra-ui/react';
-import { FiLogOut } from 'react-icons/fi';
-import PageContainer from '../../../components/Shared/PageContainer/PageContainer';
-import axios from 'axios';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';  // Updated to useNavigate
+import { Avatar, Box, Button, Flex, Grid, GridItem, Text, VStack } from '@chakra-ui/react';
+import { FaSignOutAlt } from 'react-icons/fa';
 
-const ProfilePage: React.FC = () => {
-    const [profileData, setProfileData] = useState<any>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const toast = useToast();
-    const calculateAge = (dob: string) => {
-        const birthDate = new Date(dob);
-        const today = new Date();
-        let age = today.getFullYear() - birthDate.getFullYear();
-        const monthDifference = today.getMonth() - birthDate.getMonth();
-        if (
-            monthDifference < 0 ||
-            (monthDifference === 0 && today.getDate() < birthDate.getDate())
-        ) {
-            age--;
-        }
-        return age;
-    };
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const res = await axios.get('http://localhost:4200/api/user');
-                const user = res.data;
+const UserProfileView = () => {
+  const navigate = useNavigate();  // useNavigate hook for redirection
 
-                // Format date of birth
-                const formattedDateOfBirth = new Intl.DateTimeFormat('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                }).format(new Date(user.date_of_birth));
+  const profile = {
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    avatar: '/api/placeholder/100/100',
+    memberType: 'member',
+    age: 30,
+    gender: 'male'
+  };
 
-                // Determine role
-                const role = user.is_admin
-                    ? 'Admin'
-                    : user.is_doctor
-                    ? 'Doctor'
-                    : 'Member';
+  const handleLogout = async () => {
+    try {
+      // Making the API call to logout
+      const response = await fetch('http://localhost:4200/auth/logout', {
+        method: 'POST',  // or 'GET' based on your API requirements
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',  // To include cookies or session tokens if necessary
+      });
 
-                setProfileData({
-                    userInfo: {
-                        name: user.name,
-                        email: user.email,
-                        avatar: user.avatar || 'https://bit.ly/dan-abramov',
-                        age: calculateAge(user.date_of_birth),
-                        gender: user.sex,
-                        role: role,
-                    },
-                    additionalInfo: {
-                        joined: user.joined_date,
-                        location: user.location || 'Not provided',
-                    },
-                });
-                setIsLoading(false);
-            } catch (error) {
-                console.error('Error fetching user data:', error);
-                toast({
-                    title: 'Error',
-                    description: 'Failed to load user data. Please try again later.',
-                    status: 'error',
-                    duration: 5000,
-                    isClosable: true,
-                });
-                setIsLoading(false);
-            }
-        };
+      if (response.ok) {
+        // Clear local storage or session storage if needed
+        localStorage.removeItem('authToken');
+        sessionStorage.removeItem('authToken');
 
-        fetchUserData();
-    }, [toast]);
-
-    const handleLogout = () => {
-        return <Navigate to="/login" />;
-        alert('Logged Out!');
-    };
-
-    if (isLoading) {
-        return (
-            <PageContainer>
-                <Container maxW="1280px" py={8} marginTop="55px">
-                    <Spinner size="xl" />
-                </Container>
-            </PageContainer>
-        );
+        // Redirect to login page or home page
+        navigate('/login');  // Navigate to the login page using useNavigate
+      } else {
+        console.error('Logout failed:', response.statusText);
+      }
+    } catch (error) {
+      console.error('An error occurred during logout:', error);
     }
+  };
 
-    return (
-        <PageContainer>
-            <Container maxW="1280px" py={8} marginTop="55px">
-                {/* Profile Section */}
-                <Box
-                    bg="white"
-                    p={6}
-                    borderRadius="lg"
-                    boxShadow="lg"
-                    textAlign="center"
-                >
-                    {/* Avatar */}
-                    <Avatar
-                        size="2xl"
-                        name={profileData.userInfo.name}
-                        src={profileData.userInfo.avatar}
-                        mb={4}
-                    />
-                    <Text fontSize="2xl" fontWeight="bold" color="gray.800">
-                        {profileData.userInfo.name}
-                    </Text>
-                    <Text fontSize="md" color="gray.500">
-                        {profileData.userInfo.email}
-                    </Text>
-                    <Text fontSize="ms" mt={4} color="gray.500">
-                      {profileData.userInfo.role}
-                    </Text>
-                    <Text fontSize="sm" mt={4} color="gray.600">
-                        Age: {profileData.userInfo.age}
-                    </Text>
-                    <Text fontSize="sm" color="gray.600">
-                        Gender: {profileData.userInfo.gender}
-                    </Text>
+  return (
+    <Box maxW="md" mx="auto" p={6} bg="white" rounded="lg" shadow="lg">
+      <Flex justify="space-between" align="start" mb={6}>
+        <Flex align="center" gap={4}>
+          <Avatar
+            src={profile.avatar}
+            alt="Profile"
+            boxSize="60px"
+            name={profile.name}
+            bg="gray.200"
+          />
+        </Flex>
+        <Button
+          onClick={handleLogout}
+          leftIcon={<FaSignOutAlt />}
+          colorScheme="red"
+          variant="outline"
+          borderRadius="md"
+        >
+          Logout
+        </Button>
+      </Flex>
 
-                    {/* Actions */}
-                    <Stack direction="row" spacing={4} mt={6} justify="center">
-                        <IconButton
-                            aria-label="Logout"
-                            icon={<FiLogOut />}
-                            colorScheme="red"
-                            onClick={handleLogout}
-                        />
-                    </Stack>
-                </Box>
-            </Container>
-        </PageContainer>
-    );
+      <VStack align="start" spacing={4}>
+        <Box borderBottom="1px" borderColor="gray.200" pb={4}>
+          <Grid templateColumns="repeat(2, 1fr)" gap={4}>
+            <GridItem>
+              <Text fontSize="sm" color="gray.500">Name</Text>
+              <Text fontSize="md" fontWeight="medium">{profile.name}</Text>
+            </GridItem>
+            <GridItem>
+              <Text fontSize="sm" color="gray.500">Email</Text>
+              <Text fontSize="md" fontWeight="medium">{profile.email}</Text>
+            </GridItem>
+          </Grid>
+        </Box>
+
+        <Grid templateColumns="repeat(3, 1fr)" gap={4}>
+          <GridItem>
+            <Text fontSize="sm" color="gray.500">Member Type</Text>
+            <Text fontSize="md" fontWeight="medium" textTransform="capitalize">{profile.memberType}</Text>
+          </GridItem>
+          <GridItem>
+            <Text fontSize="sm" color="gray.500">Age</Text>
+            <Text fontSize="md" fontWeight="medium">{profile.age}</Text>
+          </GridItem>
+          <GridItem>
+            <Text fontSize="sm" color="gray.500">Gender</Text>
+            <Text fontSize="md" fontWeight="medium" textTransform="capitalize">{profile.gender}</Text>
+          </GridItem>
+        </Grid>
+      </VStack>
+    </Box>
+  );
 };
 
-export default ProfilePage;
+export default UserProfileView;
