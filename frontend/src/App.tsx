@@ -34,11 +34,10 @@ const App = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
                     <Route path="/" element={<Home />}  />
-                    {/* <Route path="/reports" element={<Reports />} /> */}
-                    <Route path="/specialization/:name" element={<SpecializationDetails />} />
                     <Route path="/specialization" element={<DoctorSpecializations />} />
                     <Route path="/lab-tests" element={<Labtests />} />
-                    <Route path="/appointment/book/:doctorID" element={<BookAppointment />} />
+                    <Route path="/specialization/:name" element={<SpecializationDetails />} />
+                    <Route path="/book/:specialization/:schedule_id" element={<BookAppointment />} />
                     <Route path="/payment" element={<PaymentPage />} />
                     <Route path="/queue" element={<QueuePage />} />
                     <Route path="/book-test" element={<BookTest />} />
@@ -46,6 +45,7 @@ const App = () => {
                     <Route path="/my-account" element={<MyAccount />} />
                     <Route path="/date-picker" element={<AppointmentBooking />} />
 
+                    {/* <Route path="/reports" element={<Reports />} /> */}
                     {/* Protected Routes */}
                     {/* <Route path="/" element={<ProtectedRoute element={<Home />} />} /> */}
                     {/* <Route path="/reports" element={<ProtectedRoute element={<Reports />} />} /> */}

@@ -1,68 +1,77 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Text,
   Container,
-  Input,
   Select,
   Button,
   FormControl,
   FormLabel,
-  FormErrorMessage,
   useToast,
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useBackendAPIContext } from '../../../contexts/BackendAPIContext/BackendAPIContext';
 import PageContainer from '../../../components/Shared/PageContainer/PageContainer';
 import './BookaAppointment.scss';
 
-const testOptions = [
-  { value: 'complete-blood-count-cbc', label: 'Complete Blood Count (CBC)' },
-  { value: 'lipid-profile', label: 'Lipid Profile' },
-  { value: 'liver-function-test-lft', label: 'Liver Function Test (LFT)' },
-  // Add more test options as needed...
+const appointmentOptions = [
+  "First-Time Consultations",
+  "Consultation",
+  "Follow-up Visits",
+  "Report Collections",
+  "Prescription Refills",
+  "Category",
+  "Routine Check-up",
+  "Emergency",
+  "Vaccination",
+  "Pre-Surgery Assessment",
+  "Post-Surgery Review",
+  "Diagnostic Imaging",
+  "Specialist Referral",
 ];
 
 const BookTest: React.FC = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    selectedTest: '',
-    date: '',
-  });
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [error, setError] = useState(false);
 
-  const [errors, setErrors] = useState({
-    name: false,
-    email: false,
-    phone: false,
-    selectedTest: false,
-    date: false,
-  });
-
+  const { specialization, schedule_id } = useParams<{ specialization: string; schedule_id: string }>();
+  const { client } = useBackendAPIContext();
   const toast = useToast();
-  const navigate = useNavigate(); // Use the hook at the top of the component
+  const navigate = useNavigate();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: false }); // Clear error when user types
-  };
-
-  const handleSubmit = () => {
-    const newErrors = {
-      name: formData.name.trim() === '',
-      email: !/^\S+@\S+\.\S+$/.test(formData.email),
-      phone: formData.phone.trim() === '' || !/^\d{10}$/.test(formData.phone),
-      selectedTest: formData.selectedTest === '',
-      date: formData.date === '',
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const res = await client.get("http://localhost:4200/api/user");
+        setCurrentUser(res.data);
+        console.log(currentUser)
+      } catch (err) {
+        console.error('Error fetching user:', err);
+        toast({
+          title: 'Error',
+          description: 'Failed to fetch user information. Please try again later.',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+        });
+      }
     };
 
-    setErrors(newErrors);
+    fetchCurrentUser();
+  }, [client, toast]);
 
-    if (Object.values(newErrors).some((error) => error)) {
+  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCategory(e.target.value);
+    setError(false);
+  };
+
+  const handleSubmit = async () => {
+    if (!selectedCategory) {
+      setError(true);
       toast({
         title: 'Error',
-        description: 'Please fill out all fields correctly.',
+        description: 'Please select an appointment category.',
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -70,110 +79,77 @@ const BookTest: React.FC = () => {
       return;
     }
 
-    // Success logic
-    toast({
-      title: 'Success',
-      description: 'Your test has been successfully booked!',
-      status: 'success',
-      duration: 3000,
-      isClosable: true,
-    });
+    try {
+      setIsLoading(true); // Start loading
+      console.log(currentUser, specialization);
+      console.log("hello here", {
+        userId: currentUser?._id,
+        specialization,
+        category: selectedCategory,
+        schedule_id,
+      });
 
-    // Reset form
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      selectedTest: '',
-      date: '',
-    });
+      const res = await client.post('create-appointment', {
+        userId: currentUser?._id,
+        specialization,
+        category: selectedCategory,
+        schedule_id,
+      });
 
-    // Redirect to confirmation page
-    navigate('/confirmation');
+      toast({
+        title: 'Success',
+        description: 'Your appointment has been successfully booked!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
+      navigate('/confirmation');
+    } catch (error: any) {
+      toast({
+        title: 'Booking Failed',
+        description: error.response?.data?.message || 'Failed to book the appointment. Please try again later.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false); // Stop loading
+    }
   };
 
   return (
     <PageContainer>
-
     <Container maxW="600px" mt={10} marginTop="70px">
-      <Box textAlign="center" mb={6} className='page-wrapper'>
-        <Text fontSize="2xl" fontWeight="bold" color="gray.700">
-          Book a Lab Test
-        </Text>
-        <Text fontSize="md" color="gray.500" mt={2}>
-          Fill in the details below to schedule your test.
-        </Text>
-      </Box>
+    <Box textAlign="center" mb={6} className='page-wrapper'>
+    <Text fontSize="2xl" fontWeight="bold" color="gray.700">
+    Set Appointment
+    </Text>
+    <Text fontSize="md" color="gray.500" mt={2}>
+    Select an appointment category to continue.
+      </Text>
+    </Box>
 
-      <Box as="form" p={6} boxShadow="md" borderRadius="md" bg="white">
-        <FormControl isInvalid={errors.name} mb={4}>
-          <FormLabel>Full Name</FormLabel>
-          <Input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            placeholder="Enter your full name"
-          />
-          {errors.name && <FormErrorMessage>Name is required.</FormErrorMessage>}
-        </FormControl>
+    <Box as="form" p={6} boxShadow="md" borderRadius="md" bg="white">
+    <FormControl isInvalid={error} mb={4}>
+    <FormLabel>Select Appointment Category</FormLabel>
+    <Select
+    value={selectedCategory}
+    onChange={handleInputChange}
+    placeholder="Select a category"
+    >
+    {appointmentOptions.map((option) => (
+      <option key={option} value={option}>
+      {option}
+      </option>
+    ))}
+    </Select>
+    </FormControl>
 
-        <FormControl isInvalid={errors.email} mb={4}>
-          <FormLabel>Email Address</FormLabel>
-          <Input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            placeholder="Enter your email"
-          />
-          {errors.email && <FormErrorMessage>Valid email is required.</FormErrorMessage>}
-        </FormControl>
-
-        <FormControl isInvalid={errors.phone} mb={4}>
-          <FormLabel>Phone Number</FormLabel>
-          <Input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-            placeholder="Enter your 10-digit phone number"
-          />
-          {errors.phone && <FormErrorMessage>Valid phone number is required.</FormErrorMessage>}
-        </FormControl>
-
-        <FormControl isInvalid={errors.selectedTest} mb={4}>
-          <FormLabel>Select Test</FormLabel>
-          <Select
-            name="selectedTest"
-            value={formData.selectedTest}
-            onChange={handleInputChange}
-            placeholder="Select a test"
-          >
-            {testOptions.map((test) => (
-              <option key={test.value} value={test.value}>
-                {test.label}
-              </option>
-            ))}
-          </Select>
-          {errors.selectedTest && <FormErrorMessage>Please select a test.</FormErrorMessage>}
-        </FormControl>
-
-        <FormControl isInvalid={errors.date} mb={4}>
-          <FormLabel>Select Date</FormLabel>
-          <Input
-            type="date"
-            name="date"
-            value={formData.date}
-            onChange={handleInputChange}
-          />
-          {errors.date && <FormErrorMessage>Date is required.</FormErrorMessage>}
-        </FormControl>
-
-        <Button colorScheme="green" size="lg" onClick={handleSubmit}>
-          Book Test Now
-        </Button>
-      </Box>
+    <Button colorScheme="green" size="lg" onClick={handleSubmit}>
+    Book
+    </Button>
+    </Box>
     </Container>
     </PageContainer>
   );

@@ -16,7 +16,6 @@ import Icon from "../../../components/Shared/Icon/Icon";
 import CustomTextInput from "../../../components/Shared/CustomTextInput/CustomTextInput";
 import FormBorder from "../../../components/Patient/FormBorder/FormBorder";
 import PageContainer from "../../../components/Shared/PageContainer/PageContainer";
-import axios from "axios";
 import "./Register.scss";
 
 // Function to calculate password entropy
