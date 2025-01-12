@@ -3,7 +3,6 @@ import { Box, Card, CardHeader, CardBody, Text, Stack, Flex, Grid, Button, useTo
 import { MdPerson, MdAccessTime, MdGroup } from 'react-icons/md';
 import PageContainer from '../../../components/Shared/PageContainer/PageContainer';
 
-// Define the type for a patient
 interface Patient {
   id: number;
   name: string;
@@ -13,13 +12,11 @@ interface Patient {
   status: string; // "Waiting", "Called", "Suspended"
 }
 
-// Doctor information (can be dynamically passed or fetched)
 const doctor = {
   name: "Dr. James Boyaju",
   department: "Opthalmology"
 };
 
-// Sample patients data (you can dynamically add more patients)
 const patients: Patient[] = [
   { id: 1, name: "Falano Kto", age: 45, condition: "Regular Checkup", waitTime: "10 mins", status: "Waiting" },
   { id: 2, name: "Todpe Kto", age: 32, condition: "Follow-up", waitTime: "15 mins", status: "Waiting" },
@@ -30,6 +27,7 @@ const patients: Patient[] = [
 
 const PatientQueue = () => {
   const [patientsData, setPatientsData] = useState<Patient[]>(patients);
+  const [operatedPatientId, setOperatedPatientId] = useState<number | null>(null);
   const [selectedPatientIndex, setSelectedPatientIndex] = useState<number>(0);
   const toast = useToast();
 
@@ -37,72 +35,33 @@ const PatientQueue = () => {
     setSelectedPatientIndex(index);
   };
 
-  const handleNextPatient = () => {
-    const nextIndex = patientsData.findIndex(
-      (patient, index) => index > selectedPatientIndex && patient.status === "Waiting"
-    );
-
-    if (nextIndex !== -1) {
-      const updatedPatients = [...patientsData];
-      updatedPatients[selectedPatientIndex].status = "Called";
-      setPatientsData(updatedPatients);
-      setSelectedPatientIndex(nextIndex);
-      toast({
-        title: "Next patient notified",
-        description: `Now seeing ${updatedPatients[nextIndex].name}`,
-        status: "success",
-        duration: 3000,
-        isClosable: true,
-      });
-    } else {
-      toast({
-        title: "End of Queue",
-        description: "No more patients in the queue.",
-        status: "info",
-        duration: 3000,
-        isClosable: true,
-      });
-    }
-  };
-
-  const handleMarkComplete = () => {
-    const updatedPatients = [...patientsData];
-    updatedPatients.splice(selectedPatientIndex, 1);
-    setPatientsData(updatedPatients);
-    const nextIndex = selectedPatientIndex >= updatedPatients.length ? 0 : selectedPatientIndex;
-    setSelectedPatientIndex(nextIndex);
-    toast ({
-      title: "Patient Completed",
-      description: `${updatedPatients[selectedPatientIndex].name} has been marked as completed.`,
+  const handleOperatePatient = () => {
+    setOperatedPatientId(patientsData[selectedPatientIndex].id);
+    toast({
+      title: "Patient Operated",
+      description: `${patientsData[selectedPatientIndex].name} is now being operated on.`,
       status: "success",
       duration: 3000,
-      isClosable: true
-    })
-  }
-
-
-
-  const renderPatientDetail = (label: string, value: string | number) => (
-    <Box>
-      <Text fontSize="sm" color="gray.600">{label}</Text>
-      <Text fontWeight="medium">{value}</Text>
-    </Box>
-  );
+      isClosable: true,
+    });
+  };
 
   const handleSuspendPatient = () => {
+    if (operatedPatientId === patientsData[selectedPatientIndex].id) {
+      return;
+    }
     const updatedPatients = [...patientsData];
     const suspendedPatient = updatedPatients.splice(selectedPatientIndex, 1)[0];
     suspendedPatient.status = "Suspended";
     updatedPatients.unshift(suspendedPatient);
-  
-    // Find the next available patient to select
+
     const nextIndex = updatedPatients.findIndex(
       (patient, index) => index !== 0 && patient.status === "Waiting"
     );
-  
+
     setPatientsData(updatedPatients);
-    setSelectedPatientIndex(nextIndex !== -1 ? nextIndex : 0); // Default to the first patient if no waiting patients are found
-  
+    setSelectedPatientIndex(nextIndex !== -1 ? nextIndex : 0);
+
     toast({
       title: "Patient Suspended",
       description: `${suspendedPatient.name} has been moved to the top of the queue.`,
@@ -111,11 +70,36 @@ const PatientQueue = () => {
       isClosable: true,
     });
   };
-  
+
+  const handleMarkComplete = () => {
+    if (operatedPatientId !== patientsData[selectedPatientIndex].id) {
+      return;
+    }
+    const updatedPatients = [...patientsData];
+    updatedPatients.splice(selectedPatientIndex, 1);
+    setPatientsData(updatedPatients);
+    setOperatedPatientId(null);
+    const nextIndex = selectedPatientIndex >= updatedPatients.length ? 0 : selectedPatientIndex;
+    setSelectedPatientIndex(nextIndex);
+    toast({
+      title: "Patient Completed",
+      description: `${patientsData[selectedPatientIndex]?.name} has been marked as completed.`,
+      status: "success",
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  const renderPatientDetail = (label: string, value: string | number) => (
+    <Box>
+      <Text fontSize="sm" color="gray.600">{label}</Text>
+      <Text fontWeight="medium">{value}</Text>
+    </Box>
+  );
+
   return (
     <PageContainer>
       <Box w="full" maxW="6xl" mx="auto" p="4" bg="#f9fafb" marginTop="55px" fontFamily="Jost">
-        {/* Doctor Information */}
         <Card bg="white">
           <CardHeader pb="2">
             <Text fontSize="2xl" fontWeight="bold" color="blue.600">{doctor.name}</Text>
@@ -124,7 +108,6 @@ const PatientQueue = () => {
         </Card>
 
         <Grid templateColumns={{ base: '1fr', md: '1fr 1fr' }} gap="4" marginTop="15px">
-          {/* Patient Queue */}
           <Card bg="white">
             <CardHeader pb="2">
               <Flex align="center" gap="2">
@@ -148,8 +131,8 @@ const PatientQueue = () => {
                         patient.status === "Suspended"
                           ? 'orange.100'
                           : selectedPatientIndex === index
-                          ? 'blue.100'
-                          : 'gray.50'
+                            ? 'blue.100'
+                            : 'gray.50'
                       }
                     >
                       <Flex align="center" gap="3">
@@ -170,7 +153,6 @@ const PatientQueue = () => {
             </CardBody>
           </Card>
 
-          {/* Queue Statistics */}
           <Card bg="white">
             <CardHeader pb="2">
               <Flex align="center" gap="2">
@@ -195,7 +177,6 @@ const PatientQueue = () => {
           </Card>
         </Grid>
 
-        {/* Patient Details Row */}
         {patientsData[selectedPatientIndex] && (
           <Card bg="white" marginTop="15px">
             <CardHeader pb="2">
@@ -214,18 +195,19 @@ const PatientQueue = () => {
                 ].map(({ label, value }) => renderPatientDetail(label, value))}
               </Grid>
               <Flex justifyContent="space-between" marginTop="4">
-                <Button colorScheme="orange" onClick={handleSuspendPatient}>
+                <Button colorScheme="blue" onClick={handleOperatePatient} isDisabled={operatedPatientId !== null && operatedPatientId !== patientsData[selectedPatientIndex].id}>
+                  Operate
+                </Button>
+                <Button colorScheme="orange" onClick={handleSuspendPatient} isDisabled={operatedPatientId === patientsData[selectedPatientIndex].id}>
                   Suspend
                 </Button>
-                <Button colorScheme="green" onClick={handleMarkComplete}>
+                <Button colorScheme="green" onClick={handleMarkComplete} isDisabled={operatedPatientId !== patientsData[selectedPatientIndex].id}>
                   Mark Complete
                 </Button>
               </Flex>
             </CardBody>
           </Card>
         )}
-
-
       </Box>
     </PageContainer>
   );

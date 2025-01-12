@@ -35,6 +35,12 @@ export const createQueue = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "Invalid specialization provided!" });
     }
 
+    // Check if a queue with the same specialization already exists
+    const existingQueue = await queueModel.findOne({ specialization });
+    if (existingQueue) {
+      return res.status(400).json({ message: "A queue with this specialization already exists!" });
+    }
+
     // Validate weekly schedule
     if (!Array.isArray(weekly_schedule) || weekly_schedule.length === 0) {
       return res.status(400).json({ message: "Weekly schedule must contain at least one entry!" });
@@ -167,48 +173,34 @@ export const getLabTestSpecializations = async (req: Request, res: Response) => 
   }
 };
 
-// // Get queues by specialization
-// export const getBySpecialization = async (req: Request, res: Response) => {
-//   try {
-//     const { specialization } = req.params;
-//
-//     // Find queues by specialization
-//     const queues = await queueModel
-//     .find({ specialization })
-//     .populate('doctors', 'name email') // Populate doctor information (name, email)
-//     .exec();
-//
-//     if (queues.length === 0) {
-//       return res.status(404).json({ message: 'No queues found for this specialization' });
-//     }
-//     return res.status(200).json(queues);
-//   } catch (error) {
-//     console.error("Error fetching queues by specialization:", error);
-//     return res.status(500).json({ message: 'Error fetching queues' });
-//   }
-// };
 
-// Get queues by doctor
-// export const getByDoctor = async (req: Request, res: Response) => {
-//   try {
-//     const { doctorId } = req.params;
-//
-//     // Find queues that contain the specified doctor
-//     const queues = await queueModel
-//     .find({ doctors: doctorId })
-//     .populate('doctors', 'name email') // Populate doctor information (name, email)
-//     .exec();
-//
-//     if (queues.length === 0) {
-//       return res.status(404).json({ message: 'No queues found for this doctor' });
-//     }
-//
-//     return res.status(200).json(queues);
-//   } catch (error) {
-//     console.error("Error fetching queues by doctor:", error);
-//     return res.status(500).json({ message: 'Error fetching queues' });
-//   }
-// };
+export const getQueuesByDoctorId = async (req: Request, res: Response) => {
+  try {
+    const { doctorId } = req.params;
+
+    // Validate the doctorId
+    if (!mongoose.Types.ObjectId.isValid(doctorId)) {
+      return res.status(400).json({ message: "Invalid doctor ID!" });
+    }
+
+    // Find queues where the doctorId is in the weekly_schedule.doctors array
+    const queues = await queueModel.find({ 
+      "weekly_schedule.doctors": doctorId 
+    });
+
+    if (queues.length === 0) {
+      return res.status(404).json({ message: "No queues found for the given doctor ID!" });
+    }
+
+    return res.status(200).json({
+      message: "Queues retrieved successfully!",
+      queues,
+    });
+  } catch (error) {
+    console.error("Error fetching queues by doctor ID:", error);
+    return res.status(500).json({ message: "Something went wrong while fetching queues!" });
+  }
+};
 
 
 export const getSpecializations = async (req: Request, res: Response) => {

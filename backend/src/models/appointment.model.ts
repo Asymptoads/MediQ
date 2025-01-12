@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { weeklyScheduleSchema } from "./queue.model";
 const { Schema } = mongoose;
 
 // Appointment Schema
@@ -9,35 +10,28 @@ const appointmentSchema = new Schema({
     required: true,
     enum: [
       "First-Time Consultations",
-  "Consultation",
-  "Follow-up Visits",
-  "Report Collections",
-  "Prescription Refills",
-  "Category",
-  "Routine Check-up",
-  "Emergency",
-  "Vaccination",
-  "Pre-Surgery Assessment",
-  "Post-Surgery Review",
-  "Diagnostic Imaging",
-  "Specialist Referral",],
+      "Consultation",
+      "Follow-up Visits",
+      "Report Collections",
+      "Prescription Refills",
+      "Category",
+      "Routine Check-up",
+      "Emergency",
+      "Vaccination",
+      "Pre-Surgery Assessment",
+      "Post-Surgery Review",
+      "Diagnostic Imaging",
+      "Specialist Referral",
+    ],
   },
   queue_id: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: "queue",
   },
-
-  // Schedule field referencing a parent queue's weekly schedule
-  schedule: {
-    day: {
-      type: String,
-      enum: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      required: true
-    },
-    start_time: { type: String, required: true },  // Time in 24-hour format (e.g., "09:00")
-    end_time: { type: String, required: true }     // Time in 24-hour format (e.g., "17:00")
-  },
+  
+  // Schedule field using the weeklyScheduleSchema
+  schedule: weeklyScheduleSchema,
 
   user_id: {
     type: Schema.Types.ObjectId,
