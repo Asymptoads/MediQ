@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   date_of_birth: { type: Date, required: true },
-  sex: {type: String, enum: ["Male", "Female"], required: true},
+  sex: {type: String, enum: ["Male", "Female", "Other"], required: true},
   phone_number: { type: String, required: true }, // Added phone_number as mandatory
   authentication: {
     hashed_password: { type: String, required: true, select: false }, // select: false avoids fetching authentication data

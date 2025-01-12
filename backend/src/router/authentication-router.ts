@@ -7,7 +7,7 @@ import {
 } from "../controllers/authentication-controllers";
 
 export default (router: express.Router) => {
-    router.post("/auth/login", login);
-    router.post("/auth/register", register);
-    router.post("/auth/logout", logout);
+    router.post("/api/auth/login", login);
+    router.post("/api/auth/register", register);
+    router.post("/api/auth/logout", logout);
 };
