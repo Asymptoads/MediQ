@@ -94,7 +94,7 @@ const QueueCreation = () => {
 
   return (
     <PageContainer>
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" px={4} marginTop="55px">
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" px={4} marginTop="55px" fontFamily='Jost'>
         <VStack
           spacing={6}
           align="center"
@@ -105,7 +105,7 @@ const QueueCreation = () => {
           width="100%"
           maxW="650px"
         >
-          <Heading>Create Queue</Heading>
+          <Heading fontFamily='Jost'>Create Queue</Heading>
           <Text>Create a new queue for a doctor specialization</Text>
 
           {/* Specialization Dropdown */}
@@ -144,7 +144,7 @@ const QueueCreation = () => {
           </FormControl>
 
           {/* Weekly Schedule Section */}
-          <Heading size="md" mt={4}>
+          <Heading size="md" mt={4} fontFamily='Jost'>
             Add Weekly Schedule
           </Heading>
 
