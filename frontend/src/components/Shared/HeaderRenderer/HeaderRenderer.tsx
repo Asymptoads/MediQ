@@ -14,6 +14,7 @@ const Logo: React.FC<LogoProps> = ({ isLoggedIn }) => {
     navigate('/'); // Redirect to the homepage
   };
 
+
   const handleUserClick = () => {
     if (isLoggedIn) {
       navigate('/my-account'); // Redirect to the My Account page if logged in
@@ -52,7 +53,7 @@ const Logo: React.FC<LogoProps> = ({ isLoggedIn }) => {
             letterSpacing="tight"
             userSelect="none"
             cursor="pointer" // Makes it look clickable
-            onClick={handleLogoClick} // Click handler for redirect
+            // onClick={handleLogoClick} // Click handler for redirect
           >
             <chakra.span color="green.500">Medi</chakra.span>
             <chakra.span color="blue.500">Q</chakra.span>
