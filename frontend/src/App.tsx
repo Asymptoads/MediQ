@@ -11,6 +11,8 @@ import SuccessComponent from './components/Shared/Success/Success';
 import DoctorSchedules from './pages/Admin/DoctorSchedule/DoctorSchedule';
 import QueueCreation from './pages/Admin/QueueCreation/QueueCreation';
 import ViewPatients from './pages/Admin/ViewPatient/ViewPatient';
+import PatientQueue from './pages/Doctor/PatientQueue/PatientQueue';
+import DoctorDashboard from './pages/Doctor/DoctorDashboard/DoctorDashboard';
 
 // import Logo from './components/HeaderRenderer/HeaderRenderer';
 import Home from './pages/Patient/Home/Home';
@@ -66,6 +68,8 @@ const App = () => {
                     <Route path='/admin/queue-creation' element={<QueueCreation />} />
                     <Route path='/admin/doctor-schedules' element={<DoctorSchedules />} />
                     <Route path='/admin/view-patients' element={<ViewPatients />} />
+                    <Route path='/doctor-dashboard' element={<DoctorDashboard />} />
+                    <Route path='/doctor-dashboard/patient-queue' element={<PatientQueue />} />
 
 
                 </Routes>
