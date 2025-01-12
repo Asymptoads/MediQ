@@ -7,6 +7,7 @@ import {
     VStack,
     Icon,
     Spinner,
+    useToast, // Import useToast
 } from "@chakra-ui/react";
 import "./Login.scss";
 import "boxicons";
@@ -20,6 +21,7 @@ const Login: React.FC = () => {
     const { client } = useBackendAPIContext();
     const { fetchUser } = useUserContext();
     const navigate = useNavigate();
+    const toast = useToast(); // Initialize useToast
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -31,16 +33,39 @@ const Login: React.FC = () => {
             email,
             password,
         };
+
         try {
             const res = await client.post(
-                "http://localhost:4200/auth/login",
+                "/auth/login",
                 userDetails
             );
+
+            // Assuming successful login response contains user data
             console.log(res.data);
-            fetchUser();
-            navigate("/home");
+
+            // Fetch user and navigate to the home page
+            await fetchUser();
+            navigate("/");
+
+            // Show success toast
+            toast({
+                title: "Login Successful",
+                description: "You have successfully logged in.",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
         } catch (err) {
             console.error(err);
+
+            // Show error toast
+            toast({
+                title: "Login Failed",
+                description: "Please check your credentials and try again.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
         } finally {
             setIsLoading(false);
         }
@@ -68,10 +93,10 @@ const Login: React.FC = () => {
                     align="stretch"
                     width="100%"
                     maxW="650px"
-                    boxShadow="0 4px 12px rgba(0, 0, 0, 0.1)" // Updated shadow
-                    borderRadius="8px" // Optional: Add border radius for a smoother look
-                    p={6} // Optional: Add padding inside the container
-                    bg="white" // Optional: Ensure background is white
+                    boxShadow="0 4px 12px rgba(0, 0, 0, 0.1)"
+                    borderRadius="8px"
+                    p={6}
+                    bg="white"
                 >
                     {/* Logo */}
                     <Text

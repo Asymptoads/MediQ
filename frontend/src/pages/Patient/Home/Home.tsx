@@ -13,6 +13,7 @@ const Home: React.FC = () => {
         const fetchCurrentUser = async () => {
             try {
                 const res = await client.get("http://localhost:4200/api/user");
+                console.log(res)
                 setCurrentUser(res.data);
             } catch (err) {
                 console.error(err);
