@@ -85,7 +85,7 @@ const handleRegister = async () => {
 
   try {
     console.log(userDetails)
-    await client.post("/auth/register", userDetails);
+    const res = await client.post("/auth/register", userDetails);
 
     toast({
       title: "Signup Successful",

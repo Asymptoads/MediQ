@@ -29,17 +29,22 @@ const App = () => {
         <AuthProvider>
             <Box className="app">
                 <Routes>
-                    <Route path="/login" element={<Login />} />
                     {/* All non-protected routes */}
+                    <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/home" element={<Home />} />
+                    <Route path="/" element={<Home />}  />
+                    {/* <Route path="/reports" element={<Reports />} /> */}
+                    <Route path="/specialization" element={<DoctorSpecializations />} />
+                    <Route path="/specializations/:name" element={<SpecializationDetails />} />
+                    <Route path="/appointment/book/:doctorID" element={<BookAppointment />} />
+
 
                     {/* Protected Routes */}
-                    <Route path="/" element={<ProtectedRoute element={<Home />} />} />
-                    <Route path="/reports" element={<ProtectedRoute element={<Reports />} />} />
-                    <Route path="/specialization" element={<ProtectedRoute element={<DoctorSpecializations />} />} />
-                    <Route path="/specializations/:name" element={<ProtectedRoute element={<SpecializationDetails />} />} />
-                    <Route path="/appointment/book/:doctorID" element={<ProtectedRoute element={<BookAppointment />} />} />
+                    {/* <Route path="/" element={<ProtectedRoute element={<Home />} />} /> */}
+                    {/* <Route path="/reports" element={<ProtectedRoute element={<Reports />} />} /> */}
+                    {/* <Route path="/specialization" element={<ProtectedRoute element={<DoctorSpecializations />} />} /> */}
+                    {/* <Route path="/specializations/:name" element={<ProtectedRoute element={<SpecializationDetails />} />} /> */}
+                    {/* <Route path="/appointment/book/:doctorID" element={<ProtectedRoute element={<BookAppointment />} />} /> */}
                     <Route path="/payment" element={<ProtectedRoute element={<PaymentPage />} />} />
                     <Route path="/queue" element={<ProtectedRoute element={<QueuePage />} />} />
                     <Route path="/book-test" element={<ProtectedRoute element={<BookTest />} />} />
