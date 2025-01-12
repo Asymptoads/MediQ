@@ -71,7 +71,7 @@ const SpecializationDetails: React.FC = () => {
     }
 
     const handleNavigate = (scheduleId: string) => {
-        navigate(`/book/${specialization.specialization.toLowerCase()}/${scheduleId}`);
+        navigate(`/book/${specialization.specialization}/${scheduleId}`);
     };
 
     return (

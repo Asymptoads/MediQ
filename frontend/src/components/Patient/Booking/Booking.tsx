@@ -60,7 +60,6 @@ const BookingForm: React.FC<BookingFormProps> = ({ title, description, options, 
       selectedOption: formData.selectedOption === '',
       date: formData.date === '',
     };
-
     setErrors(newErrors);
 
     if (Object.values(newErrors).some((error) => error)) {
