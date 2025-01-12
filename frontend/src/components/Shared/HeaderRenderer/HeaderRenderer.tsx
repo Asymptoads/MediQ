@@ -1,25 +1,48 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Flex, Text, chakra, IconButton, Box, Container } from '@chakra-ui/react';
 import { BiUser } from 'react-icons/bi';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import Icon from '../Icon/Icon';
 
-interface LogoProps {
-  isLoggedIn: boolean; // Prop to indicate if the user is logged in
-}
-
-const Logo: React.FC<LogoProps> = ({ isLoggedIn }) => {
+const HeaderRenderer: React.FC = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogoClick = () => {
-    navigate('/'); // Redirect to the homepage
+  // Check login status when the component mounts
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      try {
+        const response = await axios.get('http://localhost:4200/auth/status', { withCredentials: true });
+        setIsLoggedIn(response.data.isLoggedIn); // Update state based on backend response
+      } catch (error) {
+        console.error('Error checking auth status:', error);
+      }
+    };
+
+    checkAuthStatus();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('http://localhost:4200/auth/logout', {}, { withCredentials: true });
+      setIsLoggedIn(false); // Update state after logout
+      navigate('/'); // Redirect to home page (or any page you prefer)
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
+  const handleLogoClick = () => {
+    navigate('/'); // Redirect to homepage
+  };
 
   const handleUserClick = () => {
     if (isLoggedIn) {
-      navigate('/my-account'); // Redirect to the My Account page if logged in
+      handleLogout(); // Logout if logged in and redirect to home page
     } else {
-      navigate('/login'); // Redirect to the Login page if not logged in
+      
+      navigate('/login'); // Redirect to login page if not logged in
     }
   };
 
@@ -53,20 +76,24 @@ const Logo: React.FC<LogoProps> = ({ isLoggedIn }) => {
             letterSpacing="tight"
             userSelect="none"
             cursor="pointer" // Makes it look clickable
-            // onClick={handleLogoClick} // Click handler for redirect
+            onClick={handleLogoClick} // Click handler for redirect
           >
             <chakra.span color="green.500">Medi</chakra.span>
             <chakra.span color="blue.500">Q</chakra.span>
           </Text>
 
           {/* User Icon */}
+          <Icon name='bsx-user' />
+
           <IconButton
-            aria-label="User profile"
+            aria-label={isLoggedIn ? 'Logout' : 'User profile'}
             icon={<BiUser size="24px" />}
             variant="ghost"
             colorScheme="gray"
             size="lg"
-            onClick={handleUserClick} // Check login status and redirect
+            onClick={handleUserClick} // Check login status and handle accordingly
+            // onClick={() => console.log('clicked')}
+
             cursor="pointer"
             _hover={{ bg: 'gray.100' }}
             _active={{ bg: 'gray.200' }}
@@ -77,4 +104,4 @@ const Logo: React.FC<LogoProps> = ({ isLoggedIn }) => {
   );
 };
 
-export default Logo;
+export default HeaderRenderer;

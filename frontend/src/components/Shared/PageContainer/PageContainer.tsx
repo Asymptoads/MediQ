@@ -24,7 +24,7 @@ const PageContainer: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
                 gridTemplateRows={'min-content 1fr'}
             >
                 <GridItem>
-                    <HeaderRenderer isLoggedIn={true}/>
+                    <HeaderRenderer />
                 </GridItem>
                 <GridItem maxH={'100%'} overflowY={'auto'}>
                     {children}
