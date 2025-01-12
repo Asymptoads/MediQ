@@ -135,7 +135,7 @@ const Admin: React.FC = () => {
                                 </Flex>
                             </GridItem> */}
 
-                            <GridItem
+                            {/* <GridItem
                                 as={Link}
                                 to="/admin/doctor-schedules"
                                 width="100%"
@@ -169,7 +169,7 @@ const Admin: React.FC = () => {
                                         </Text>
                                     </Box>
                                 </Flex>
-                            </GridItem>
+                            </GridItem> */}
                         </Grid>
                     </Box>
                 </Container>
