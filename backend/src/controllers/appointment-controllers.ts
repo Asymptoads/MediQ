@@ -9,46 +9,32 @@ export const createAppointment = async (
   res: express.Response
 ) => {
   try {
-    const { userId, queueId, category, schedule } = req.body;
+    const { userId, specialization, category, schedule_id, } = req.body;
 
     // Validate if the IDs are valid MongoDB ObjectIds
-    if (
-      !mongoose.Types.ObjectId.isValid(userId) ||
-      !mongoose.Types.ObjectId.isValid(queueId)
-    ) {
-      return res
-      .status(400)
-      .json({ message: "Invalid user ID or queue ID format" });
+    if (!mongoose.Types.ObjectId.isValid(userId) || !mongoose.Types.ObjectId.isValid(schedule_id)) {
+      return res.status(400).json({ message: "Invalid user ID or schedule ID format" });
     }
 
-    // Check if the queue exists
-    const queue = await queueModel.findById(queueId).lean(); // Use lean() for better performance
+    // Check if the queue exists based on the specialization
+    const queue = await queueModel.findOne({ specialization }).lean(); // Use lean() for better performance
     if (!queue) {
       return res.status(404).json({ message: "Queue not found" });
     }
 
-    // Validate the provided schedule against the queue's weekly schedule
-    const isValidSchedule = queue.weekly_schedule.some(
-      (entry: {
-        day: string;
-        start_time: string;
-        end_time: string;
-      }) =>
-      entry.day === schedule.day &&
-        entry.start_time === schedule.start_time &&
-        entry.end_time === schedule.end_time
+    // Validate the provided schedule_id against the queue's weekly schedule
+    const validSchedule = queue.weekly_schedule.find(
+      (entry) => entry._id.toString() === schedule_id
     );
 
-    if (!isValidSchedule) {
-      return res
-      .status(400)
-      .json({ message: "Invalid schedule for the selected queue" });
+    if (!validSchedule) {
+      return res.status(400).json({ message: "Invalid schedule for the selected queue" });
     }
 
     // Check if the user already has an appointment in the same queue that is not completed
     const existingAppointment = await appointmentModel.findOne({
       user_id: userId,
-      queue_id: queueId,
+      queue_id: queue._id,
       is_completed: false,
     });
 
@@ -61,13 +47,9 @@ export const createAppointment = async (
     // Create a new appointment with the validated schedule
     const appointment = new appointmentModel({
       user_id: userId,
-      queue_id: queueId,
+      queue_id: queue._id,
       category: category,
-      schedule: {
-        day: schedule.day,
-        start_time: schedule.start_time,
-        end_time: schedule.end_time,
-      }, // Include the validated schedule
+      schedule: validSchedule, // Include the validated schedule
     });
 
     await appointment.save();

@@ -19,7 +19,7 @@ const LabTests: React.FC = () => {
     const fetchSpecializations = async () => {
       try {
         const response = await client.get('/queue/labtest/');
-        setSpecializations(response.data.data || []); // Assuming the API response has a `data` property
+        setSpecializations(response.data || []); // Assuming the API response has a `data` property
         setIsLoading(false);
       } catch (err: any) {
         console.error('Error fetching specializations:', err);

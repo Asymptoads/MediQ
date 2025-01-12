@@ -19,7 +19,7 @@ const DoctorSpecializations: React.FC = () => {
     const fetchSpecializations = async () => {
       try {
         const response = await client.get('/queue/specialization/');
-        setSpecializations(response.data.data || []); // Assuming the API response has a `data` property
+        setSpecializations(response.data || []); // Assuming the API response has a `data` property
         console.log(specializations)
         setIsLoading(false);
       } catch (err: any) {

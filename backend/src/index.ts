@@ -71,4 +71,3 @@ mongoose.connection.on('error', (err: Error) => {
 //   }
 // };
 // clearAppointments();
-

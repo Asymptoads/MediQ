@@ -71,7 +71,7 @@ const SpecializationDetails: React.FC = () => {
     }
 
     const handleNavigate = (scheduleId: string) => {
-        navigate(`/book/${specialization.specialization}/${scheduleId}`);
+        navigate(`/book/${specialization.specialization.toLowerCase()}/${scheduleId}`);
     };
 
     return (
@@ -113,11 +113,6 @@ const SpecializationDetails: React.FC = () => {
                     ))}
                 </SimpleGrid>
 
-                <Box textAlign="center" mt={6}>
-                    <Button colorScheme="green" size="lg" onClick={() => navigate(`/appointment/book/${specialization.specialization.toLowerCase()}`)}>
-                        Book Appointment
-                    </Button>
-                </Box>
             </Container>
         </PageContainer>
     );
