@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   date_of_birth: { type: Date, required: true },
-  sex: {type: String, enum: ["Male", "Female"], required: true},
+  sex: {type: String, enum: ["Male", "Female", "Other"], required: true},
   phone_number: { type: String, required: true }, // Added phone_number as mandatory
   authentication: {
     hashed_password: { type: String, required: true, select: false }, // select: false avoids fetching authentication data
@@ -17,13 +17,9 @@ const userSchema = new mongoose.Schema({
   is_doctor: {type: Boolean, default: false},
   specialization: {
     type: String, 
-    enum: [
-      'OPD', 'Eye', 'Ear', 'Cardiology', 'Orthopedics', 'Dermatology', 
-      'Neurology', 'X-ray', 'Ultrasound', 'MRI', 'CT Scan', 'Pathology', 
-      'Radiology', 'Pediatrics', 'Gynaecology', 'Dentistry', 'ENT', 
-      'Gastroenterology', 'Hematology', 'Oncology', 'Rheumatology', 
-      'Urology', 'Pulmonology', 'Endocrinology'
-    ],  // Enum for specializations directly in the user schema
+    enum: [ "OPD", "Ophthalmology", "Cardiology", "Orthopedics", "Dermatology", "Pediatrics", "Neurology",
+      "X-ray", "Ultrasound", "MRI", "CT Scan", "Pathology", "Radiology",
+      "Gynaecology", "Dentistry", "ENT", "Gastroenterology", "Hematology", "Oncology", ],
     required: function () { return this.is_doctor; },  // Only if doctor
   },
   is_busy: {

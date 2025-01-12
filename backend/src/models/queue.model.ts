@@ -4,10 +4,9 @@ const { Schema } = mongoose;
 const queueSchema = new Schema({
   specialization: {
     type: String,
-    enum: [ "OPD",    "Eye",        "Ear",         "Cardiology",       "Orthopedics", "Dermatology", "Neurology",
-      "X-ray",        "Ultrasound", "MRI",         "CT Scan",          "Pathology",   "Radiology",   "Pediatrics",
-      "Gynaecology",  "Dentistry",  "ENT",         "Gastroenterology", "Hematology",  "Oncology",
-      "Rheumatology", "Urology",    "Pulmonology", "Endocrinology",    ],
+    enum: [ "OPD", "Ophthalmology", "Cardiology", "Orthopedics", "Dermatology", "Pediatrics", "Neurology",
+      "X-ray", "Ultrasound", "MRI", "CT Scan", "Pathology", "Radiology",
+      "Gynaecology", "Dentistry", "ENT", "Gastroenterology", "Hematology", "Oncology", ],
     required: true,
   },
   weekly_schedule: [{

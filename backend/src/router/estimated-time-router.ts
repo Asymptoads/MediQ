@@ -6,6 +6,6 @@ import {
 import { isAuthenticated } from "../middlewares/index";
 
 export default (router: express.Router) => {
-  router.post("api/set-update-estimated-time", isAuthenticated, updateOrCreateEstimatedTime);
-  router.post("api/estimated-time/", isAuthenticated, getEstimatedTimeFor)
+  router.post("/api/set-update-estimated-time", isAuthenticated, updateOrCreateEstimatedTime);
+  router.post("/api/estimated-time/", isAuthenticated, getEstimatedTimeFor)
 };

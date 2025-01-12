@@ -58,29 +58,6 @@
             color: variables.$pure-black-80;
         }
 
-        .google-sign-in-btn {
-            height: 50px;
-            border-radius: 8px;
-            background-color: variables.$pure-white;
-            font-family: variables.$primary-font;
-            font-size: 18px;
-            font-weight: 600;
-            color: variables.$pure-black-80;
-
-            .google-logo-container {
-                display: block;
-                width: 35px;
-                height: 35px;
-                margin-right: 10px;
-
-                .google-logo {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                }
-            }
-        }
-
         .login-page-link {
             font-family: variables.$primary-font;
             font-weight: 400;

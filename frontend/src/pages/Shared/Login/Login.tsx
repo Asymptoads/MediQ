@@ -7,6 +7,7 @@ import {
     VStack,
     Icon,
     Spinner,
+    useToast, // Import useToast
 } from "@chakra-ui/react";
 import "./Login.scss";
 import "boxicons";
@@ -20,6 +21,7 @@ const Login: React.FC = () => {
     const { client } = useBackendAPIContext();
     const { fetchUser } = useUserContext();
     const navigate = useNavigate();
+    const toast = useToast(); // Initialize useToast
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -31,16 +33,35 @@ const Login: React.FC = () => {
             email,
             password,
         };
+
         try {
             const res = await client.post(
-                "http://localhost:4200/auth/login",
+                "/auth/login",
                 userDetails
             );
             console.log(res.data);
-            fetchUser();
-            navigate("/home");
+            await fetchUser();
+            navigate("/");
+
+            // Show success toast
+            toast({
+                title: "Login Successful",
+                description: "You have successfully logged in.",
+                status: "success",
+                duration: 3000,
+                isClosable: true,
+            });
         } catch (err) {
             console.error(err);
+
+            // Show error toast
+            toast({
+                title: "Login Failed",
+                description: "Please check your credentials and try again.",
+                status: "error",
+                duration: 3000,
+                isClosable: true,
+            });
         } finally {
             setIsLoading(false);
         }
@@ -68,10 +89,10 @@ const Login: React.FC = () => {
                     align="stretch"
                     width="100%"
                     maxW="650px"
-                    boxShadow="0 4px 12px rgba(0, 0, 0, 0.1)" // Updated shadow
-                    borderRadius="8px" // Optional: Add border radius for a smoother look
-                    p={6} // Optional: Add padding inside the container
-                    bg="white" // Optional: Ensure background is white
+                    boxShadow="0 4px 12px rgba(0, 0, 0, 0.1)"
+                    borderRadius="8px"
+                    p={6}
+                    bg="white"
                 >
                     {/* Logo */}
                     <Text
@@ -147,21 +168,6 @@ const Login: React.FC = () => {
                         Don’t have an account?{" "}
                         <Link href="/register">Register</Link>
                     </Text>
-
-                    {/* Back Home Link */}
-                    <Link
-                        href="/"
-                        className="back-home-link"
-                        display="inline-flex"
-                        alignSelf="flex-end"
-                        fontSize="15px"
-                        fontWeight="700"
-                        fontFamily="variables.$primary-font"
-                        textDecoration="none"
-                        marginTop="25px"
-                    >
-                        <Icon name="bx-left-arrow-alt" /> Back to Home
-                    </Link>
                 </VStack>
             </Box>
         </PageContainer>

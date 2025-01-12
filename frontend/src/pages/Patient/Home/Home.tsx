@@ -9,17 +9,16 @@ import "./Home.scss";
 const Home: React.FC = () => {
     const { client } = useBackendAPIContext();
     const [currentUser, setCurrentUser] = useState<any>(null);
-
     useEffect(() => {
         const fetchCurrentUser = async () => {
             try {
                 const res = await client.get("http://localhost:4200/api/user");
+                console.log(res)
                 setCurrentUser(res.data);
             } catch (err) {
                 console.error(err);
             }
         };
-
         fetchCurrentUser();
     }, [client]);
     return (
