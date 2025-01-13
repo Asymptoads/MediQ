@@ -32,8 +32,11 @@ const QueueCreation = () => {
   const [day, setDay] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
+  const [description, setDescription] = useState("");
+  const [isLabTest, setIsLabTest] = useState(false);
   const [errors, setErrors] = useState({
     specialization: false,
+    description: false,
     weeklySchedule: false,
     status: false,
   });
@@ -85,6 +88,7 @@ const QueueCreation = () => {
     if (!specialization || weeklySchedule.length === 0 || !status) {
       setErrors({
         specialization: !specialization,
+        description: !description,
         weeklySchedule: weeklySchedule.length === 0,
         status: !status,
       });
@@ -94,13 +98,25 @@ const QueueCreation = () => {
 
     const queueDetails = {
       specialization,
+      is_lab_test: isLabTest,
+      description,
       status,
       weekly_schedule: weeklySchedule,
     };
+   
+    console.log(queueDetails);
+    try {
+      const response = axios.post("http://localhost:4200/api/queue", queueDetails);
+      console.log(response);
+      navigate('/success');
+    } catch (error) {
+      console.error("Error creating queue:", error);
+      alert("Error creating queue. Please try again.");
+    }
 
-    // Submit the queueDetails to your backend here
-    console.log(queueDetails); // Just for testing
-    navigate("/success"); // Redirect on success
+    // // Submit the queueDetails to your backend here
+    // console.log(queueDetails); // Just for testing
+    // navigate("/success"); // Redirect on success
   };
 
   return (
@@ -152,6 +168,18 @@ const QueueCreation = () => {
                   </option>
                 ))}
             </Select>
+          </FormControl>
+
+
+          {/* Description */}
+          <FormControl isInvalid={errors.description}>
+            <FormLabel>Description</FormLabel>
+            <Input
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Enter description"
+            />
+            <FormErrorMessage>Description is required.</FormErrorMessage>
           </FormControl>
 
           {/* Weekly Schedule Section */}
