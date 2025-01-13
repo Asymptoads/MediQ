@@ -22,5 +22,5 @@ export default (router: express.Router) => {
     router.put("/api/appointments/operated/:appointment_id", isAuthenticated, markAppointmentAsOperated);
     router.put("/api/appointments/completed/:appointment_id", isAuthenticated, markAppointmentAsCompleted);
     router.get("/api/user/appointments/:status/:user_id", isAuthenticated, getAppointmentsByUserId);
-    router.get("/api/user/appointments/:status/:user_id", getAppointmentsByUserId);
+    // router.get("/api/user/appointments/:status/:user_id", getAppointmentsByUserId);
 };
