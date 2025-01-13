@@ -38,7 +38,7 @@ const App = () => {
                     {/* All non-protected routes */}
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/" element={<Home />}  />
+                    <Route path="/" element={<Login />}  />
                     <Route path="/specialization" element={<DoctorSpecializations />} />
                     <Route path="/lab-tests" element={<Labtests />} />
                     <Route path="/specialization/:name" element={<SpecializationDetails />} />
