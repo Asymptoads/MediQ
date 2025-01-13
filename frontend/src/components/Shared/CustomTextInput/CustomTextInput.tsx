@@ -13,7 +13,8 @@ import "./CustomTextInput.scss";
 type CustomTextInputProps = {
     label: string;
     className?: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+    onChange: (e: React.ChangeEvent<HTMLInputElement >) => void;
+    // HTMLSelectElement
     value: string;
     type: "email" | "date" | "password" | "name" | "phone_number" | "select";
     required?: boolean;
