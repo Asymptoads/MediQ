@@ -93,29 +93,41 @@ export const getAppointmentsBySpecialization = async (
       return res.status(404).json({ message: "Queue not found" });
     }
 
-    // Check if the schedule_id is valid and present in the queue's weekly schedule
-    const validSchedule = queue.weekly_schedule.find(
+    // Filter the weekly_schedule to include only the one with the matching schedule_id
+    const filteredSchedule = queue.weekly_schedule.filter(
       (entry) => entry._id.toString() === schedule_id
     );
-    if (!validSchedule) {
+
+    if (filteredSchedule.length === 0) {
       return res.status(400).json({ message: "Invalid schedule for the selected queue" });
     }
 
     // Fetch appointments by the given schedule_id that are not completed
     const appointments = await appointmentModel.find({
       queue_id: queue._id,
-      "schedule._id": schedule_id,
+      // "schedule._id": mongoose.Types.ObjectId(schedule_id),
       is_completed: false,
     }).populate("user_id").lean();
 
-    // Split users into suspended and waiting
-    const suspended = appointments.filter((appt) => appt.is_suspended).map((appt) => appt.user_id);
-    const waiting = appointments.filter((appt) => !appt.is_suspended).map((appt) => appt.user_id);
+    // Sort appointments by registered_at
+    const sortedAppointments = appointments.sort((a, b) => new Date(a.registered_at).getTime() - new Date(b.registered_at).getTime());
+
+    // Split users into suspended and waiting with position numbers
+    const suspended = sortedAppointments
+      .filter((appt) => appt.is_suspended)
+      .map((appt, index) => ({ ...appt.user_id, position_no: index + 1 }));
+
+    const waiting = sortedAppointments
+      .filter((appt) => !appt.is_suspended)
+      .map((appt, index) => ({ ...appt.user_id, position_no: index + 1 }));
 
     return res.status(200).json({
       message: "Appointments fetched successfully",
-      schedule: validSchedule,
-      doctors: validSchedule.doctors,
+      queue: {
+        ...queue.toObject(),
+        weekly_schedule: filteredSchedule,
+      },
+      doctors: filteredSchedule[0].doctors,
       suspended,
       waiting,
     });
@@ -155,7 +167,7 @@ export const getAppointmentsByUserId = async (
 
     // If no appointments are found for the user
     if (!appointments || appointments.length === 0) {
-      return res.status(404).json({ message: 'No appointments found for this user' });
+      return res.status(200).json([]);
     }
 
     // Return the appointments

@@ -44,7 +44,7 @@ const App = () => {
                     <Route path="/specialization/:name" element={<SpecializationDetails />} />
                     <Route path="/book/:specialization/:schedule_id" element={<BookAppointment />} />
                     <Route path="/payment" element={<PaymentPage />} />
-                    <Route path="/queue" element={<QueuePage />} />
+                    <Route path="/queue/:appointment-id" element={<QueuePage />} />
                     <Route path="/book-test" element={<BookTest />} />
                     <Route path="/confirmation" element={<Confirmation />} />
                     <Route path="/my-account" element={<MyAccount />} />
