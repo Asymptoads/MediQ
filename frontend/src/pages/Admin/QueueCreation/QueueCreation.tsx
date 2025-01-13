@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Box,
   Heading,
@@ -10,25 +11,9 @@ import {
   Select,
   Input,
   FormErrorMessage,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom"; // For page navigation
 import PageContainer from "../../../components/Shared/PageContainer/PageContainer";
-
-// The dictionary mapping specialization to its corresponding doctors
-const doctorsData = {
-  OPD: ["Dr. John Doe", "Dr. Jane Smith"],
-  Eye: ["Dr. Robert Brown", "Dr. Emma White"],
-  Cardiology: ["Dr. Michael Green", "Dr. Sarah Black"],
-  Orthopedics: ["Dr. Alan Grey", "Dr. Lisa Blue"],
-  Dermatology: ["Dr. Mark Wilson", "Dr. Olivia Turner"],
-  Neurology: ["Dr. James King", "Dr. Nancy White"],
-};
 
 const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -52,8 +37,34 @@ const QueueCreation = () => {
     weeklySchedule: false,
     status: false,
   });
-
+  const [doctorsData, setDoctorsData] = useState<Record<string, string[]>>({});
   const navigate = useNavigate();
+
+  // Fetch doctors data from the API
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await axios.get("http://localhost:4200/api/doctors");
+        const doctors = response.data;
+
+        // Process data to match the required structure
+        const formattedData: Record<string, string[]> = {};
+        doctors.forEach((doctor: any) => {
+          const spec = doctor.specialization;
+          if (!formattedData[spec]) {
+            formattedData[spec] = [];
+          }
+          formattedData[spec].push(doctor.name);
+        });
+
+        setDoctorsData(formattedData);
+      } catch (error) {
+        console.error("Error fetching doctors data:", error);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
 
   // Function to handle the addition of a schedule
   const addSchedule = () => {
@@ -94,7 +105,7 @@ const QueueCreation = () => {
 
   return (
     <PageContainer>
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" px={4} marginTop="55px" fontFamily='Jost'>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" px={4} marginTop="55px" fontFamily="Jost">
         <VStack
           spacing={6}
           align="center"
@@ -105,7 +116,7 @@ const QueueCreation = () => {
           width="100%"
           maxW="650px"
         >
-          <Heading fontFamily='Jost'>Create Queue</Heading>
+          <Heading fontFamily="Jost">Create Queue</Heading>
           <Text>Create a new queue for a doctor specialization</Text>
 
           {/* Specialization Dropdown */}
@@ -135,7 +146,7 @@ const QueueCreation = () => {
               isDisabled={!specialization} // Disable if no specialization selected
             >
               {specialization &&
-                doctorsData[specialization].map((doc, index) => (
+                doctorsData[specialization]?.map((doc, index) => (
                   <option key={index} value={doc}>
                     {doc}
                   </option>
@@ -144,7 +155,7 @@ const QueueCreation = () => {
           </FormControl>
 
           {/* Weekly Schedule Section */}
-          <Heading size="md" mt={4} fontFamily='Jost'>
+          <Heading size="md" mt={4} fontFamily="Jost">
             Add Weekly Schedule
           </Heading>
 
@@ -184,7 +195,6 @@ const QueueCreation = () => {
           <Button colorScheme="blue" onClick={addSchedule} mt={4}>
             Add Schedule
           </Button>
-
 
           {/* Status Selection */}
           <FormControl isInvalid={errors.status} mt={4}>
